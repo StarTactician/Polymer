@@ -17,7 +17,7 @@ public class PlayerData
     public float effectVolume; // 音效音量
     public string lastResetTime; // 上次重置的时间
 }
-#region 成就类
+#region 成就科技类
 /// <summary>
 /// 存储成就解锁情况的信息
 /// </summary>
@@ -72,5 +72,51 @@ public class Technology
 public class TechnologyList
 {
     public List<Technology> Technologies = new List<Technology>();
+}
+#endregion
+# region 建筑类
+[System.Serializable]
+public class BuildingData
+{
+    public string id;
+    public string name;
+    public string type;
+    public Position position;
+    public Scale scale;
+    public Rotation rotation;
+    public bool isUnlocked;
+    public int defaultIncome;
+    public bool hasNPC;
+    public List<Position> npcPath;
+}
+
+[System.Serializable]
+public class Position
+{
+    public float x;
+    public float y;
+    public float z;
+}
+
+[System.Serializable]
+public class Scale
+{
+    public float x;
+    public float y;
+    public float z;
+}
+
+[System.Serializable]
+public class Rotation
+{
+    public float x;
+    public float y;
+    public float z;
+}
+
+[System.Serializable]
+public class BuildingList
+{
+    public List<BuildingData> buildings;
 }
 #endregion
