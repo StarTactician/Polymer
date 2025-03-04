@@ -1,0 +1,156 @@
+{
+    "tasks": [
+        {
+            "id": "T001",
+            "type": "材料研发",
+            "description": "研究新型聚合物材料，提高基础产量。",
+            "cost": 1000,
+            "level": 1,
+            "duration": 1800,
+            "newTech": "SuperCH2",
+            "rarity": { "key": "Common" },
+            "conditions": [
+                { "key": "unlockCH2Material", "value": true }
+            ]
+        },
+        {
+            "id": "T002",
+            "type": "基地升级",
+            "description": "扩建基地，增加资源存储容量。",
+            "cost": 2000,
+            "level": 2,
+            "duration": 3600,
+            "newBuliding": "CoreBase",
+            "rarity": { "key": "Rare" },
+            "conditions": [
+                { "key": "coinMoreThan8000", "value": true }
+            ]
+        },
+        {
+            "id": "T003",
+            "type": "订单接取",
+            "description": "接受外界的材料订单，获取急需资金。",
+            "cost": 0,
+            "level": 1,
+            "duration": 2400,
+            "rewardCoin": 2500,
+            "rarity": { "key": "Common" },
+            "conditions": []
+        },
+        {
+            "id": "T004",
+            "type": "基地升级",
+            "description": "建造CH2工厂，开始批量生成CH2。",
+            "cost": 4000,
+            "level": 3,
+            "duration": 5400,
+            "newBuliding": "CH2Factory",
+            "rarity": { "key": "VeryRare" },
+            "conditions": [
+                { "key": "unlockCH2Material", "value": true }
+            ]
+        },
+        {
+            "id": "T005",
+            "type": "材料研发",
+            "description": "开发新科技，减少材料消耗。",
+            "cost": 5000,
+            "level": 4,
+            "duration": 7200,
+            "newTech": "SuperCH2",
+            "rarity": { "key": "SuperRare" },
+            "conditions": [
+                { "key": "unlockCH2Material", "value": true }
+            ]
+        },
+        {
+            "id": "T006",
+            "type": "基地升级",
+            "description": "扩建能源供应建筑，确保能量供应充足。",
+            "cost": 1500,
+            "level": 2,
+            "duration": 3000,
+            "newBuliding": "EnergyCore",
+            "rarity": { "key": "Rare" },
+            "conditions": [
+                { "key": "hasCoreBase", "value": true }
+            ]
+        },
+        {
+            "id": "T007",
+            "type": "工厂革新",
+            "description": "升级现有工厂，进一步提高效率。",
+            "cost": 4000,
+            "level": 3,
+            "duration": 6000,
+            "newBuliding": "UpgradeCH2Factory",
+            "rarity": { "key": "VeryRare" },
+            "conditions": [
+                { "key": "hasBuiltCH2Factory", "value": true }
+            ]
+        },
+        {
+            "id": "T008",
+            "type": "材料研发",
+            "description": "深入研究高等级材料，探索新性能。",
+            "cost": 6000,
+            "level": 5,
+            "duration": 10800,
+            "newTech": "SuperMaterial",
+            "rarity": { "key": "SuperRare" },
+            "conditions": [
+                { "key": "unlockCH2Material", "value": true }
+            ]
+        },
+        {
+            "id": "T009",
+            "type": "订单接取",
+            "description": "与空间居住站进行资源交易，获取急需资金。",
+            "cost": 0,
+            "level": 2,
+            "duration": 6000,
+            "rewardCoin": 6400,
+            "rarity": { "key": "Rare" },
+            "conditions": [
+                { "key": "unlockCH2Material", "value": true }
+            ]
+        },
+        {
+            "id": "T010",
+            "type": "工厂革新",
+            "description": "升级基础设施，提高整体生产效率。",
+            "cost": 5000,
+            "level": 2,
+            "duration": 4800,
+            "newTech": "BaseMentLevel2",
+            "rarity": { "key": "Rare" },
+            "conditions": []
+        },
+        {
+            "id": "T011",
+            "type": "材料研发",
+            "description": "研究应急响应材料，以应对突发事件。",
+            "cost": 4000,
+            "level": 3,
+            "duration": 2700,
+            "newTech": "TestTech",
+            "rarity": { "key": "VeryRare" },
+            "conditions": [
+                { "key": "unlockCH2Material", "value": true }
+            ]
+        },
+        {
+            "id": "T012",
+            "type": "基地升级",
+            "description": "探索新建造技术，扩展基地。",
+            "cost": 6500,
+            "level": 3,
+            "duration": 5400,
+            "newBuliding": "TestBuliding",
+            "rarity": { "key": "Rare" },
+            "conditions": [
+                { "key": "testconditions", "value": true }
+            ]
+        }
+    ]
+}
