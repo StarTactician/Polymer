@@ -1,0 +1,22 @@
+# Unity 自动生成的文件（不需要提交）
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+UserSettings/
+MemoryCaptures/
+
+# Visual Studio 相关（不需要提交）
+.vs/
+*.csproj
+*.sln
+*.user
+
+# 包含 Package Cache（防止提交依赖包）
+Packages/com.unity.*
+Packages/packages-lock.json
+
+# 不提交 Unity 生成的本地设置
+ProjectSettings/EditorBuildSettings.asset
