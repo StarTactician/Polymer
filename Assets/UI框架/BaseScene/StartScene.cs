@@ -8,7 +8,7 @@ public class StartScene : BaseScene
     public override void EnterScene()
     {
         CurrentType = 0;
-        AudioManager.Inst.Updatelist(CurrentType);
+        AudioManager.Inst.Updatelist(CurrentType);//ÇÐ¸è
         UIManager.GetInst().Push(new StartPanel());
     }
 

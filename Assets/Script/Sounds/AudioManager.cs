@@ -21,7 +21,7 @@ public class AudioManager : MonoBehaviour
     /// </summary>
     public static event System.Action<float> OnVolumeChanged;
     private int lastPlayedIndex = -1; // 用于记录上一次播放的曲目索引
-    private void Awake()
+    private void OnEnable()
     {
         if (Inst == null)
             Inst = this;
@@ -29,15 +29,19 @@ public class AudioManager : MonoBehaviour
             Destroy(gameObject);
 
         DontDestroyOnLoad(gameObject);
-        BaseScene.OnEnterScene += HandleEnterScene;
+    }
+    private void Awake()
+    {
+        
+        BaseScene.OnEnterScene += EnterScene;
     }
     private void OnDestroy()
     {
         // 取消订阅进入场景的事件
-        BaseScene.OnEnterScene -= HandleEnterScene;
+        BaseScene.OnEnterScene -= EnterScene;
     }
 
-    private void HandleEnterScene()
+    private void EnterScene()
     {
         // 更新歌单
         Updatelist(BaseScene.CurrentType);

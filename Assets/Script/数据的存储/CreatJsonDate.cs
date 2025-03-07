@@ -33,7 +33,7 @@ public partial class SaveManager
 
         Debug.Log($"玩家数据已保存至 {filePath}");
     }
-    public bool LoadPlayerDate()
+    public bool LoadPlayerDate()//bool值用于判断玩家是否第一次进入游戏
     {
         string filePath = Path.Combine(Application.persistentDataPath, "PlayerData.json");
 
@@ -55,6 +55,10 @@ public partial class SaveManager
             TaskDepartment = playerData.taskDepartmentLevel;
             SaveRefresh = playerData.RefreshChance;
             LastChangeTime = playerData.lastResetTime;
+            if (!AudioManager.Inst)
+                Debug.Log("AudioManager不在");
+            if(playerData==null)
+                Debug.Log("playerData不在");
             AudioManager.Inst.MusicVolum = playerData.musicVolume;
             AudioManager.Inst.EffectVolum = playerData.effectVolume;
 

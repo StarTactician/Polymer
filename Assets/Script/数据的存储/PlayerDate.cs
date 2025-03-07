@@ -10,12 +10,15 @@ public class PlayerData
     public int currentLevel; // 当前关卡
     public int farthestLevel; // 最远解锁关卡
     public int coin=2000; // 当前金币数量
+    public int PU = 0;//当前碳链分子,(聚合基元)数量
+    public int progress;//玩家当前的进度
     public int finishedMissionNum;//已完成的任务数量
     public int taskDepartmentLevel=1; // 任务部门等级
     public int RefreshChance = 2; // 剩下的刷新次数
     public float musicVolume; // 音乐音量
     public float effectVolume; // 音效音量
     public string lastResetTime; // 上次重置的时间
+    public string playerName;
 }
 #region 成就科技类
 /// <summary>

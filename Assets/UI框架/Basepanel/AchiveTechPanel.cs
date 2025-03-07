@@ -68,7 +68,7 @@ public class AchiveTechPanel : BasePanel
     }
     void Achivement()
     {
-        UIManager.GetInst().Push(new TechTreePanel());
+        UIManager.GetInst().Push(new AchivementPanel());
     }
     void TechTree()
     {

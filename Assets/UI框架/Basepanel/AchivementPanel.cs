@@ -10,6 +10,7 @@ public class AchivementPanel : BasePanel
     private static string path = "Panel/AchivementPanel";
     public static readonly UIType uitype = new UIType(path, name);
     private string loadPath = "IMG/AchiveImg/";
+    DescribeWindow DescribeWindow = null;
     private List<Button> achiveButtons;
     public AchivementPanel() : base(uitype)
     {
@@ -74,7 +75,7 @@ public class AchivementPanel : BasePanel
                 selectedAchiev.hasCheck = 0;
                 AchievementManager.GetInst().SaveAchievementLibrary();
             }
-            TechDescribeWindow techWindow = new TechDescribeWindow();
+            DescribeWindow techWindow = new DescribeWindow();
             if (TechTreeManager.IsTechnologyUnlocked(buttonName))//只有已解锁的才会传递成就描述，否则显示未解锁以及解锁方式
             {
                 techWindow.IsLocked = false;

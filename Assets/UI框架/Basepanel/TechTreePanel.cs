@@ -11,7 +11,7 @@ public class TechTreePanel : BasePanel
     private static string path = "Panel/TechTreePanel";
     public static readonly UIType uitype = new UIType(path, name);
     private string loadPath = "IMG/TechImg/";
-    TechDescribeWindow techWindow;
+    DescribeWindow techWindow=null;
     private List<Button> techButtons;
     public Dictionary<int,GameObject> ButtonBadges_Dict = new Dictionary<int,GameObject>();//将按钮与科技ID一一对应
     ScrollRect scrollRect;
@@ -22,13 +22,11 @@ public class TechTreePanel : BasePanel
     public override void OnDestroy()
     {
         base.OnDestroy();
-        UIManager.GetInst().PopWindow(techWindow, true);
     }
     public override void OnDisable()
     {
         base.OnDisable();
-        UIFunction.Inst.StartFade(0.2f, this, false);
-        UIManager.GetInst().PopWindow(techWindow, true);
+        UIFunction.Inst.StartFade(0.2f, this, false);        
     }
     public override void OnEnable()
     {
@@ -87,7 +85,7 @@ public class TechTreePanel : BasePanel
                 TechTreeManager.GetInst().SaveTechTree();
             }
             
-            techWindow = new TechDescribeWindow();
+            techWindow = new DescribeWindow();
             techWindow.techLevel = selectedTech.TechLevel;
             if (TechTreeManager.IsTechnologyUnlocked(buttonName))//只有已解锁的才会传递成就描述，否则显示未解锁以及解锁方式
             {
@@ -134,6 +132,18 @@ public class TechTreePanel : BasePanel
     }
     void Back()
     {
+        if (techWindow != null)
+        {
+            // 确保对象仍然存在
+            if (techWindow.PanelObj != null && UIManager.GetInst().Windows_Dict.ContainsKey(techWindow.PanelObj.name))
+            {
+                UIManager.GetInst().PopWindow(techWindow, true);
+            }
+            techWindow = null; // 置空，避免后续访问已销毁的对象
+        }
+
         UIManager.GetInst().Pop(false);
     }
+
+
 }
