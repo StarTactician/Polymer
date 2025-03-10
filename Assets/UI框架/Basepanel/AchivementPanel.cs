@@ -10,8 +10,11 @@ public class AchivementPanel : BasePanel
     private static string path = "Panel/AchivementPanel";
     public static readonly UIType uitype = new UIType(path, name);
     private string loadPath = "IMG/AchiveImg/";
-    DescribeWindow DescribeWindow = null;
+    int lastButtonName;
+    DescribeWindow describeWindow = null;
     private List<Button> achiveButtons;
+    ScrollRect scrollRect;
+    public Dictionary<int, GameObject> ButtonBadges_Dict = new Dictionary<int, GameObject>();//将按钮标号与New标识的物体一一对应
     public AchivementPanel() : base(uitype)
     {
 
@@ -36,27 +39,35 @@ public class AchivementPanel : BasePanel
     public override void OnStart()
     {
         base.OnStart();
-        UIFunction.Inst.GetCompoentInObjsChild<Button>(PanelObj, "Back").onClick.AddListener(Back);
         UIFunction.Inst.StartFade(0.2f, this, true);
-        //改成for循环才能实现每个隔一点时间缩放出来，（包括回弹）
-        for (int i = 0; i < achiveButtons.Count; i++)
+        UIFunction.Inst.GetCompoentInObjsChild<Button>(PanelObj, "Back").onClick.AddListener(Back);
+        achiveButtons = UIFunction.Inst.GetComponentsInObjsChild<Button>(PanelObj, "Achive");
+        scrollRect = UIFunction.Inst.GetCompoentInObjsChild<ScrollRect>(PanelObj, "Scroll");
+        //改成for循环才能实现每个隔一点时间缩放出来，
+        for (int i = 0; i < achiveButtons.Count; i++)//AchievementManager.GetInst().GetAchivesNum()
         {
             Button button = achiveButtons[i];
-            if (!AchievementManager.IsTechnologyUnlocked(i+1)) // 未解锁，设置黑白颜色 + 上锁图标
+            int buttonName = int.Parse(achiveButtons[i].name);
+            if (!AchievementManager.IsAchiveUnlocked(i+1)) // 未解锁，设置黑白颜色 + 上锁图标
             {
                 Image LockedImage = button.GetComponent<Image>();//黑白需要调饱和度，不好实现，还需要别的办法
-                UIFunction.Inst.StartFade(0.1f, UIFunction.Inst.GetCompoentInObjsChild<Image>(button.gameObject, "techImage"), true);//锁图标初始透明度为0
+                Image achiveImage = UIFunction.Inst.GetCompoentInObjsChild<Image>(button.gameObject, "techImage");
+                //UIFunction.Inst.StartFade(0.1f, UIFunction.Inst.GetCompoentInObjsChild<Image>(button.gameObject, "techImage"), true);//锁图标初始透明度为0
+                if (TechTreeManager.GetInst().GetTech(buttonName).hasCheck == 1)
+                {
+                    ButtonBadges_Dict.Add(buttonName, UIFunction.Inst.AddBadgeToImage(achiveImage, null, 200, 80, 70, false));
+                }
                 // 锁定图标可以加上 sprite
                 // UIFunction.Inst.GetCompoentInObjsChild<Image>(button.gameObject, "techImage").sprite = Resources.Load<Sprite>("IMG/TechImag/");
             }
 
-            // 计算延迟时间（第 1 个按钮立即执行，第 2 个按钮延迟 0.1s，第 3 个按钮延迟 0.2s 依次类推）
-            float waitTime = i * 0.1f;
+            // 计算延迟时间
+            float waitTime = i * 0.25f;
 
             // **执行放大动画**
             RectTransform rectTransform = button.GetComponent<RectTransform>();
-            UIFunction.Inst.StartScale(0.1f, rectTransform, new Vector3(1.2f, 1.2f, 1), waitTime); // 放大
-            UIFunction.Inst.StartScale(0.05f, rectTransform, new Vector3(1.0f, 1.0f, 1), waitTime + 0.1f); // 回弹
+            UIFunction.Inst.StartScale(0.2f, rectTransform, new Vector3(1.2f, 1.2f, 1), waitTime); // 放大
+            UIFunction.Inst.StartScale(0.05f, rectTransform, new Vector3(1.0f, 1.0f, 1), waitTime + 0.2f); // 回弹
 
             button.onClick.AddListener(Select);
         }
@@ -67,32 +78,48 @@ public class AchivementPanel : BasePanel
         Button clickedButton = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
         if (clickedButton != null)
         {
-            UIManager.GetInst().PopAllWindow();
+            
             int buttonName = int.Parse(clickedButton.name);
+            if (buttonName != lastButtonName)
+            {
+                UIManager.GetInst().PopAllWindow();
+            }
+            else
+                return;
+
+            lastButtonName = buttonName; // 更新上一个按钮记录
             Achievement selectedAchiev = AchievementManager.GetInst().GetAchiev(buttonName);//根据id获取
+            if (selectedAchiev == null)
+                return;
             if (selectedAchiev.hasCheck != 0)
             {
                 selectedAchiev.hasCheck = 0;
+                if (ButtonBadges_Dict.ContainsKey(buttonName))
+                {
+                    GameObject.Destroy(ButtonBadges_Dict[buttonName]);
+                    ButtonBadges_Dict.Remove(buttonName);
+                }
                 AchievementManager.GetInst().SaveAchievementLibrary();
             }
-            DescribeWindow techWindow = new DescribeWindow();
-            if (TechTreeManager.IsTechnologyUnlocked(buttonName))//只有已解锁的才会传递成就描述，否则显示未解锁以及解锁方式
+            describeWindow = new DescribeWindow();
+            //describeWindow.techLevel = selectedTech.TechLevel;
+            if (AchievementManager.IsAchiveUnlocked(buttonName))//只有已解锁的才会传递成就描述，否则显示未解锁以及解锁方式
             {
-                techWindow.IsLocked = false;
-                techWindow.TechName = selectedAchiev.name;
-                techWindow.TechDescription = selectedAchiev.description;
-                techWindow.TechSprite = Resources.Load<Sprite>(loadPath + buttonName);
+                describeWindow.IsLocked = false;
+                describeWindow.TechName = selectedAchiev.AchieveName;
+                describeWindow.TechDescription = selectedAchiev.Description;
+                describeWindow.TechSprite = Resources.Load<Sprite>(loadPath + buttonName);
             }
             else
             {
-                techWindow.IsLocked = true;
-                techWindow.TechName = "???";
-                techWindow.TechDescription = selectedAchiev.lockedInfo;
-                techWindow.TechSprite = Resources.Load<Sprite>("IMG/LittleUI/UILock");
+                describeWindow.IsLocked = true;
+                describeWindow.TechName = "???";
+                describeWindow.TechDescription = selectedAchiev.lockedInfo;
+                describeWindow.TechSprite = Resources.Load<Sprite>("IMG/LittleUI/AchiveLock");
             }
             Debug.Log(clickedButton.name);
             ScrollToButton(buttonName);
-            UIManager.GetInst().Push(techWindow, true);
+            UIManager.GetInst().Push(describeWindow, true);
         }
         else
         {
@@ -101,7 +128,7 @@ public class AchivementPanel : BasePanel
     }
     void ScrollToButton(int index)
     {
-        ScrollRect scrollRect = UIFunction.Inst.GetCompoentInObjsChild<ScrollRect>(PanelObj, "Scroll");
+        //ScrollRect scrollRect = UIFunction.Inst.GetCompoentInObjsChild<ScrollRect>(PanelObj, "Scroll");
         if (scrollRect == null)
         {
             Debug.LogWarning("未找到 ScrollRect 组件！");
@@ -111,9 +138,9 @@ public class AchivementPanel : BasePanel
         RectTransform contentRect = scrollRect.content; // 获取 ScrollRect 的内容区域
 
         // x = (index - 1) * 480
-        float targetX = -(index - 2) * 480;//我也不知道为什么减一不行减二行
+        float targetX = -(index - 1) * 580;//我也不知道为什么减一不行减二行
         // 限制范围，防止滑动超出边界
-        float minX = -524;//协程没搞懂，数据全靠试
+        float minX = -580;//数据全靠试
         float maxX = contentRect.rect.width - scrollRect.viewport.rect.width;
         targetX = Mathf.Clamp(targetX, -maxX, -minX);
 
@@ -122,11 +149,17 @@ public class AchivementPanel : BasePanel
     }
     void Back()
     {
+        lastButtonName = 0;
+        if (describeWindow != null)
+        {
+            // 确保对象仍然存在
+            if (describeWindow.PanelObj != null && UIManager.GetInst().Windows_Dict.ContainsKey(describeWindow.PanelObj.name))
+            {
+                UIManager.GetInst().PopWindow(describeWindow, true);
+            }
+            describeWindow = null; // 置空，避免后续访问已销毁的对象
+        }
         UIManager.GetInst().Pop(false);
     }
-    void ShowOut()
-        //让成就一个接一个冒出来
-    {
 
-    }
 }

@@ -11,9 +11,10 @@ public class TechTreePanel : BasePanel
     private static string path = "Panel/TechTreePanel";
     public static readonly UIType uitype = new UIType(path, name);
     private string loadPath = "IMG/TechImg/";
+    int lastButtonName;
     DescribeWindow techWindow=null;
     private List<Button> techButtons;
-    public Dictionary<int,GameObject> ButtonBadges_Dict = new Dictionary<int,GameObject>();//将按钮与科技ID一一对应
+    public Dictionary<int,GameObject> ButtonBadges_Dict = new Dictionary<int,GameObject>();//将按钮标号与New标识的物体一一对应
     ScrollRect scrollRect;
     public TechTreePanel() : base(uitype)
     {
@@ -74,14 +75,24 @@ public class TechTreePanel : BasePanel
         Button clickedButton = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
         if (clickedButton != null)
         {
-            UIManager.GetInst().PopAllWindow();
             int buttonName = int.Parse(clickedButton.name);
+            if (buttonName != lastButtonName)
+            {
+                UIManager.GetInst().PopAllWindow();
+            }
+            else
+                return;
+
+            lastButtonName = buttonName; // 更新上一个按钮记录
             Technology selectedTech=TechTreeManager.GetInst().GetTech(buttonName);//根据id获取
             if(selectedTech.hasCheck != 0)
             {
-                selectedTech.hasCheck = 0;              
-                GameObject.Destroy(ButtonBadges_Dict[buttonName]);
-                ButtonBadges_Dict.Remove(buttonName);
+                selectedTech.hasCheck = 0;
+                if(ButtonBadges_Dict.ContainsKey(buttonName))
+                {
+                    GameObject.Destroy(ButtonBadges_Dict[buttonName]);
+                    ButtonBadges_Dict.Remove(buttonName);
+                }               
                 TechTreeManager.GetInst().SaveTechTree();
             }
             
@@ -99,6 +110,7 @@ public class TechTreePanel : BasePanel
                 techWindow.IsLocked = true;
                 techWindow.TechName = "???";
                 techWindow.TechDescription = selectedTech.UnlockWay;
+                techWindow.TechSprite = Resources.Load<Sprite>("IMG/LittleUI/TechLock");
             }
             Debug.Log(clickedButton.name);
             ScrollToButton(buttonName);
@@ -132,6 +144,7 @@ public class TechTreePanel : BasePanel
     }
     void Back()
     {
+        lastButtonName = 0;
         if (techWindow != null)
         {
             // 确保对象仍然存在

@@ -27,23 +27,14 @@ public class PlayerData
 [System.Serializable]
 public class Achievement
 {
-    public int id; // 成就的唯一标识符
-    public string name; // 成就名称
-    public string description; // 成就描述
-    public string lockedInfo;//锁定描述
-    public AciveType type;//成就解锁需要的数据种类，主要用于分拣
-    public bool isUnlocked; // 是否已解锁
-    public int hasCheck;//玩家是否已查看(int方便计数0已查看或未解锁，1未查看)
-    public List<AchievementCondition> conditions; // 成就的解锁条件,可能不止一个，所以要用LIST
-    public int reward; // 成就奖励（例如金币数量）
-}
-[System.Serializable]
-
-public class AchievementCondition
-{
-    public string key; // 条件名称，例如 "completeTask", "collectResources"
-    public int targetValue; // 条件目标值，例如 "完成10个任务"
-    //public int currentValue; // 当前进度值
+    public int AchieveID; // 成就的唯一标识符
+    public string AchieveName; // 成就名称
+    public string Description; // 成就描述
+    public string lockedInfo;//锁定描述   
+    public bool IsUnlock; // 是否已解锁
+    public int hasCheck;//玩家是否已查看(int方便计数0已查看或未解锁，1未查看)   
+    public AciveType RewardType; // 成就奖励（奖励类型与奖励数量）
+    public List<AciveType> UnlockType =new List<AciveType>();//成就解锁所需要的数据种类，主要用于分拣
 }
 [System.Serializable]
 public class AciveType
@@ -54,7 +45,7 @@ public class AciveType
 [System.Serializable]
 public class AchievementList
 {
-    public List<Achievement> achievements;
+    public List<Achievement> Achievements;
 }
 
 [System.Serializable]
@@ -81,7 +72,7 @@ public class TechnologyList
 [System.Serializable]
 public class BuildingData
 {
-    public string id;
+    public int id;
     public string name;
     public string type;
     public Position position;

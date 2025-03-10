@@ -10,7 +10,7 @@ public class AchievementManager
     private AchievementList achievementList;
     private List<Achievement> coinType = new List<Achievement>();
     private List<Achievement> missionType = new List<Achievement>();
-    private Dictionary<string, Achievement> singleType = new Dictionary<string, Achievement>();
+    //private Dictionary<string, Achievement> singleType = new Dictionary<string, Achievement>();
     private string AchievementLibraryFilePath = Application.persistentDataPath + "/AchievementLibrary.json";
 
     public static AchievementManager GetInst()
@@ -26,6 +26,11 @@ public class AchievementManager
         Inst = this;
         LoadAchievementLibrary();
         TypeAchiev();
+        Debug.Log("成就数量："+GetAchivesNum());
+    }
+    public int GetAchivesNum()
+    {
+        return achievementList.Achievements.Count();
     }
     /// <summary>
     /// 读取成就库的逻辑
@@ -36,12 +41,12 @@ public class AchievementManager
         {
             string json = File.ReadAllText(AchievementLibraryFilePath);
             achievementList = JsonUtility.FromJson<AchievementList>(json);
-            if (achievementList == null || achievementList.achievements == null)
+            if (achievementList == null || achievementList.Achievements == null)
             {
                 Debug.LogError("JSON 解析失败：成就列表为空。");
                 return;
             }
-            if(achievementList.achievements.Count==0)
+            if(achievementList.Achievements.Count==0)
             {
                 Debug.LogWarning("成就库为空。");
             }
@@ -50,12 +55,18 @@ public class AchievementManager
         else
         {
             Debug.LogWarning("成就库文件不存在，正在加载初始成就库...");
-            TextAsset defaultLibrary = Resources.Load<TextAsset>("AchievementLibrary");
-            achievementList = JsonUtility.FromJson<AchievementList>(defaultLibrary.text);
-            if (achievementList != null && achievementList.achievements != null)
+            TextAsset resourcesAchiveLibrary = Resources.Load<TextAsset>("AchievementLibrary");
+            
+            if (resourcesAchiveLibrary != null)
             {
+                achievementList = JsonUtility.FromJson<AchievementList>(resourcesAchiveLibrary.text);
                 SaveAchievementLibrary(); // 保存默认成就库到目标路径
                 Debug.Log("初始成就库已保存！");
+            }
+            else
+            {
+                Debug.LogError("无法加载默认科技树！");
+                achievementList = new AchievementList(); // 创建空的成就库以防报错
             }
         }
     }
@@ -76,7 +87,7 @@ public class AchievementManager
     /// <returns></returns>
     public Achievement GetAchiev(int id)
     {
-        Achievement achiev = Inst.achievementList.achievements.Find(t => t.id == id);//实际对象引用，学到了
+        Achievement achiev = Inst.achievementList.Achievements.Find(t => t.AchieveID == id);//实际对象引用
         if (achiev != null)
         {
             return achiev;
@@ -86,7 +97,7 @@ public class AchievementManager
     }
     public int AmountUncheckedCount()
     {
-        return achievementList.achievements.Sum(tech => tech.hasCheck);
+        return achievementList.Achievements.Sum(tech => tech.hasCheck);
     }
     /// <summary>
     /// 按照成就解锁所需数据种类来查看当前类型中是否有成就可以解锁，如果可以，解锁成就并保存
@@ -114,13 +125,13 @@ public class AchievementManager
         }
         foreach (Achievement achiev in achievementsToCheck)
         {
-            if (!achiev.isUnlocked) // 只检查未解锁的成就
+            if (!achiev.IsUnlock) // 只检查未解锁的成就
             {
                 bool canUnlock = true; // 需要所有条件都满足
 
-                foreach (AchievementCondition condition in achiev.conditions)
+                foreach (AciveType condition in achiev.UnlockType)
                 {
-                    int progress = GetProgressByType(condition.key); // 获取当前进度
+                    int progress = GetProgressByType(condition.type); // 获取当前进度
                     if (progress < condition.targetValue)
                     {
                         canUnlock = false; // 只要有一个条件不满足，就不能解锁
@@ -130,17 +141,17 @@ public class AchievementManager
 
                 if (canUnlock)
                 {
-                    Achievement unlockAchiev = achievementList.achievements.Find(a => a.id == achiev.id);
+                    Achievement unlockAchiev = achievementList.Achievements.Find(a => a.AchieveID == achiev.AchieveID);
                     if(unlockAchiev!=null)
                     {
-                        unlockAchiev.isUnlocked =true;
+                        unlockAchiev.IsUnlock =true;
                         unlockAchiev.hasCheck = 1;//解锁的时候把hasChecked设置为1
-                        Debug.Log("🏆 解锁成就: "+ unlockAchiev.name);
+                        Debug.Log("🏆 解锁成就: "+ unlockAchiev.AchieveName);//弹出成就解锁的window
                         SaveAchievementLibrary();
                     }
                     else
                     {
-                        Debug.LogWarning($"⚠️ 成就 {achiev.name} 未找到");
+                        Debug.LogWarning($"⚠️ 成就 {achiev.AchieveName} 未找到");
                     }
                     //UnlockAchievement(achiev);
                 }
@@ -154,12 +165,12 @@ public class AchievementManager
     /// </summary>
     /// <param name="techID">所查询的科技ID/param>
     /// <returns></returns>
-    public static bool IsTechnologyUnlocked(int techID)
+    public static bool IsAchiveUnlocked(int techID)
     {
-        Achievement achievement= Inst.achievementList.achievements.Find(t => t.id == techID);
+        Achievement achievement= Inst.achievementList.Achievements.Find(t => t.AchieveID == techID);
         if (achievement != null)
         {
-            return achievement.isUnlocked;
+            return achievement.IsUnlock;
         }
         Debug.LogWarning($"未找到科技：{techID}");
         return false;
@@ -169,30 +180,35 @@ public class AchievementManager
     /// </summary>
     private void TypeAchiev()
     {
-        coinType.Clear(); // 清空List和字典，防止重复存储（尽管在初始化时被调用）
-        foreach (Achievement achiev in achievementList.achievements)
+        coinType.Clear();
+        missionType.Clear();
+
+        foreach (Achievement achiev in achievementList.Achievements)
         {
-            string achievType = achiev.type.type; // 获取成就的解锁数据类型
-            switch (achievType)
+            foreach (AciveType condition in achiev.UnlockType) // 遍历所有解锁条件
             {
-                case ("coin"):
-                    // 存入List
-                    coinType.Add(achiev);
-                    break;
-                case ("task"):
-                    missionType.Add(achiev);
-                    break;
-                default:
-                    //存入字典
-                    singleType.Add(achievType, achiev);
-                    Debug.Log("未规范使用的成就解锁条件，请确保是否存在拼写错误或是特殊条件类型");
-                    break;
+                string achievType = condition.type; // 获取当前条件类型
+
+                if (achievType == "coin")
+                {
+                    if (!coinType.Contains(achiev))
+                    {
+                        coinType.Add(achiev);
+                    }
+                }
+                else if (achievType == "task")
+                {
+                    if (!missionType.Contains(achiev))
+                    {
+                        missionType.Add(achiev);
+                    }
+                }
             }
         }
-
     }
+
     /// <summary>
-    /// 获取对应类型的具体数据
+    /// 获取解锁类型的进度数据
     /// </summary>
     /// <param name="key"></param>
 
@@ -200,8 +216,8 @@ public class AchievementManager
     {
         switch (key)
         {
-            case "task": return SaveManager.CurrentFinishedTaskNum;
-            case "coin": return SaveManager.CurrentCoin;
+            case "task": return SaveManager.CurrentFinishedTaskNum;//如果是任务型，则获取当前任务完成数量
+            case "coin": return SaveManager.CurrentCoin;//如果是资源型，则获取当前资源数量
             default:
                 Debug.LogWarning($"未知的成就条件: {key}");
                 return 0;

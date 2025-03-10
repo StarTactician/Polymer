@@ -22,7 +22,8 @@ public class UIFunction : MonoBehaviour
         {4, "IV"},
         {3, "¢ó"},
         {2, "¢ò"},
-        {1, "I"}
+        {1, "I"},
+        {0, ""}
     };
     //public float FadeTime;
     /*public static UIFunction GetInst()

@@ -1,83 +1,54 @@
 {
   "Achievements": [
     {
-      "id": 1,
-      "name": "科技启蒙",
-      "description": "火、轮子、塑料——每一项科技，都是人类文明的里程碑！\n你解锁了第一项科技，意味着你正式迈入科学的世界！\n别急，还有几十种材料等着你去探索，你的月球基地才刚刚开始！",
+      "AchieveID": 1,
+      "AchieveName": "科技启蒙",
+      "Description": "火、轮子、塑料——每一项科技，都是人类文明的里程碑！\n你解锁了第一项科技，意味着你正式迈入科学的世界！\n别急，还有几十种材料等着你去探索，你的月球基地才刚刚开始！",
       "lockedInfo": "解锁任意一项科技可获得",
-      "type": {
-        "type": "techUnlock",
-        "targetValue": 1
-      },
-      "isUnlocked": false,
+      "IsUnlock": false,
       "hasCheck": 0,
-      "conditions": [
-        {
-          "key": "techUnlocked",
-          "targetValue": 1
-        }
-      ],
-      "reward": 100
+      "RewardType": { "type": "coin", "targetValue": 100 },
+      "UnlockType": [
+        { "type": "techUnlock", "targetValue": 1 }
+      ]
     },
     {
-      "id": 2,
-      "name": "任务达人",
-      "description": "完成 10 个任务",
+      "AchieveID": 2,
+      "AchieveName": "任务达人",
+      "Description": "完成 10 个任务",
       "lockedInfo": "累计完成 10 个任务后可获得",
-      "type": {
-        "type": "task",
-        "targetValue": 10
-      },
-      "isUnlocked": false,
+      "IsUnlock": false,
       "hasCheck": 0,
-      "conditions": [
-        {
-          "key": "completeTask",
-          "targetValue": 10
-        }
-      ],
-      "reward": 200
+      "RewardType": { "type": "coin", "targetValue": 200 },
+      "UnlockType": [
+        { "type": "task", "targetValue": 10 }
+      ]
     },
     {
-      "id": 3,
-      "name": "财富积累",
-      "description": "累计收集 5000 金币",
+      "AchieveID": 3,
+      "AchieveName": "财富积累",
+      "Description": "累计收集 5000 金币",
       "lockedInfo": "总金币达到 5000 后解锁",
-      "type": {
-        "type": "coin",
-        "targetValue": 5000
-      },
-      "isUnlocked": false,
+      "IsUnlock": false,
       "hasCheck": 0,
-      "conditions": [
-        {
-          "key": "collectCoins",
-          "targetValue": 5000
-        }
-      ],
-      "reward": 300
+      "RewardType": { "type": "coin", "targetValue": 300 },
+      "UnlockType": [
+        { "type": "coin", "targetValue": 5000 }
+      ]
     },
     {
-      "id": 4,
-      "name": "完美执行者",
-      "description": "完成 10 个任务并收集 5000 金币",
+      "AchieveID": 4,
+      "AchieveName": "完美执行者",
+      "Description": "完成 10 个任务并收集 5000 金币",
       "lockedInfo": "完成 10 个任务并收集 5000 金币后可获得",
-      "type": {
-        "type": "task"
-      },
-      "isUnlocked": false,
+      "IsUnlock": false,
       "hasCheck": 0,
-      "conditions": [
-        {
-          "key": "completeTask",
-          "targetValue": 10
-        },
-        {
-          "key": "collectCoins",
-          "targetValue": 5000
-        }
-      ],
-      "reward": 500
+      "RewardType": { "type": "coin", "targetValue": 500 },
+      "UnlockType": [
+        { "type": "task", "targetValue": 10 },
+        { "type": "coin", "targetValue": 5000 }
+      ]
     }
   ]
 }
+
