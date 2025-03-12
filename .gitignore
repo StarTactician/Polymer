@@ -20,3 +20,5 @@ Packages/packages-lock.json
 
 # 不提交 Unity 生成的本地设置
 ProjectSettings/EditorBuildSettings.asset
+# 忽略 Bought 目录中的所有文件
+Assets/Bought/
