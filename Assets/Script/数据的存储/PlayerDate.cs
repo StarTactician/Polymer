@@ -73,13 +73,13 @@ public class TechnologyList
 public class BuildingData
 {
     public int id;
+    public int income;//收入大于0则是生产类建筑
+    public string incomeType;//收入类型
     public string name;
-    public string type;
     public Position position;
     public Scale scale;
     public Rotation rotation;
-    public bool isUnlocked;
-    public int defaultIncome;
+    public bool isUnlocked;   
     public bool hasNPC;
     public List<Position> npcPath;
 }

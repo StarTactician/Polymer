@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3720611430395752450
+--- !u!1 &1737367501247661668
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,9 +8,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2312021167589610014}
-  - component: {fileID: 3962065700790819902}
-  - component: {fileID: 6910536963394817281}
+  - component: {fileID: 5507034429431336977}
+  - component: {fileID: 3317802784633833550}
+  - component: {fileID: 8643551773706407741}
   m_Layer: 0
   m_Name: SolarPanels_Glass
   m_TagString: Untagged
@@ -18,36 +18,36 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2312021167589610014
+--- !u!4 &5507034429431336977
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3720611430395752450}
+  m_GameObject: {fileID: 1737367501247661668}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1842851451901909121}
+  m_Father: {fileID: 5867868242220597652}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &3962065700790819902
+--- !u!33 &3317802784633833550
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3720611430395752450}
-  m_Mesh: {fileID: 8347141454247588808, guid: 1b9c6bf32c3ebe14e904be8f8fd528bb, type: 3}
---- !u!23 &6910536963394817281
+  m_GameObject: {fileID: 1737367501247661668}
+  m_Mesh: {fileID: 8347141454247588808, guid: ee8e9e0199be615428d371dba110ccc7, type: 3}
+--- !u!23 &8643551773706407741
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3720611430395752450}
+  m_GameObject: {fileID: 1737367501247661668}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -61,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 8556262120643298411, guid: 1b9c6bf32c3ebe14e904be8f8fd528bb, type: 3}
+  - {fileID: 8556262120643298411, guid: ee8e9e0199be615428d371dba110ccc7, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -83,7 +83,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!1 &7783520281136559166
+--- !u!1 &1921671183051598433
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -91,43 +91,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1842851451901909121}
-  m_Layer: 0
-  m_Name: SolarPanels
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1842851451901909121
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7783520281136559166}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 384395137786055788}
-  - {fileID: 2312021167589610014}
-  - {fileID: 7234805376891079264}
-  m_Father: {fileID: 0}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &8673535975841902749
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7234805376891079264}
-  - component: {fileID: 1209084859602237083}
-  - component: {fileID: 5356868198905632478}
+  - component: {fileID: 2864875091129219413}
+  - component: {fileID: 4024396390551913865}
+  - component: {fileID: 6442068676152528060}
   m_Layer: 0
   m_Name: SolarPanels_WhitePlastic
   m_TagString: Untagged
@@ -135,36 +101,36 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7234805376891079264
+--- !u!4 &2864875091129219413
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8673535975841902749}
+  m_GameObject: {fileID: 1921671183051598433}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1842851451901909121}
+  m_Father: {fileID: 5867868242220597652}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &1209084859602237083
+--- !u!33 &4024396390551913865
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8673535975841902749}
-  m_Mesh: {fileID: 818075714688582791, guid: 1b9c6bf32c3ebe14e904be8f8fd528bb, type: 3}
---- !u!23 &5356868198905632478
+  m_GameObject: {fileID: 1921671183051598433}
+  m_Mesh: {fileID: 818075714688582791, guid: ee8e9e0199be615428d371dba110ccc7, type: 3}
+--- !u!23 &6442068676152528060
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8673535975841902749}
+  m_GameObject: {fileID: 1921671183051598433}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -178,7 +144,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2085290642638021832, guid: 1b9c6bf32c3ebe14e904be8f8fd528bb, type: 3}
+  - {fileID: 2085290642638021832, guid: ee8e9e0199be615428d371dba110ccc7, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -200,7 +166,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!1 &8994470511492385894
+--- !u!1 &4679717876232104600
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -208,9 +174,43 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 384395137786055788}
-  - component: {fileID: 3720563701525887767}
-  - component: {fileID: 5331933651790000983}
+  - component: {fileID: 5867868242220597652}
+  m_Layer: 0
+  m_Name: SolarPanels
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5867868242220597652
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4679717876232104600}
+  m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: -2181.5386, y: 2.2462006, z: -32.570213}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 15591284798473155}
+  - {fileID: 5507034429431336977}
+  - {fileID: 2864875091129219413}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8895427954199664004
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 15591284798473155}
+  - component: {fileID: 890377316193169353}
+  - component: {fileID: 2661503020308291296}
   m_Layer: 0
   m_Name: SolarPanels_DarkPlastic
   m_TagString: Untagged
@@ -218,36 +218,36 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &384395137786055788
+--- !u!4 &15591284798473155
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8994470511492385894}
+  m_GameObject: {fileID: 8895427954199664004}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1842851451901909121}
+  m_Father: {fileID: 5867868242220597652}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &3720563701525887767
+--- !u!33 &890377316193169353
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8994470511492385894}
-  m_Mesh: {fileID: -6529436013851089933, guid: 1b9c6bf32c3ebe14e904be8f8fd528bb, type: 3}
---- !u!23 &5331933651790000983
+  m_GameObject: {fileID: 8895427954199664004}
+  m_Mesh: {fileID: -6529436013851089933, guid: ee8e9e0199be615428d371dba110ccc7, type: 3}
+--- !u!23 &2661503020308291296
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8994470511492385894}
+  m_GameObject: {fileID: 8895427954199664004}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -261,7 +261,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -5778738923275531994, guid: 1b9c6bf32c3ebe14e904be8f8fd528bb, type: 3}
+  - {fileID: -5778738923275531994, guid: ee8e9e0199be615428d371dba110ccc7, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
