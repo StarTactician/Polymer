@@ -51,13 +51,17 @@ public class ConfirmCoinCostPanel : BasePanel
     void Confirm()
     {
         //判断钱够不够
-        if(SaveManager.CurrentCoin< Num)
+        if(SaveManager.CurrentPU< Num)
         {
             //弹出不够窗口
+            UIManager.GetInst().PopOnceOnlyUsePanel();
+            TipsJumpWindow jumpWindow = new TipsJumpWindow();
+            jumpWindow.Text = "当前聚合基元不够，无法开始研发工作!";
+            UIManager.GetInst().PushTips(jumpWindow,2.5f);
         }
         else
         {
-            SaveManager.GetInst().CoinChange(-Num);
+            SaveManager.GetInst().ResourcesChange(-Num,"PU");
             //TestScene testScene = new TestScene();
             //SceneControl.GetInst().LoadScene(testScene.SceneName, testScene);
             //SaveManager.GetInst().CoinChange(-SaveManager.CurrentLevel * 40);

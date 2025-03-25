@@ -17,6 +17,9 @@ public class GameRoot : MonoBehaviour
     private LevelManager levelManager;
     public LevelManager LevelManager_Root { get => levelManager; }
 
+    private BuildingManager buildingManager;
+    public BuildingManager BuildingManager_Root { get => buildingManager; }
+
     private MissionManager missionManager;
     public MissionManager MissionManager_Root { get => missionManager; }
 
@@ -73,6 +76,7 @@ public class GameRoot : MonoBehaviour
         getTouchedVector = new GetTouchedVector();
         levelManager = new LevelManager();
         saveManager = new SaveManager();
+        buildingManager = new BuildingManager();
         missionManager = new MissionManager();
         techTreeManager = new TechTreeManager();
         achievementManager = new AchievementManager();
@@ -84,6 +88,7 @@ public class GameRoot : MonoBehaviour
         UIManager_Root.CurrentSceneCanvas = UIFunction.Inst.FindCanvas();
         StartScene startScene = new StartScene();
         SceneControl_Root.Scene_Dict.Add(startScene.SceneName, startScene);
+
         #region 推入第一个界面
         UIManager_Root.Push(new StartPanel());
         #endregion

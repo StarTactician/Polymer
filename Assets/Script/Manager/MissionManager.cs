@@ -201,7 +201,7 @@ public class MissionManager
             return;
         }
         else
-            SaveManager.GetInst().CoinChange(-mission.cost);
+            SaveManager.GetInst().ResourcesChange(-mission.cost);
         // 将任务加入队列
         if(taskQueue.Count==0|| GetNextIncompleteTask()==null)//如果队列为空或者没有未完成的任务则
             onlyMission.startTime = DateTime.Now.ToString("o");
@@ -506,8 +506,9 @@ public class MissionManager
             if (taskQueue.Peek().rewardCoin > 0)
             {
                 rewardPanel.CoinNumber = (int)(UnityEngine.Random.Range(0.9f, 1.2f) * taskQueue.Peek().rewardCoin);
-                SaveManager.GetInst().CoinChange(rewardPanel.CoinNumber);
+                SaveManager.GetInst().ResourcesChange(rewardPanel.CoinNumber);
             }
+            //PU
             if (!string.IsNullOrEmpty(taskQueue.Peek().newBuliding))//在成就，科技管理器中解锁对应的
             {
                 rewardPanel.newBuildingShown = true;

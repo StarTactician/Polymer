@@ -56,13 +56,13 @@ public class VectoryPanel : BasePanel
     {
         ++SaveManager.CurrentLevel;
         ConfirmCoinCostPanel coinCostPanel = new ConfirmCoinCostPanel();
-        coinCostPanel.Num = SaveManager.CurrentLevel * 40;
+        coinCostPanel.Num = SaveManager.CountLevelCost();
         UIManager.GetInst().Push(coinCostPanel);
     }
     void Restart()
     {
         ConfirmCoinCostPanel coinCostPanel = new ConfirmCoinCostPanel();
-        coinCostPanel.Num = SaveManager.CurrentLevel * 40;
+        coinCostPanel.Num = SaveManager.CountLevelCost();
         UIManager.GetInst().Push(coinCostPanel);
     }
     void ShowStar(int starnum)

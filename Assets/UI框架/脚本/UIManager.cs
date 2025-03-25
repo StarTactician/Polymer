@@ -141,6 +141,18 @@ public class UIManager
         GameObject.Destroy(ui_Obj, time);        
     }
     /// <summary>
+    /// 在指定物体的子物体上实例化
+    /// </summary>
+    /// <param name="basePanel"></param>
+    /// <param name="transform"></param>
+    public GameObject PushChild(BasePanel basePanel,Transform transform)
+    {
+        GameObject TheUI = GameObject.Instantiate<GameObject>(Resources.Load<GameObject>(basePanel.uiType.Path), transform);
+        basePanel.PanelObj = TheUI;
+        basePanel.OnStart();
+        return TheUI;
+    }
+    /// <summary>
     /// 需要关闭当前UI界面时调用
     /// </summary>
     /// <param name="changeScene">是否切换场景，切换场景则关闭当前场景的所有UI</param>

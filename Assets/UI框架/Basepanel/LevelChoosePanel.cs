@@ -74,7 +74,7 @@ public class LevelChoosePanel : BasePanel
             SaveManager.CurrentLevel= int.Parse(clickedButton.name);
             //SceneControl.GetInst().LoadLevel(SaveManager.CurrentLevel);
             ConfirmCoinCostPanel coinCostPanel = new ConfirmCoinCostPanel();
-            coinCostPanel.Num = SaveManager.CurrentLevel * 40;
+            coinCostPanel.Num = SaveManager.CountLevelCost();
             UIManager.GetInst().Push(coinCostPanel);
         }
         else

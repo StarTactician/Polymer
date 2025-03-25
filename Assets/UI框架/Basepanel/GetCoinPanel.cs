@@ -16,6 +16,7 @@ public class GetCoinPanel : BasePanel
     public string Name1;
     public string Name2;
     public bool rewardCoinShown = false;//在调用这个Panel的脚本中设置
+    public bool rewardPuShown = false;
     public bool newBuildingShown = false;
     public bool newTechShown = false;
     public bool upgradeTaskDepartmentShown = false;
@@ -82,6 +83,12 @@ public class GetCoinPanel : BasePanel
                 coinNum.text = CoinNumber.ToString();*/
                 UIFunction.Inst.GetCompoentInObjsChild<TextMeshProUGUI>(image.gameObject, "Text").text= CoinNumber.ToString();
                 rewardCoinShown = false; // 标记金币奖励已展示
+            }
+            else if(rewardPuShown)
+            {
+                image.sprite = Resources.Load<Sprite>("IMG/Rewards/PU");
+                UIFunction.Inst.GetCompoentInObjsChild<TextMeshProUGUI>(image.gameObject, "Text").text = CoinNumber.ToString();
+                rewardPuShown = false; // 标记新建筑奖励已展示
             }
             else if (newBuildingShown)
             {

@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using UnityEngine;
 using System.IO;
@@ -8,14 +8,17 @@ public partial class SaveManager
 {
     public void SavePlayerDate()
     {
-        Debug.Log("ÕıÔÚ±£´æÍæ¼ÒÊı¾İ...");
+        Debug.Log("æ­£åœ¨ä¿å­˜ç©å®¶æ•°æ®...");
 
-        // ´´½¨Íæ¼ÒÊı¾İ¶ÔÏó
+        // åˆ›å»ºç©å®¶æ•°æ®å¯¹è±¡
         PlayerData playerData = new PlayerData
         {
             currentLevel = CurrentLevel,
             farthestLevel = LastesLevel,
             coin = CurrentCoin,
+            PU = CurrentPU,  // âœ… æ–°å¢å­˜å‚¨ PU
+            progress = PlayerProgress,  // âœ… å­˜å‚¨ç©å®¶è¿›åº¦
+            playerName = PlayerName,  // âœ… å­˜å‚¨ç©å®¶åç§°
             finishedMissionNum = CurrentFinishedTaskNum,
             taskDepartmentLevel = TaskDepartment,
             RefreshChance = SaveRefresh,
@@ -24,67 +27,80 @@ public partial class SaveManager
             effectVolume = AudioManager.Inst.EffectVolum
         };
 
-        // ĞòÁĞ»¯Îª JSON
+        // åºåˆ—åŒ–ä¸º JSON
         string json = JsonUtility.ToJson(playerData, true);
 
-        // Ğ´ÈëÎÄ¼ş
+        // å†™å…¥æ–‡ä»¶
         string filePath = Path.Combine(Application.persistentDataPath, "PlayerData.json");
         File.WriteAllText(filePath, json);
 
-        Debug.Log($"Íæ¼ÒÊı¾İÒÑ±£´æÖÁ {filePath}");
+        Debug.Log($"ç©å®¶æ•°æ®å·²ä¿å­˜è‡³ {filePath}");
     }
-    public bool LoadPlayerDate()//boolÖµÓÃÓÚÅĞ¶ÏÍæ¼ÒÊÇ·ñµÚÒ»´Î½øÈëÓÎÏ·
+
+    public bool LoadPlayerDate() // boolå€¼ç”¨äºåˆ¤æ–­ç©å®¶æ˜¯å¦ç¬¬ä¸€æ¬¡è¿›å…¥æ¸¸æˆ
     {
         string filePath = Path.Combine(Application.persistentDataPath, "PlayerData.json");
 
         if (File.Exists(filePath))
         {
-            Debug.Log("ÕıÔÚ¼ÓÔØÍæ¼ÒÊı¾İ...");
+            Debug.Log("æ­£åœ¨åŠ è½½ç©å®¶æ•°æ®...");
 
-            // ¶ÁÈ¡ JSON
+            // è¯»å– JSON
             string json = File.ReadAllText(filePath);
 
-            // ·´ĞòÁĞ»¯
+            // ååºåˆ—åŒ–
             PlayerData playerData = JsonUtility.FromJson<PlayerData>(json);
 
-            // Í¬²½Êı¾İ
+            // åŒæ­¥æ•°æ®
             CurrentLevel = playerData.currentLevel;
             LastesLevel = playerData.farthestLevel;
             CurrentCoin = playerData.coin;
+            CurrentPU = playerData.PU;  // âœ… è¯»å– PU
+            PlayerProgress = playerData.progress;  // âœ… è¯»å–ç©å®¶è¿›åº¦
+            PlayerName = playerData.playerName;  // âœ… è¯»å–ç©å®¶åç§°
             CurrentFinishedTaskNum = playerData.finishedMissionNum;
             TaskDepartment = playerData.taskDepartmentLevel;
             SaveRefresh = playerData.RefreshChance;
             LastChangeTime = playerData.lastResetTime;
-            if (!AudioManager.Inst)
-                Debug.Log("AudioManager²»ÔÚ");
-            if(playerData==null)
-                Debug.Log("playerData²»ÔÚ");
-            AudioManager.Inst.MusicVolum = playerData.musicVolume;
-            AudioManager.Inst.EffectVolum = playerData.effectVolume;
 
-            Debug.Log("Íæ¼ÒÊı¾İ¼ÓÔØÍê³É£¡");
+            if (AudioManager.Inst != null)
+            {
+                AudioManager.Inst.MusicVolum = playerData.musicVolume;
+                AudioManager.Inst.EffectVolum = playerData.effectVolume;
+            }
+            else
+            {
+                Debug.Log("AudioManageræœªæ‰¾åˆ°ï¼");
+            }
+
+            Debug.Log("ç©å®¶æ•°æ®åŠ è½½å®Œæˆï¼");
             return true;
         }
         else
         {
-            Debug.LogWarning("Íæ¼ÒÊı¾İÎÄ¼ş²»´æÔÚ£¬´´½¨Ä¬ÈÏÊı¾İ...");
-            CurrentCoin = 2000;//¿ª¾ÖÄ¬ÈÏÁ½Ç§
+            Debug.LogWarning("ç©å®¶æ•°æ®æ–‡ä»¶ä¸å­˜åœ¨ï¼Œåˆ›å»ºé»˜è®¤æ•°æ®...");
+            CurrentCoin = 2000; // å¼€å±€é»˜è®¤ä¸¤åƒ
+            CurrentPU = 50; // å¼€å±€é»˜è®¤ 50 PU
+            PlayerProgress = 0; // å¼€å±€é»˜è®¤è¿›åº¦ä¸º 0
+            PlayerName = "åŸºåœ°æŒ‡æŒ¥å®˜"; // é»˜è®¤ç©å®¶åç§°
             SaveRefresh = 2;
             TaskDepartment = 1;
-            SavePlayerDate(); // Èç¹ûÃ»ÓĞÎÄ¼ş£¬Ôò´´½¨Ä¬ÈÏÊı¾İÎÄ¼ş
+
+            SavePlayerDate(); // åˆ›å»ºé»˜è®¤æ•°æ®æ–‡ä»¶
             return false;
         }
     }
 
-    /*public bool LoadPlayerByJson()//¶ÁÈ¡JSONÊı¾İ,ÔÚÓÎÏ·½øÈëÊ±µ÷ÓÃ(ĞèÒªLevelManager±»ÊµÀı»¯ºóÊ¹ÓÃ)
+
+    /*public bool LoadPlayerByJson()//è¯»å–JSONæ•°æ®,åœ¨æ¸¸æˆè¿›å…¥æ—¶è°ƒç”¨(éœ€è¦LevelManagerè¢«å®ä¾‹åŒ–åä½¿ç”¨)
     {
         if (File.Exists(Application.persistentDataPath + "/PlayerDate.json"))
         {
-            StreamReader sr = new StreamReader(Application.persistentDataPath + "/PlayerDate.json");//´ÓÎÄ¼ş¼ĞÖĞµÄJsonDateÖĞ¶ÁÈ¡
+            StreamReader sr = new StreamReader(Application.persistentDataPath + "/PlayerDate.json");//ä»æ–‡ä»¶å¤¹ä¸­çš„JsonDateä¸­è¯»å–
             string JsonString = sr.ReadToEnd();
             sr.Close();
             PlayerDate save = JsonUtility.FromJson<PlayerDate>(JsonString);
-            //¶ÁÈ¡ËùÓĞ±»±£´æµÄÊı¾İ,×îÔ¶µÄ¹Ø¿¨£¬¿ÆÑĞÍê³ÉÇé¿ö£¬½ğ±Ò¶àÉÙµÈ
+            //è¯»å–æ‰€æœ‰è¢«ä¿å­˜çš„æ•°æ®,æœ€è¿œçš„å…³å¡ï¼Œç§‘ç ”å®Œæˆæƒ…å†µï¼Œé‡‘å¸å¤šå°‘ç­‰
             LastesLevel = save.TheFarthestLevel;
             AudioManager.Inst.MusicVolum = save.MusicVolum;
             AudioManager.Inst.EffectVolum = save.EffectVolum;
@@ -94,24 +110,24 @@ public partial class SaveManager
         }
         else
         {
-            Debug.Log("¶ÁÈ¡JsonÊ§°Ü");
+            Debug.Log("è¯»å–Jsonå¤±è´¥");
             SavePlayerByJson();
             return false;
         }
     }
     
-    public void SavePlayerByJson()//´¢´æJSONÊı¾İ£¬ÔÚ¹ı¹Ø£¨Ö÷ÏßÓëÎŞ¾¡£©£¬Íê³ÉÎ¯ÍĞ½áËã×Ê½ğÓë¿Æ¼¼ÏßºóÒÔ¼°ÍË³öÓÎÏ·Ê±µ÷ÓÃ
+    public void SavePlayerByJson()//å‚¨å­˜JSONæ•°æ®ï¼Œåœ¨è¿‡å…³ï¼ˆä¸»çº¿ä¸æ— å°½ï¼‰ï¼Œå®Œæˆå§”æ‰˜ç»“ç®—èµ„é‡‘ä¸ç§‘æŠ€çº¿åä»¥åŠé€€å‡ºæ¸¸æˆæ—¶è°ƒç”¨
     {
 
-        Debug.Log("ÕıÔÚ±£´æ");
+        Debug.Log("æ­£åœ¨ä¿å­˜");
         PlayerDate save = CreateSavePlayerDate();
         string JsonString = JsonUtility.ToJson(save, true);
-        StreamWriter sw = new StreamWriter(Application.persistentDataPath + "/PlayerDate.json");//°ÑÔİ´æÊı¾İĞ´Èë
+        StreamWriter sw = new StreamWriter(Application.persistentDataPath + "/PlayerDate.json");//æŠŠæš‚å­˜æ•°æ®å†™å…¥
         sw.Write(JsonString);
         sw.Close();
     }
 
-    PlayerDate CreateSavePlayerDate()//´´½¨Ò»¸öĞÂµÄ JsonDate ¶ÔÏó,È»ºó½«µ±Ç°ÓÎÏ·ÖĞµÄÄÚÈİÍ¬²½½øJSONÀï
+    PlayerDate CreateSavePlayerDate()//åˆ›å»ºä¸€ä¸ªæ–°çš„ JsonDate å¯¹è±¡,ç„¶åå°†å½“å‰æ¸¸æˆä¸­çš„å†…å®¹åŒæ­¥è¿›JSONé‡Œ
     {
         PlayerDate save = new PlayerDate();
         save.CurrentLevel = CurrentLevel;

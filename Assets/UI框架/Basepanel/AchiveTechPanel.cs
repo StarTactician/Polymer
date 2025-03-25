@@ -32,6 +32,8 @@ public class AchiveTechPanel : BasePanel
     public override void OnEnable()
     {
         base.OnEnable();
+        achiveButton = UIFunction.Inst.GetCompoentInObjsChild<Button>(PanelObj, "AchivementButton");
+        techButton = UIFunction.Inst.GetCompoentInObjsChild<Button>(PanelObj, "TechTreeButton");
         if (techBadge != null)
             GameObject.Destroy(techBadge);
         else if (TechTreeManager.GetInst().AmountUncheckedCount() > 0)

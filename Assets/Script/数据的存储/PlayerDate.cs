@@ -10,8 +10,8 @@ public class PlayerData
     public int currentLevel; // 当前关卡
     public int farthestLevel; // 最远解锁关卡
     public int coin=2000; // 当前金币数量
-    public int PU = 0;//当前碳链分子,(聚合基元)数量
-    public int progress;//玩家当前的进度
+    public int PU = 50;//当前碳链分子,(聚合基元)数量
+    public int progress;//玩家当前的进度，最大值为10000
     public int finishedMissionNum;//已完成的任务数量
     public int taskDepartmentLevel=1; // 任务部门等级
     public int RefreshChance = 2; // 剩下的刷新次数
@@ -73,14 +73,26 @@ public class TechnologyList
 public class BuildingData
 {
     public int id;
-    public int income;//收入大于0则是生产类建筑
-    public string incomeType;//收入类型
     public string name;
+    public string textName;//中文名
+    public string upgradeBy;//由哪一个建筑升级而来，防止出现同一个建筑的不同等级出现在一起。这里的值是一级建筑的名字，如果该建筑是一级或者没有升级则为空。用于使已解锁的高级建筑替代低级建筑出现
+    public string description;
+    public int level;//建筑的等级，2.3级的建筑需要有upgradeBy值以使用位置值。
+    public int type;//0指挥中心类，1工厂类，2进度推进类
+    public int unlockReward;//解锁后的进度推进值
+    public int income;//
+    public string incomeType;//收入类型
+    public int producInterval;//生产间隔
+    public int maxReserves;//最大储量
+    public int currentReserves;//当前储量
+    public int hasCheck;//新解锁未查看的建筑
+    public string nextGenerateTime;//上次生产的时间  
     public Position position;
     public Scale scale;
     public Rotation rotation;
-    public bool isUnlocked;   
-    public bool hasNPC;
+    public bool isUnlocked;//true解锁false未解锁
+                           
+    public bool hasNPC;//实验性功能
     public List<Position> npcPath;
 }
 
@@ -95,17 +107,17 @@ public class Position
 [System.Serializable]
 public class Scale
 {
-    public float x;
-    public float y;
-    public float z;
+    public float x=1;
+    public float y=1;
+    public float z=1;
 }
 
 [System.Serializable]
 public class Rotation
 {
-    public float x;
-    public float y;
-    public float z;
+    public float x=0;
+    public float y=0;
+    public float z=0;
 }
 
 [System.Serializable]

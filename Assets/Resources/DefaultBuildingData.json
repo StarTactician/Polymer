@@ -1,0 +1,50 @@
+{
+  "buildings": [
+    {
+      "id": 1,
+      "name": "SolarPanel_Level1",
+      "textName": "1级太阳能板",
+      "upgradeBy": "",
+      "description": "基础能源来源，利用太阳能为基地提供电力。",
+      "level": 1,
+      "type": 1,
+      "unlockReward": 0,
+      "income": 10,
+      "incomeType": "EU",
+      "producInterval": 300,
+      "maxReserves": 6000,
+      "currentReserves": 200,
+      "hasCheck": 0,
+      "lastGenerateTime": "",
+      "position": { "x": 0, "y": 0, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "isUnlocked": true,
+      "hasNPC": false,
+      "npcPath": []
+    },
+    {
+      "id": 2,
+      "name": "LandingPad_Level1",
+      "textName": "1级飞船停靠站",
+      "upgradeBy": "",
+      "description": "用于接收来自地球的运输飞船，提供聚合基元物资。",
+      "level": 1,
+      "type": 1,
+      "unlockReward": 0,
+      "income": 50,
+      "incomeType": "PU",
+      "producInterval": 86400,
+      "maxReserves":150,
+      "currentReserves": 0,
+      "hasCheck": 0,
+      "lastGenerateTime": "",
+      "position": { "x": 0, "y": 0, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "isUnlocked": true,
+      "hasNPC": false,
+      "npcPath": []
+    }
+  ]
+}
