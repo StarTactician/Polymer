@@ -149,7 +149,17 @@ public class UIFunction : MonoBehaviour
         badgeRect.anchoredPosition = new Vector2(x, y); // 适当调整位置
         return badgeObj;
     }
-
+    /// <summary>
+    /// 在指定 TextMeshProUGUI 上以打字机效果显示文本
+    /// </summary>
+    /// <param name="textElement">要显示文本的 TMP UI 元素</param>
+    /// <param name="fullText">完整要显示的文本内容</param>
+    /// <param name="charInterval">每个字符的时间间隔</param>
+    /// <param name="host">调用协程的 MonoBehaviour（通常是 DialogueWindow）</param>
+    public Coroutine StartTypewriter(TextMeshProUGUI textElement, string fullText, float charInterval, MonoBehaviour host)
+    {
+        return host.StartCoroutine(TypeTextCoroutine(textElement, fullText, charInterval));
+    }
     /// <summary>
     /// 从场景中获取画布物体
     /// </summary>
@@ -545,6 +555,15 @@ public class UIFunction : MonoBehaviour
         }
 
         content.anchoredPosition = targetPos; // 确保到达目标位置
+    }
+    private IEnumerator TypeTextCoroutine(TextMeshProUGUI textElement, string fullText, float charInterval)
+    {
+        textElement.text = "";
+        foreach (char letter in fullText)
+        {
+            textElement.text += letter;
+            yield return new WaitForSeconds(charInterval);
+        }
     }
     #region 处理UI元素放大缩小的具体协程方法
     private IEnumerator ScaleCoroutine(float duration, RectTransform rectTransform, Vector3 targetScale,float waitTime=0)

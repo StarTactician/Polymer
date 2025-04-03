@@ -27,6 +27,9 @@ public class GameRoot : MonoBehaviour
     public TechTreeManager TechTreeManager_Root { get => techTreeManager; }
     private AchievementManager achievementManager;
     public AchievementManager AchievementManager_Root { get => achievementManager; }
+    private DialogueManager dialogueManager;
+    public DialogueManager DialogueManager_Root { get => dialogueManager; }
+
     #endregion
 
     #region 生成方法类实例

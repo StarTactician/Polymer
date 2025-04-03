@@ -84,13 +84,22 @@ public class BuildingManager
         foreach (BuildingData building in buildingList.buildings)
         {
             if (!building.isUnlocked || string.IsNullOrEmpty(building.name))
+            {
+                Debug.LogWarning("建筑未解锁或命名错误" +building.textName);
                 continue;
+            }
+
+                
 
             // 如果该建筑已被更高级版本替代，就跳过生成
             if (IsReplacedByUpgrade(building, buildingList.buildings.FindAll(b => b.isUnlocked)))
+            {
+                Debug.LogWarning("建筑已被更高级版本替代" + building.textName);
                 continue;
+            }
+                
 
-            GameObject buildingPrefab = Resources.Load<GameObject>($"Prefabs/Buildings/{building.name}");
+            GameObject buildingPrefab = Resources.Load<GameObject>($"Building/{building.name}");
             if (buildingPrefab != null)
             {
                 GameObject buildingObj = GameObject.Instantiate(buildingPrefab);

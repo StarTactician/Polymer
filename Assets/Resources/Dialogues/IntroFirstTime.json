@@ -1,0 +1,30 @@
+{
+  "name": "IntroFirstTime",
+  "dialogueLines": [
+    {
+      "speaker": "布伦希尔德",
+      "text": "欢迎来到月球基地，管理员。",
+      "portrait": "Brunhilde_Smile"
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "这里是人类在地外世界的第一个永久据点。",
+      "portrait": "Brunhilde_Confident"
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "我是辅助 AI 布伦希尔德，将协助你完成各项科研与建设任务。",
+      "portrait": "Brunhilde_Side"
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "每一块材料、每一个装置，都是人类智慧的结晶。",
+      "portrait": "Brunhilde_Smile"
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "现在，一切准备就绪——未来，由你书写。",
+      "portrait": "Brunhilde_Glow"
+    }
+  ]
+}
