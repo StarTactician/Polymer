@@ -1,0 +1,35 @@
+{
+  "name": "Level_4_Intro",
+  "dialogueLines": [
+    {
+      "speaker": "布伦希尔德",
+      "text": "在某些精密实验中，电荷粒子之间的每一次交互都需要精准的预测与耐心的等待。",
+      "portrait": "Brunhilde_Smile",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "你将观察到，当两个带有相反电荷的基团相互靠近时，它们会因为库仑力而逐渐加速接近——即使你什么也不做，它们也会彼此吸引。",
+      "portrait": "Brunhilde_Explain",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "而有时，只需一次角度精准的释放，就能让粒子经历数次反弹后，恰好聚合于目标之上。",
+      "portrait": "Brunhilde_Gesture",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "请尝试预测一次以上的反弹轨迹，利用边界、障碍的反弹特性，巧妙地规划每一次释放。",
+      "portrait": "Brunhilde_Side",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "若你发现某颗基团并未如预期结合，不妨等待几秒，也许，变化已经在路上了。。",
+      "portrait": "Brunhilde_Smile",
+      "fadePortrait": true
+    }
+  ]
+}

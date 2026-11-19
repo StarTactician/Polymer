@@ -11,10 +11,11 @@ public class MissionDate
     public int level;         // 任务的等级或难度
     public int duration;      // 任务的持续时间（以秒为单位）
     public int rewardCoin; //任务的奖励1金币
+    public int rewardPU; //任务的奖励1金币
     public string newBuliding;//任务的奖励2解锁的工厂，合成方式，科技线等
     public string newTech;//任务的奖励3解锁的工厂，合成方式，科技线等
-    public bool upgradeTaskDepartment;//任务的奖励4完成后是否可以升级任务部门
     public bool IsComplete;
+    //public bool CanFinishOnce;//只能完成一次的任务，完成后将条件里的设置为true
     public string startTime; //任务开始的时间
     public Rarity rarity;          // 任务的稀有度
     public List<Condition> conditions = new List<Condition>(); // 条件集合，用于控制任务的刷新
@@ -37,13 +38,14 @@ public class MissionDate
             level = this.level,
             duration = this.duration,
             rewardCoin = this.rewardCoin,
+            rewardPU=this.rewardPU,
             newBuliding = this.newBuliding,
             newTech = this.newTech,
-            upgradeTaskDepartment = this.upgradeTaskDepartment,
             IsComplete = this.IsComplete,
+            //CanFinishOnce=this.CanFinishOnce,
             startTime = this.startTime,
             rarity = this.rarity,
-            conditions = new List<Condition>(this.conditions) // 深拷贝条件
+            //conditions = new List<Condition>(this.conditions) // 深拷贝条件
         };
     }
 }
@@ -56,7 +58,7 @@ public class Rarity
 public class Condition
 {
     public string key;
-    public bool value;
+    public bool canNotShowOut;//只能完成一次的任务
 }
 [System.Serializable]
 public class MissionList

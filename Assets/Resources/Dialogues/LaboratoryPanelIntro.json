@@ -1,0 +1,41 @@
+{
+  "name": "LaboratoryPanelIntro",
+  "dialogueLines": [
+    {
+      "speaker": "布伦希尔德",
+      "text": "欢迎来到分子实验室，在这里你可以选择不同的材料开展聚合前期实验。",
+      "portrait": "Brunhilde_Smile",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "我们不会直接合成完整的高分子聚合物，而是以模拟单体为基础，探索其稳定性与组合趋势。",
+      "portrait": "Brunhilde_Explain",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "每一次实验关卡，都代表一次单体结构的聚合反应过程模拟。",
+      "portrait": "Brunhilde_Side",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "完成某一单体的实验后，系统将根据实验成果，自动解锁对应聚合物的科技项。",
+      "portrait": "Brunhilde_Info",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "例如，完成乙烯单体的合成任务后，你将获得聚乙烯的合成与应用技术。",
+      "portrait": "Brunhilde_Gesture",
+      "fadePortrait": false
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "请选择你的实验对象吧，指挥官！",
+      "portrait": "Brunhilde_Smile",
+      "fadePortrait": true
+    }
+  ]
+}

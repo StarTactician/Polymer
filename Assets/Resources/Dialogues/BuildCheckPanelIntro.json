@@ -1,0 +1,41 @@
+{
+  "name": "BuildCheckPanelIntro",
+  "dialogueLines": [
+    {
+      "speaker": "布伦希尔德",
+      "text": "这里是建筑总览界面，也可以称为基地的脉络图。",
+      "portrait": "Brunhilde_Smile",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "你可以在这里查看目前已解锁的所有建筑，以及它们的功能与状态。",
+      "portrait": "Brunhilde_Explain",
+      "fadePortrait": false
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "部分建筑，如资源处理站与聚合工厂，会在工作一段时间后产出资源。",
+      "portrait": "Brunhilde_Info",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "你可以定期进入本界面，手动收取它们的收益，或检查是否出现资源瓶颈。",
+      "portrait": "Brunhilde_Gesture",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "建筑面板也提供了基地当前开发程度的总览，帮助你掌握整体节奏。",
+      "portrait": "Brunhilde_Side",
+      "fadePortrait": false
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "不妨多点几下试试，看看每一座建筑背后藏着怎样的科技与规划哲学。",
+      "portrait": "Brunhilde_Smile",
+      "fadePortrait": true
+    }
+  ]
+}

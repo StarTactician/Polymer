@@ -103,7 +103,7 @@ public class MissionDetailWindow : BasePanel
         bool rewardCoinShown = false;
         bool newBuildingShown = false;
         bool newTechShown = false;
-        bool upgradeTaskDepartmentShown = false;
+        bool rewardPUShown = false;
         foreach (Image image in rewardImage)
         {
             // 依次检查每种奖励，优先显示金币
@@ -122,10 +122,10 @@ public class MissionDetailWindow : BasePanel
                 image.sprite = Resources.Load<Sprite>("IMG/Rewards/Tech");
                 newTechShown = true; // 标记新科技奖励已展示
             }
-            else if (!upgradeTaskDepartmentShown && task.upgradeTaskDepartment)
+            else if (!rewardPUShown && task.rewardPU > 0)
             {
-                image.sprite = Resources.Load<Sprite>("IMG/Rewards/Upgrade");
-                upgradeTaskDepartmentShown = true; // 标记任务部门升级奖励已展示
+                image.sprite = Resources.Load<Sprite>("IMG/Rewards/PU");
+                rewardPUShown = true; // 标记PU奖励已展示
             }
             else
             {
@@ -138,11 +138,13 @@ public class MissionDetailWindow : BasePanel
     
     void AddToQueue()
     {
-        if (!(MissionManager.GetInst().taskQueue.Count >= MissionManager.GetInst().MaxQueueNum))
+        MissionManager.GetInst().AddTaskToQueue(task);
+        if (!(MissionManager.GetInst().taskQueue.Count >= MissionManager.GetInst().MaxQueueNum)&&! (task.cost > 0 && SaveManager.CurrentCoin < task.cost))
         {
+            
             viewPanel.Refresh();           
         }
-        MissionManager.GetInst().AddTaskToQueue(task);  
+        
         UIManager.GetInst().PopWindow(this, true);
     }
 }

@@ -11,6 +11,7 @@ public class VectoryPanel : BasePanel
     private RawImage star2;
     private RawImage star3;
     public static readonly UIType uitype = new UIType(path, name);
+    private bool hasShow;
     public VectoryPanel() : base(uitype)
     {
 
@@ -32,7 +33,8 @@ public class VectoryPanel : BasePanel
     {
         base.OnEnable();
         UIFunction.Inst.StartFade(0.2f, this, true);
-        ShowStar(LevelManager.GetInst().starNumJudge());//自身start启用了之后马上会被禁用出现金币数量UI，所以跳星星的操作放进OnEnable
+        if(!hasShow)
+        ShowStar(LevelManager.GetInst().starNumJudge());//自身start启用了之后马上会被禁用出现金币数量UI，所以跳星星的操作放进OnEnable只展示一次
     }
 
     public override void OnStart()
@@ -54,19 +56,24 @@ public class VectoryPanel : BasePanel
     }
     void NextLevel()
     {
-        ++SaveManager.CurrentLevel;
+        //++SaveManager.CurrentLevel;
+        if (SaveManager.CurrentLevel == SaveManager.LastesLevel - 1&& SaveManager.LastesLevel>SaveManager.GetInst().MaxLevel)
+            return;
         ConfirmCoinCostPanel coinCostPanel = new ConfirmCoinCostPanel();
-        coinCostPanel.Num = SaveManager.CountLevelCost();
+        coinCostPanel.Num = SaveManager.CountLevelCost(SaveManager.CurrentLevel + 1);
+        coinCostPanel.Level = SaveManager.CurrentLevel + 1;
         UIManager.GetInst().Push(coinCostPanel);
     }
     void Restart()
     {
         ConfirmCoinCostPanel coinCostPanel = new ConfirmCoinCostPanel();
-        coinCostPanel.Num = SaveManager.CountLevelCost();
+        coinCostPanel.Num = SaveManager.CountLevelCost(SaveManager.CurrentLevel);
+        coinCostPanel.Level = SaveManager.CurrentLevel ;
         UIManager.GetInst().Push(coinCostPanel);
     }
     void ShowStar(int starnum)
     {
+        hasShow = true;
         if (star1 == null || star2 == null || star3 == null)
         {
             Debug.LogError("One or more star RawImage references are null. Please check the UI setup.");

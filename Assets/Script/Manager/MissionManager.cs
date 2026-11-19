@@ -92,7 +92,16 @@ public class MissionManager
     /// <param name="task"></param>
     public void RefreshTaskPool(MissionDate task)
     {
-        if (ConditionsJudge(task))
+        // 如果该任务已在当前任务队列中，则不添加到刷新池中
+        if (taskQueue.Any(t => t.id == task.id))
+        {
+            if (isFirstLoadInSession)
+                Debug.Log($"任务 {task.id} 已在队列中，跳过刷新。");
+            return;
+        }
+        bool canShowOut = ConditionsJudge(task);
+        Debug.Log($"任务 {task.id}可刷新="+canShowOut);
+        if (canShowOut)
         {
             switch (task.rarity.key)
             {
@@ -449,51 +458,75 @@ public class MissionManager
         }
         if (task.conditions == null || task.conditions.Count == 0)
         {
-            if (isFirstLoadInSession)
-                Debug.LogWarning("任务条件为空，将视为条件满足。任务ID: " + task.id);
+            
+            Debug.LogWarning("任务条件为空，将视为条件满足。任务ID: " + task.id);
             return true;  // 如果没有定义条件，则默认为满足条件
         }
         foreach (Condition condition in task.conditions)
         {
-            switch (condition.key)
+            
+            switch (condition.key)//不能刷新的情况
             {
-                case "unlockCH2Material":
-                    if (!condition.value && SaveManager.LastesLevel < 1)
-                    {
+                case "Progress2":
+                    if (condition.canNotShowOut || SaveManager.GetInst().TaskDepartment <2)
                         return false;
-                    }
+                    break;
+                case "Progress3":
+                    if (condition.canNotShowOut || SaveManager.GetInst().TaskDepartment <3)
+                        return false;
+                    break;
+                case "hasBuiltFactory":
+                    if (condition.canNotShowOut || ! BuildingManager.GetInst().IsUnlock("LunarFactory_Level1"))//返回false的情况，也就是所需的科技建筑未解锁
+                        return false;
+                    break;
+                case "hasBuiltMiningBase":
+                    if (condition.canNotShowOut || ! BuildingManager.GetInst().IsUnlock("LunarMiningBase"))
+                        return false;
+                    break;
+                case "LandingPadLevel1":
+                    if (condition.canNotShowOut || BuildingManager.GetInst().IsUnlock("LandingPadLevel2"))
+                        return false;
+                    break;
+                case "LivingStationLevel1":
+                    if (condition.canNotShowOut || BuildingManager.GetInst().IsUnlock("LivingStationLevel2"))
+                        return false;
+                    break;
+                case "ResearchCenterLevel1":
+                    if (condition.canNotShowOut || BuildingManager.GetInst().IsUnlock("ResearchCenterLevel2"))
+                        return false;                   
+                    break;                
+                case "SolarPanelLevel1":
+                    if (condition.canNotShowOut || BuildingManager.GetInst().IsUnlock("SolarPanelLevel2"))
+                        return false;                   
+                    break;                
+                case "notHasBuiltMiningBase":
+                    if (condition.canNotShowOut || BuildingManager.GetInst().IsUnlock("LunarMiningBase"))
+                        return false;                   
+                    break;                
+                case "notHasBuiltFactory":
+                    if (condition.canNotShowOut || BuildingManager.GetInst().IsUnlock("LunarFactory_Level1"))
+                        return false;                   
+                    break;
+                case "notUnlockBiosphere":
+                    if (condition.canNotShowOut || BuildingManager.GetInst().IsUnlock("LunarBiosphere"))
+                        return false;                   
+                    break;                
+                case "notUnlockCarbonFiberComposite":
+                    if (condition.canNotShowOut || TechTreeManager.IsTechnologyUnlocked(25))
+                        return false;                   
                     break;
 
-                case "hasCoinOver5000":
-                    if (!condition.value && SaveManager.CurrentCoin <= 5000)
-                    {
-                        return false;
-                    }
-                    break;
-
-                case "hasBuiltCH2Factory":
-                    if (!condition.value)
-                    {
-                        return false;
-                    }
-                    break;
-                case "unlockAdvancedLab":
-                    if (!condition.value)
-                    {
-                        return false;
-                    }
-                    break;
 
                 // 可以根据需要扩展更多的条件
                 default:
-                    if (isFirstLoadInSession)
-                        Debug.LogWarning("未知的条件：" + condition.key);
+                   //if (isFirstLoadInSession)
+                   //    Debug.LogWarning("未知的条件：" + condition.key);
                     return false;
+                    
             }
         }
-        if (isFirstLoadInSession)
-            Debug.Log("任务条件加载完成"+task.id);
         return true;
+        
     }
     private void FinishMission()
     {
@@ -508,25 +541,36 @@ public class MissionManager
                 rewardPanel.CoinNumber = (int)(UnityEngine.Random.Range(0.9f, 1.2f) * taskQueue.Peek().rewardCoin);
                 SaveManager.GetInst().ResourcesChange(rewardPanel.CoinNumber);
             }
-            //PU
-            if (!string.IsNullOrEmpty(taskQueue.Peek().newBuliding))//在成就，科技管理器中解锁对应的
+            if (taskQueue.Peek().rewardPU > 0)
             {
+                rewardPanel.rewardPuShown = true;
+                rewardPanel.PUNumber = taskQueue.Peek().rewardPU;
+                SaveManager.GetInst().ResourcesChange(rewardPanel.PUNumber,"PU");
+            }
+            //PU
+            if (!string.IsNullOrEmpty(taskQueue.Peek().newBuliding))//在建筑，科技管理器中解锁对应的
+            {
+                BuildingManager.GetInst().UnlockBuilding(taskQueue.Peek().newBuliding);
                 rewardPanel.newBuildingShown = true;
                 rewardPanel.Name1 = taskQueue.Peek().newBuliding;
             }
             if (!string.IsNullOrEmpty(taskQueue.Peek().newTech))
             {
+                TechTreeManager.GetInst().UnlockTechnology(taskQueue.Peek().newTech);
                 rewardPanel.newTechShown = true;
                 rewardPanel.Name2 = taskQueue.Peek().newTech;
             }
-            if (taskQueue.Peek().upgradeTaskDepartment)
+            /*if (taskQueue.Peek().upgradeTaskDepartment)
             {
                 if (SaveManager.GetInst().TaskDepartment < 3)
                     SaveManager.GetInst().TaskDepartment++;
                 rewardPanel.upgradeTaskDepartmentShown = true;
-            }
+            }*/
+            SaveManager.GetInst().AddFinishedTaskNum();
             UIManager.GetInst().Push(rewardPanel);
             taskQueue.Dequeue();//
+            //++SaveManager.CurrentFinishedTaskNum;
+            //AchievementManager.GetInst().CheckAchievProgress("task");
             //taskQueue.Peek() = null; // 将 currentTask 重置为 null，等待下一个任务
             SaveManager.GetInst().SavePlayerDate();
         }

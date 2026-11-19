@@ -101,6 +101,7 @@ public class MissionViewPanel : BasePanel
             }
             button.onClick.AddListener(Select);
         }
+        DialogueManager.GetInst().TryTriggerDialogue("MissionSystemIntro");
     }
     void Back()
     {
@@ -223,7 +224,7 @@ public class MissionViewPanel : BasePanel
         bool rewardCoinShown = false;
         bool newBuildingShown = false;
         bool newTechShown = false;
-        bool upgradeTaskDepartmentShown = false;
+        bool rewardPUShown = false;
              
         foreach (Image image in rewardImage)
         {
@@ -243,10 +244,10 @@ public class MissionViewPanel : BasePanel
                 image.sprite = Resources.Load<Sprite>("IMG/Rewards/Tech");
                 newTechShown = true; // 标记新科技奖励已展示
             }
-            else if (!upgradeTaskDepartmentShown && task.upgradeTaskDepartment)
+            else if (!rewardPUShown && task.rewardPU > 0)
             {
-                image.sprite = Resources.Load<Sprite>("IMG/Rewards/Upgrade");
-                upgradeTaskDepartmentShown = true; // 标记任务部门升级奖励已展示
+                image.sprite = Resources.Load<Sprite>("IMG/Rewards/PU");
+                rewardPUShown = true; // 标记任务部门升级奖励已展示
             }
             else
             {

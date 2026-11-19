@@ -50,6 +50,7 @@ public class BuildCheckPanel : BasePanel
         UIFunction.Inst.GetCompoentInObjsChild<Button>(PanelObj, "Back").onClick.AddListener(Back);
         updateProgress();
         progressCoroutine = UIFunction.Inst.StartCoroutineWithInterval(updateProgress, 60f);
+        DialogueManager.GetInst().TryTriggerDialogue("BuildCheckPanelIntro");
 
     }
 
@@ -60,7 +61,7 @@ public class BuildCheckPanel : BasePanel
     /// </summary>
     private void UpdateFactoryUI()
     {
-        var unlockedFactories = BuildingManager.GetInst().unlockFactory;
+        var unlockedFactories = BuildingManager.GetInst().unlockBuilding;
 
         foreach (BuildingData factory in unlockedFactories)
         {

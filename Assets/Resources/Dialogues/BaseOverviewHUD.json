@@ -1,0 +1,47 @@
+{
+  "name": "BaseOverviewHUD",
+  "dialogueLines": [
+    {
+      "speaker": "布伦希尔德",
+      "text": "欢迎进入基地总览界面，管理员。",
+      "portrait": "Brunhilde_Smile",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "这里是基地管理的中枢，你可以在这里规划任务、查看建筑运作状态，并调整基地设置。",
+      "portrait": "Brunhilde_Explain",
+      "fadePortrait": false
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "任务安排界面可用于下达材料研究或基地建设指令，是科研与发展并行的关键。",
+      "portrait": "Brunhilde_Gesture",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "建筑总览将展示当前已启用的基地设施，并为后续扩建提供参考。",
+      "portrait": "Brunhilde_Side",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "你也可以在此调整音乐音量、图像表现等基础设置，以适应你的操作习惯。",
+      "portrait": "Brunhilde_Info",
+      "fadePortrait": false
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "如果你想暂时返回地球，总览页面右下角提供了安全退出功能。",
+      "portrait": "Brunhilde_Confident",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "功能虽多，但你大可不必一次全部掌握。请随意探索，逐步适应月球基地的节奏。",
+      "portrait": "Brunhilde_Smile",
+      "fadePortrait": true
+    }
+  ]
+}

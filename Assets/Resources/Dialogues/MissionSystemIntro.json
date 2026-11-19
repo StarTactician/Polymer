@@ -1,0 +1,53 @@
+{
+  "name": "MissionSystemIntro",
+  "dialogueLines": [
+    {
+      "speaker": "布伦希尔德",
+      "text": "接下来，我来为你介绍任务系统的运作方式。",
+      "portrait": "Brunhilde_Smile",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "任务系统会定期提供可选项目，任务类型涵盖材料研究、建筑建设与资源输出。",
+      "portrait": "Brunhilde_Explain",
+      "fadePortrait": false
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "随着基地进度的推进，你将逐渐获得更多的可选任务位。",
+      "portrait": "Brunhilde_Gesture",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "当进度值达到 3000 时，指挥中心将完成首次升级，待选任务的数量也会随之提升。",
+      "portrait": "Brunhilde_Info",
+      "fadePortrait": false
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "一旦你选择了任务并投入资源，它将自动开始执行，无需手动干预。",
+      "portrait": "Brunhilde_Side",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "你最多可以同时安排五个任务，它们会依次排队，自动完成。",
+      "portrait": "Brunhilde_Explain",
+      "fadePortrait": false
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "任务不仅能解锁新建筑与科技，也可以作为出口，向地球获取可观的能元回报。",
+      "portrait": "Brunhilde_Glow",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "请选择适合当下基地发展节奏的任务策略，按下节拍，逐步建立属于你的月球秩序。",
+      "portrait": "Brunhilde_Smile",
+      "fadePortrait": true
+    }
+  ]
+}

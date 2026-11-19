@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class DefeatedPanel : BasePanel
 {
     private static string name = "DefeatedPanel";
     private static string path = "Panel/DefeatedPanel";
     public static readonly UIType uitype = new UIType(path, name);
+    public string DefeatedMessage;
     public DefeatedPanel() : base(uitype)
     {
 
@@ -37,6 +39,7 @@ public class DefeatedPanel : BasePanel
         UIFunction.Inst.StartFade(0.2f, this, true);
         UIFunction.Inst.GetCompoentInObjsChild<Button>(PanelObj, "BackToMenu").onClick.AddListener(BackToMenu);
         UIFunction.Inst.GetCompoentInObjsChild<Button>(PanelObj, "Restart").onClick.AddListener(Restart);
+        UIFunction.Inst.GetCompoentInObjsChild<TextMeshProUGUI>(PanelObj, "DefeatedMessage").text=DefeatedMessage;
     }
     void BackToMenu()
     {

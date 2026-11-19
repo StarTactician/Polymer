@@ -20,13 +20,15 @@ public class Ball : MonoBehaviour
     public int Value;
     [Tooltip("邻居集合")]
     public List<Charge>  neighbour;
-    [Tooltip("电荷在胜利判定时的自身编号（唯一）")]
-    public int Code;
+    //[Tooltip("电荷在胜利判定时的自身编号（唯一）")]
+    //public int Code;
     /*[Tooltip("在自身电场影响范围内的电荷")]
     public List<int>  EffectCharges;*/
     [Tooltip("是否已连接")]
     public bool IsConnected;
-    
+
+    public bool Isgravity;
+    public float k=1;
     protected virtual void creatMaterial()// 创建并设置 PhysicsMaterial2D
     {      
         PhysicsMaterial2D bouncyMaterial = new PhysicsMaterial2D();
@@ -41,7 +43,7 @@ public class Ball : MonoBehaviour
             return;
         else
         {
-            Collider2D[] effectCharges = Physics2D.OverlapCircleAll(transform.position, Mathf.Abs(ChargeNum)*2);//超出ChargeNum*2.5f这个范围视为无穷远处
+            Collider2D[] effectCharges = Physics2D.OverlapCircleAll(transform.position, Mathf.Abs(ChargeNum)*2);//超出ChargeNum*2f这个范围视为无穷远处
             foreach (Collider2D hitCollider in effectCharges)
             {
                 //Debug.Log(hitCollider.gameObject.name);
@@ -51,7 +53,7 @@ public class Ball : MonoBehaviour
                     float dis = Mathf.Abs(Vector3.Distance(transform.position, ball.transform.position));
                     if(dis!=0)
                     {
-                        float force = (ChargeNum * ball.ChargeNum) / (dis * dis); // 库伦定理，k值待定
+                        float force =k* (ChargeNum * ball.ChargeNum) / (dis * dis); // 库伦定理，k值待定
                         rigiball.AddForce(direction * force);
                     }                    
                 }

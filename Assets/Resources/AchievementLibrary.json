@@ -2,52 +2,164 @@
   "Achievements": [
     {
       "AchieveID": 1,
-      "AchieveName": "科技启蒙",
-      "Description": "火、轮子、塑料——每一项科技，都是人类文明的里程碑！\n你解锁了第一项科技，意味着你正式迈入科学的世界！\n别急，还有几十种材料等着你去探索，你的月球基地才刚刚开始！",
-      "lockedInfo": "解锁任意一项科技可获得",
+      "AchieveName": "第一步",
+      "Description": "通过第一关，开启高分子科研征程。\n你已成功解锁第一项关键材料，从月面实验室踏出属于自己的科研之路。",
+      "lockedInfo": "通过第一关后解锁。",
       "IsUnlock": false,
       "hasCheck": 0,
-      "RewardType": { "type": "coin", "targetValue": 100 },
-      "UnlockType": [
-        { "type": "techUnlock", "targetValue": 1 }
-      ]
+      "RewardType": { "type": "PU", "targetValue": 80 },
+      "UnlockType":  { "type": "mainlineLevel", "targetValue": 1 } 
     },
     {
       "AchieveID": 2,
-      "AchieveName": "任务达人",
-      "Description": "完成 10 个任务",
-      "lockedInfo": "累计完成 10 个任务后可获得",
+      "AchieveName": "开启工程塑料的篇章",
+      "Description": "通过第 8 关主线关卡，掌握多种关键材料技术。\n你所掌握的不只是材料，更是人类适应宇宙的关键答案。",
+      "lockedInfo": "通过第 8 关主线关卡后解锁。",
       "IsUnlock": false,
       "hasCheck": 0,
-      "RewardType": { "type": "coin", "targetValue": 200 },
-      "UnlockType": [
-        { "type": "task", "targetValue": 10 }
-      ]
+      "RewardType": { "type": "PU", "targetValue": 240 },
+      "UnlockType":  { "type": "mainlineLevel", "targetValue": 8 } 
     },
     {
       "AchieveID": 3,
-      "AchieveName": "财富积累",
-      "Description": "累计收集 5000 金币",
-      "lockedInfo": "总金币达到 5000 后解锁",
+      "AchieveName": "来到特种塑料的篇章",
+      "Description": "通过第 16 个主线关卡，进入高性能特种材料领域。\n你已触及现代高分子工业的尖端，将为基地带来质的飞跃。",
+      "lockedInfo": "通过第 16 个主线关卡后解锁。",
       "IsUnlock": false,
       "hasCheck": 0,
-      "RewardType": { "type": "coin", "targetValue": 300 },
-      "UnlockType": [
-        { "type": "coin", "targetValue": 5000 }
-      ]
+      "RewardType": { "type": "PU", "targetValue": 300 },
+      "UnlockType":  { "type": "mainlineLevel", "targetValue": 16 } 
     },
     {
       "AchieveID": 4,
-      "AchieveName": "完美执行者",
-      "Description": "完成 10 个任务并收集 5000 金币",
-      "lockedInfo": "完成 10 个任务并收集 5000 金币后可获得",
+      "AchieveName": "科学终章",
+      "Description": "通关全部主线关卡，揭开高分子科研的最后谜题。\n你已踏足科技极限之巅，每一步都写入人类太空史的新篇章。",
+      "lockedInfo": "完成全部主线关卡后解锁。",
       "IsUnlock": false,
       "hasCheck": 0,
-      "RewardType": { "type": "coin", "targetValue": 500 },
-      "UnlockType": [
-        { "type": "task", "targetValue": 10 },
-        { "type": "coin", "targetValue": 5000 }
-      ]
+      "RewardType": { "type": "coin", "targetValue": 20000 },
+      "UnlockType":  { "type": "mainlineLevel", "targetValue": 24 } 
+    },
+{
+  "AchieveID": 5,
+  "AchieveName": "跨越常规",
+  "Description": "成功研究并解锁碳纤维复合材料、液晶高分子与硅橡胶三项关键技术。\n这些材料原本并不属于主流程，却构成了现代高性能工程的骨架与神经，你以精准调度与长期积累，化不可能为既成事实。",
+  "lockedInfo": "通过任务系统解锁碳纤维复合材料、液晶高分子和硅橡胶后获得。",
+  "IsUnlock": false,
+  "hasCheck": 0,
+  "RewardType": { "type": "coin", "targetValue": 30000 },
+  "UnlockType": { "type": "tech", "targetValue": 27 }
+},
+{
+  "AchieveID": 6,
+  "AchieveName": "技术前沿",
+  "Description": "在非标准研究体系中成功合成超高分子量聚乙烯、自修复聚合物与高性能导电聚合物。\n它们代表了材料科学的未来边界——坚不可摧、具备自愈能力，甚至能响应电流思考。你的工作已经不止于完成，而是在定义接下来的方向。",
+  "lockedInfo": "在特殊研究流程中解锁超高分子量聚乙烯、自修复聚合物与高性能导电聚合物后获得。",
+  "IsUnlock": false,
+  "hasCheck": 0,
+  "RewardType": { "type": "PU", "targetValue": 150 },
+  "UnlockType": { "type": "tech", "targetValue": 30 }
+},
+{
+  "AchieveID": 7,
+  "AchieveName": "Steady As She Lands",
+  "Description": "成功升级飞船降落场及其塔台系统，开启高频次星际物流能力。\n这一系统的完善不仅代表着基地通信与航天调度能力的跃升，更象征着你对资源统筹与结构扩展的全面掌控。",
+  "lockedInfo": "完成飞船降落场与塔台系统的升级后解锁。",
+  "IsUnlock": false,
+  "hasCheck": 0,
+  "RewardType": { "type": "coin", "targetValue": 15000 },
+  "UnlockType": { "type": "building", "targetValue": 1 }
+},
+{
+  "AchieveID": 8,
+  "AchieveName": "地外开拓",
+  "Description": "成功建立月面材料生产工厂，迈出人类工业体系走向地球以外的第一步。\n这不仅意味着资源初步自给，也标志着太阳能供能不再是唯一选择，能元的来源拓展至星际贸易。地球的环境也因此得以松一口气。",
+  "lockedInfo": "建立第一座材料生产工厂后解锁。",
+  "IsUnlock": false,
+  "hasCheck": 0,
+  "RewardType": { "type": "PU", "targetValue": 120 },
+  "UnlockType": { "type": "building", "targetValue": 1 }
+},
+{
+  "AchieveID": 9,
+  "AchieveName": "栖息之所",
+  "Description": "成功将生态园、生活舱等宇航员生活建筑升级至满级，构筑起真正意义上的月面家园。\n在高分子科技与工程的庇护下，人类的存在不再仅限于苟延残喘，而是逐步拥有了舒适、可持续的生活环境，这是从探索到定居,生存到生活的关键跃迁。",
+  "lockedInfo": "将所有生活相关建筑升级至满级后解锁。",
+  "IsUnlock": false,
+  "hasCheck": 0,
+  "RewardType": { "type": "PU", "targetValue": 300 },
+  "UnlockType": { "type": "building", "targetValue": 1 }
+},
+{
+  "AchieveID": 10,
+  "AchieveName": "反哺之地",
+  "Description": "建成月球资源开采站，成功建立人类在地外世界的资源回路。\n地球不再是单方面的供给者，月球不仅带回了宝贵的氦-3，还挖掘出了可用于高分子合成的碳链矿物——月球基地从此不再只是索取者，而是成为地球未来的守望者。",
+  "lockedInfo": "建成月球开采站后解锁。",
+  "IsUnlock": false,
+  "hasCheck": 0,
+  "RewardType": { "type": "PU", "targetValue": 200 },
+  "UnlockType":  { "type": "building", "targetValue": 1 }
+},
+{
+  "AchieveID": 11,
+  "AchieveName": "轨道之门",
+  "Description": "将飞船降落场与塔台系统升级至满级，完成了从临时起降点到太空级船坞的跨越。\n尽管尚未获准自主造舰，但你已具备完整的航天接驳能力，基地可为更多飞船提供维护与调度，地月之间的运输效率显著提升——这不只是升级工程，更是对地外文明秩序的深度参与。",
+  "lockedInfo": "将飞船降落场与塔台系统升级至满级后解锁。",
+  "IsUnlock": false,
+  "hasCheck": 0,
+  "RewardType": { "type": "PU", "targetValue": 300 },
+  "UnlockType":   { "type": "building", "targetValue": 1 }
+  
+},
+    {
+      "AchieveID": 12,
+      "AchieveName": "资深执行官",
+      "Description": "安排完成 50 个任务，成为基地的可靠一把手。\n你出色地调度了各种资源，各个部门在你的统筹下大幅度推进了基地发展的速度。",
+      "lockedInfo": "安排完成 50 个任务后解锁。",
+      "IsUnlock": false,
+      "hasCheck": 0,
+      "RewardType": { "type": "PU", "targetValue": 240 },
+      "UnlockType":  { "type": "task", "targetValue": 50 } 
+    },
+    {
+      "AchieveID": 13,
+      "AchieveName": "第一桶金",
+      "Description": "累计获得 10000 金币，迈出经济独立的第一步。\n聚沙成塔，从一根导线到一台设备，财富在你的指尖汇聚。",
+      "lockedInfo": "金币数达到 10000 后解锁。",
+      "IsUnlock": false,
+      "hasCheck": 0,
+      "RewardType": { "type": "PU", "targetValue": 150 },
+      "UnlockType":  { "type": "coin", "targetValue": 10000 } 
+    },
+    {
+      "AchieveID": 14,
+      "AchieveName": "财政充盈",
+      "Description": "累计获得 50000 金币，为大型工程打下基础。\n你不只是科研者，还是精明的资源管理者，基地的扩张离不开你。",
+      "lockedInfo": "金币数达到 50000 后解锁。",
+      "IsUnlock": false,
+      "hasCheck": 0,
+      "RewardType": { "type": "PU", "targetValue": 300 },
+      "UnlockType":  { "type": "coin", "targetValue":50000 } 
+    },
+    {
+      "AchieveID": 15,
+      "AchieveName": "资金自由",
+      "Description": "累计获得 100000 金币，为月球基地经济自由奠基。\n你已实现从入不敷出到资产自由，下一步，是星际间的自由贸易？",
+      "lockedInfo": "金币数达到 100000 后解锁。",
+      "IsUnlock": false,
+      "hasCheck": 0,
+      "RewardType": { "type": "PU", "targetValue": 500 },
+      "UnlockType":  { "type": "coin", "targetValue": 100000 } 
+    },
+    {
+      "AchieveID": 16,
+      "AchieveName": "敏锐的洞察",
+      "Description": "在第五关中以三星成绩合成乙烯-醋酸乙烯共聚物。\n面对首次引入的复杂结构与电荷设定，你通过细致入微的观察与精准操作，达成了最优解。",
+      "lockedInfo": "以三星成绩通关第五关后解锁。",
+      "IsUnlock": false,
+      "hasCheck": 0,
+      "RewardType": { "type": "PU", "targetValue": 180 },
+      "UnlockType": { "type": "star", "targetValue": 5 } 
     }
   ]
 }

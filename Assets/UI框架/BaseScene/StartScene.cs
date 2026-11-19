@@ -9,7 +9,10 @@ public class StartScene : BaseScene
     {
         CurrentType = 0;
         AudioManager.Inst.Updatelist(CurrentType);//ÇÐ¸è
+
         UIManager.GetInst().Push(new StartPanel());
+        GameRoot.GetInst().ReLoad();
+
     }
 
     public override void ExitScene()

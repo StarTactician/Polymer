@@ -34,15 +34,7 @@ public class AchiveTechPanel : BasePanel
         base.OnEnable();
         achiveButton = UIFunction.Inst.GetCompoentInObjsChild<Button>(PanelObj, "AchivementButton");
         techButton = UIFunction.Inst.GetCompoentInObjsChild<Button>(PanelObj, "TechTreeButton");
-        if (techBadge != null)
-            GameObject.Destroy(techBadge);
-        else if (TechTreeManager.GetInst().AmountUncheckedCount() > 0)
-            techBadge = UIFunction.Inst.AddBadgeToImage(UIFunction.Inst.GetComponentInObj<Image>(techButton.gameObject), TechTreeManager.GetInst().AmountUncheckedCount(), 65, 10, 10);
-        if (achiveBadge != null)
-            GameObject.Destroy(achiveBadge);
-        else if (AchievementManager.GetInst().AmountUncheckedCount() > 0)
-            achiveBadge = UIFunction.Inst.AddBadgeToImage(UIFunction.Inst.GetComponentInObj<Image>(achiveButton.gameObject), TechTreeManager.GetInst().AmountUncheckedCount(), 100, 10, 10);
-
+        updateBadge();
         UIFunction.Inst.StartFade(0.2f, this, true);
     }
 
@@ -63,17 +55,38 @@ public class AchiveTechPanel : BasePanel
 
         UIFunction.Inst.GetCompoentInObjsChild<Button>(PanelObj, "Back").onClick.AddListener(Back);
         UIFunction.Inst.StartFade(0.2f, this, true);
+        DialogueManager.GetInst().TryTriggerDialogue("AchiveTechPanelIntro");
+
     }
     void Back()
     {
+        updateBadge();
         UIManager.GetInst().Pop(false);
     }
     void Achivement()
     {
+        updateBadge();
         UIManager.GetInst().Push(new AchivementPanel());
     }
     void TechTree()
     {
+        updateBadge();
         UIManager.GetInst().Push(new TechTreePanel());
+    }
+    void updateBadge()
+    {
+        if (techBadge != null)
+        {
+            GameObject.Destroy(techBadge);
+            if (TechTreeManager.GetInst().AmountUncheckedCount() > 0)
+                techBadge = UIFunction.Inst.AddBadgeToImage(UIFunction.Inst.GetComponentInObj<Image>(techButton.gameObject), TechTreeManager.GetInst().AmountUncheckedCount(), 65, 10, 10);
+        }
+
+        if (achiveBadge != null)
+        {
+            GameObject.Destroy(achiveBadge);
+            if (AchievementManager.GetInst().AmountUncheckedCount() > 0)
+                achiveBadge = UIFunction.Inst.AddBadgeToImage(UIFunction.Inst.GetComponentInObj<Image>(achiveButton.gameObject), AchievementManager.GetInst().AmountUncheckedCount(), 100, 10, 10);
+        }
     }
 }

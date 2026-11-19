@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,7 +9,7 @@ public class ConnectionManager
     {
         if (Inst == null)
         {
-            Debug.LogError("Î´ÕÒµ½ConnectionManagerÊµÀı");
+            Debug.LogError("æœªæ‰¾åˆ°ConnectionManagerå®ä¾‹");
             return Inst;
         }
         return Inst;
@@ -25,35 +25,40 @@ public class ConnectionManager
     {
         if (charge1 == null || charge2 == null)
         {
-            Debug.LogWarning("´«ÈëµÄµçºÉÎª¿Õ£¬ÎŞ·¨´¦ÀíÁ¬½Ó");
+            Debug.LogWarning("ä¼ å…¥çš„ç”µè·ä¸ºç©ºï¼Œæ— æ³•å¤„ç†è¿æ¥");
             return;
         }
 
-        // ¼ì²éÊÇ·ñÒÑ¾­Á¬½Ó³É¶Ô
+        // æ£€æŸ¥æ˜¯å¦å·²ç»è¿æ¥æˆå¯¹
         if (ConnectedCharges != null && ConnectedCharges.Count > 0)
         {
             foreach (var chargeList in ConnectedCharges)
             {
                 if (chargeList.Contains(charge1) && chargeList.Contains(charge2))
                 {
-                    // ÒÑ¾­Á¬½Ó£¬Ö±½Ó·µ»Ø
+                    // å·²ç»è¿æ¥ï¼Œç›´æ¥è¿”å›
                     return;
                 }
             }
         }
 
-        // Èç¹û¿ÉÒÔÁ¬½Ó£¬Ìí¼Óµ½ÁĞ±íÖĞ
+        // å¦‚æœå¯ä»¥è¿æ¥ï¼Œæ·»åŠ åˆ°åˆ—è¡¨ä¸­
         if (charge1.canConnect && charge2.canConnect)
         {
             List<Charge> newConnection = new List<Charge> { charge1, charge2 };
             ConnectedCharges.Add(newConnection);
 
-            // ½ÂÁ´Á¬½Ó×Ô¼ºÓë¶Ô·½
-            DistanceJoint2D joint = charge1.gameObject.AddComponent<DistanceJoint2D>();
+            // é“°é“¾è¿æ¥è‡ªå·±ä¸å¯¹æ–¹
+            FixedJoint2D joint = charge1.gameObject.AddComponent<FixedJoint2D>();
+            joint.connectedBody = charge2.gameObject.GetComponent<Rigidbody2D>();
+            joint.breakForce = Mathf.Infinity;
+            joint.breakTorque = Mathf.Infinity;
+
+            /*DistanceJoint2D joint = charge1.gameObject.AddComponent<DistanceJoint2D>();
             joint.connectedBody = charge2.gameObject.GetComponent<Rigidbody2D>();
             joint.autoConfigureDistance = false;
             joint.distance = Vector2.Distance(charge1.transform.position, charge2.transform.position);
-            joint.breakForce = Mathf.Infinity;
+            joint.breakForce = Mathf.Infinity;*/
 
 
             if (!charge1.neighbour.Contains(charge2))
@@ -70,7 +75,7 @@ public class ConnectionManager
             LevelManager.GetInst().VictoryCheck();
         }
 
-        // ´¦ÀíµçºÉÖĞºÍÂß¼­
+        // å¤„ç†ç”µè·ä¸­å’Œé€»è¾‘
         HandleChargeNeutralization(charge1, charge2);
     }
 
@@ -78,7 +83,7 @@ public class ConnectionManager
     {
         int totalCharge = charge1.ChargeNum + charge2.ChargeNum;
 
-        if (charge1.ChargeNum * charge2.ChargeNum < 0) // ÒìÖÖµçºÉÖĞºÍ
+        if (charge1.ChargeNum * charge2.ChargeNum < 0) // å¼‚ç§ç”µè·ä¸­å’Œ
         {
             charge1.ChargeNum = totalCharge / 2;
             charge2.ChargeNum = totalCharge / 2;
@@ -95,14 +100,21 @@ public class ConnectionManager
                 }
             }
         }
-        else if (charge1.ChargeNum * charge2.ChargeNum == 0) // Í¬ÖÖµçºÉÆ½Ì¯
+        else if (charge1.ChargeNum * charge2.ChargeNum >= 0) // åŒç§ç”µè·å¹³æ‘Š
         {
+            if (charge1.ChargeNum == charge2.ChargeNum)//éƒ½ä¸º0æˆ–è€…ç”µè·ç›¸ç­‰ä¸å‘ç”Ÿè½¬ç§»
+                return;
             charge1.ChargeNum = totalCharge / 2;
             charge2.ChargeNum = totalCharge / 2;
 
-            if (totalCharge % 2 != 0)
+            
+            if (Mathf.Abs(charge1.ChargeNum) > Mathf.Abs(charge2.ChargeNum))
             {
-                charge1.ChargeNum += 1;
+                charge1.ChargeNum += (totalCharge > 0) ? 1 : -1;
+            }
+            else
+            {
+                charge2.ChargeNum += (totalCharge > 0) ? 1 : -1;
             }
         }
 

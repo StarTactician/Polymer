@@ -16,6 +16,7 @@ public class AudioManager : MonoBehaviour
     public float MusicVolum=1; 
     public float EffectVolum=1;
     public bool skip;
+    public bool isPause;
     /// <summary>
     /// 通知播放音效的物体更改自身的音量
     /// </summary>
@@ -56,8 +57,18 @@ public class AudioManager : MonoBehaviour
        
         Updatelist(0);
         PlayMusic();
+        Pause();
     }
-
+    public void Play()
+    {
+        audioSource.Play();
+        isPause = false;
+    }
+    public void Pause()
+    {
+        audioSource.Pause();
+        isPause = true;
+    }
     void FixedUpdate()
     {        
         /*if (skip)
@@ -69,7 +80,7 @@ public class AudioManager : MonoBehaviour
         {
             return;           
         }
-        else// 如果没有播放音乐，则随机播放一首
+        else if(!isPause)// 如果没有播放音乐，则随机播放一首
             PlayMusic();
     }
     public void SetMusicVolume(float newVolume)

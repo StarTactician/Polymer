@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 /// <summary>
 /// 由于需要淡入淡出的协程，故该脚本需要继承自MonoBehaviour，必须挂载到GameManager的游戏物体上
 /// </summary>
@@ -76,6 +77,10 @@ public class UIFunction : MonoBehaviour
     public void StartFade(float duration, RawImage rawImage, bool isFadingIn, float waitTime = 0)
     {
         StartCoroutine(FadeCoroutine(duration, rawImage, isFadingIn, waitTime));
+    }
+    public void MoveCameraSmooth(Camera cam, Vector3 targetPos, Quaternion targetRot, float duration)
+    {
+        StartCoroutine(CameraLerpCoroutine(cam, targetPos, targetRot, duration));
     }
     /// <summary>
     /// 需要执行UI元素放大缩小操作时调用
@@ -156,17 +161,21 @@ public class UIFunction : MonoBehaviour
     /// <param name="fullText">完整要显示的文本内容</param>
     /// <param name="charInterval">每个字符的时间间隔</param>
     /// <param name="host">调用协程的 MonoBehaviour（通常是 DialogueWindow）</param>
-    public Coroutine StartTypewriter(TextMeshProUGUI textElement, string fullText, float charInterval, MonoBehaviour host)
+    public Coroutine StartTypewriter(TextMeshProUGUI textElement, string fullText, float charInterval, MonoBehaviour host, Action onComplete = null)
     {
-        return host.StartCoroutine(TypeTextCoroutine(textElement, fullText, charInterval));
+        return host.StartCoroutine(TypeTextCoroutine(textElement, fullText, charInterval, onComplete));
     }
     /// <summary>
     /// 从场景中获取画布物体
     /// </summary>
     /// <returns></returns>
-    public GameObject FindCanvas()
+    public GameObject FindCanvas(string canvasName= "UIScreen")
     {
-        GameObject canvas = GameObject.FindObjectOfType<Canvas>().gameObject;
+        GameObject canvas;
+        if (canvasName!=null)       
+            canvas = GameObject.Find(canvasName);        
+        else
+            canvas = GameObject.FindObjectOfType<Canvas>().gameObject;
         if(canvas==null)        
             Debug.LogError("没有找到画布物体");       
         return canvas;
@@ -232,7 +241,7 @@ public class UIFunction : MonoBehaviour
                     return component;
                 else
                 {
-                    Debug.LogWarning("在 " + child.gameObject.name + " 上未找到组件 " + typeof(T).Name);
+                    Debug.LogError("在 " + child.gameObject.name + " 上未找到组件 " + typeof(T).Name);
                     return default(T);
                 }
             }                                       
@@ -321,6 +330,7 @@ public class UIFunction : MonoBehaviour
 
         return components;
     }
+
     /// <summary>
     /// 取代SetActive的方法，用来设置UI物体的可见性与交互性
     /// </summary>
@@ -349,6 +359,19 @@ public class UIFunction : MonoBehaviour
             canvasGroup.interactable = false;   // 禁用交互
         }
     }
+    public void SetImageVise(Image image, bool visible)
+    {
+        if (image == null)
+        {
+            Debug.LogWarning("传入的 Image 为空，无法设置可见性");
+            return;
+        }
+
+        Color color = image.color;
+        color.a = visible ? 1f : 0f;
+        image.color = color;
+    }
+
     /// <summary>
     /// 移动某个物体向某个方向时调用
     /// </summary>
@@ -432,17 +455,31 @@ public class UIFunction : MonoBehaviour
     #region 处理淡入淡出的具体协程方法
     private IEnumerator FadeCoroutine(float duration, BasePanel basepanel, bool isFadingIn, float waitTime = 0)
     {
+        if (basepanel == null || basepanel.PanelObj == null)
+        {
+            yield break; // 已销毁，立即退出协程
+        }
+        CanvasGroup canvasGroup;
+        if (!basepanel.PanelObj.TryGetComponent<CanvasGroup>(out canvasGroup))
+        {
+            yield break; // 未找到组件也退出
+        }
+
         if (basepanel == null)
         {
             yield break; // 如果对象在中途被销毁，退出协程
         }
         yield return new WaitForSeconds(waitTime);
         float elapsedTime = 0f;
-        CanvasGroup canvasGroup = basepanel.PanelObj.GetComponent<CanvasGroup>();
-        if (canvasGroup == null)
+
+        if (basepanel == null)
+        {
+            yield break; // 如果对象在中途被销毁，退出协程
+        }
+        /*if (canvasGroup == null&& basepanel != null)
         {
             canvasGroup = basepanel.PanelObj.AddComponent<CanvasGroup>();
-        }
+        }*/
 
         // 如果是淡入，起始透明度为0，淡出则起始透明度为1
         float startAlpha = isFadingIn ? 0f : 1f;
@@ -461,7 +498,8 @@ public class UIFunction : MonoBehaviour
             yield return null;
         }
         // 确保动画结束时，alpha值准确设置为目标值
-        canvasGroup.alpha = endAlpha;
+        if (canvasGroup != null)
+            canvasGroup.alpha = endAlpha;
     }
     
     /// <summary>
@@ -478,7 +516,10 @@ public class UIFunction : MonoBehaviour
         }
         yield return new WaitForSeconds(waitTime);
         float elapsedTime = 0f;
-
+        if (image == null)
+        {
+            yield break; // 如果对象在中途被销毁，退出协程
+        }
         // 如果是淡入，起始透明度为0，淡出则起始透明度为1
         float startAlpha = isFadingIn ? 0f : 1f;
         float endAlpha = isFadingIn ? 1f : 0f;
@@ -487,6 +528,7 @@ public class UIFunction : MonoBehaviour
         currentColor.a = startAlpha;
         image.color = currentColor;
 
+        
         while (elapsedTime < duration)
         {
             if (image == null)
@@ -512,7 +554,10 @@ public class UIFunction : MonoBehaviour
         }
         yield return new WaitForSeconds(waitTime);
         float elapsedTime = 0f;
-
+        if (rawImage == null)
+        {
+            yield break; // 如果对象在中途被销毁，退出协程
+        }
         // 如果是淡入，起始透明度为0，淡出则起始透明度为1
         float startAlpha = isFadingIn ? 0f : 1f;
         float endAlpha = isFadingIn ? 1f : 0f;
@@ -556,23 +601,59 @@ public class UIFunction : MonoBehaviour
 
         content.anchoredPosition = targetPos; // 确保到达目标位置
     }
-    private IEnumerator TypeTextCoroutine(TextMeshProUGUI textElement, string fullText, float charInterval)
+    private IEnumerator TypeTextCoroutine(TextMeshProUGUI textElement, string fullText, float charInterval, Action onComplete)
     {
-        textElement.text = "";
-        foreach (char letter in fullText)
+        textElement.text = string.Empty;
+        for (int i = 0; i < fullText.Length; i++)
         {
-            textElement.text += letter;
-            yield return new WaitForSeconds(charInterval);
+            textElement.text += fullText[i];
+            yield return new WaitForSecondsRealtime(charInterval);
         }
+        onComplete?.Invoke();
     }
+
+    /// <summary>
+    /// 处理摄像头移动的方法
+    /// </summary>
+    /// <param name="cam"></param>
+    /// <param name="targetPos"></param>
+    /// <param name="targetRot"></param>
+    /// <param name="duration"></param>
+    /// <returns></returns>
+    private IEnumerator CameraLerpCoroutine(Camera cam, Vector3 targetPos, Quaternion targetRot, float duration)
+    {
+        float elapsed = 0f;
+        Vector3 startPos = cam.transform.position;
+        Quaternion startRot = cam.transform.rotation;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+
+            cam.transform.position = Vector3.Lerp(startPos, targetPos, t);
+            cam.transform.rotation = Quaternion.Slerp(startRot, targetRot, t);
+            yield return null;
+        }
+
+        // 强制最后一步到位
+        cam.transform.position = targetPos;
+        cam.transform.rotation = targetRot;
+    }
+
     #region 处理UI元素放大缩小的具体协程方法
     private IEnumerator ScaleCoroutine(float duration, RectTransform rectTransform, Vector3 targetScale,float waitTime=0)
     {
+
         if (rectTransform == null)
         {
             yield break; // 如果对象在中途被销毁，退出协程
         }
         yield return new WaitForSeconds(waitTime);
+        if (rectTransform == null)
+        {
+            yield break; // 如果对象在中途被销毁，退出协程
+        }
         float elapsedTime = 0f;
         Vector3 initialScale = rectTransform.localScale;
 
@@ -594,5 +675,9 @@ public class UIFunction : MonoBehaviour
         }
         rectTransform.localScale = targetScale;
     }
+    #endregion
+
+    #region 特效类
+
     #endregion
 }

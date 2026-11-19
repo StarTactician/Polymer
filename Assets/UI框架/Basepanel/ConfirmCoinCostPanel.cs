@@ -11,6 +11,7 @@ public class ConfirmCoinCostPanel : BasePanel
     public static readonly UIType uitype = new UIType(path, name);
     private TextMeshProUGUI coinNum;
     public int Num;
+    public int Level;
     public ConfirmCoinCostPanel() : base(uitype)
     {
 
@@ -61,10 +62,14 @@ public class ConfirmCoinCostPanel : BasePanel
         }
         else
         {
+            if(Level>=SaveManager.GetInst().MaxLevel)//是最后一关了，直接返回。事实上最后一关不应该出现进入下一关按钮，后面再改
+                UIManager.GetInst().PopOnceOnlyUsePanel();
+
             SaveManager.GetInst().ResourcesChange(-Num,"PU");
             //TestScene testScene = new TestScene();
             //SceneControl.GetInst().LoadScene(testScene.SceneName, testScene);
             //SaveManager.GetInst().CoinChange(-SaveManager.CurrentLevel * 40);
+            SaveManager.CurrentLevel = Level;//只有这里，也就是进入关卡前才能改
             SceneControl.GetInst().LoadLevel(SaveManager.CurrentLevel);
         }
     }

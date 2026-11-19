@@ -37,14 +37,8 @@ public class HUDPanel : BasePanel
         //UIFunction.Inst.GetCompoentInObjsChild<Text>(PanelObj, "FinishNum").text = MissionManager.GetInst().LoadTaskQueue().ToString();
         missionButton = UIFunction.Inst.GetCompoentInObjsChild<Button>(PanelObj, "Mission");
         achiveButton = UIFunction.Inst.GetCompoentInObjsChild<Button>(PanelObj, "Achivement");
-        if (missonBadge != null)
-            GameObject.Destroy(missonBadge);
-        else if (MissionManager.GetInst().LoadTaskQueue() > 0)
-            missonBadge = UIFunction.Inst.AddBadgeToImage(UIFunction.Inst.GetComponentInObj<Image>(missionButton.gameObject), MissionManager.GetInst().LoadTaskQueue());
-        if (achiveBadge != null)
-            GameObject.Destroy(achiveBadge);
-        else if (TechTreeManager.GetInst().AmountUncheckedCount() + AchievementManager.GetInst().AmountUncheckedCount() > 0)
-            achiveBadge = UIFunction.Inst.AddBadgeToImage(UIFunction.Inst.GetComponentInObj<Image>(achiveButton.gameObject), (TechTreeManager.GetInst().AmountUncheckedCount() + AchievementManager.GetInst().AmountUncheckedCount()));
+        updateBadge();
+
         //coinValue = UIFunction.Inst.GetCompoentInObjsChild<TextMeshProUGUI>(PanelObj, "CoinValue");
         //UIFunction.Inst.StartFade(0.2f, this, true);
 
@@ -90,7 +84,7 @@ public class HUDPanel : BasePanel
         // **启动动画**
         UIFunction.Inst.StartScale(0.3f, panelRect, Vector3.one, 0f);  // **放大动画**
         UIFunction.Inst.MoveObject(PanelObj, Vector2.up, Screen.height / 2, 0.3f, this);  // **上移动画**
-
+        DialogueManager.GetInst().TryTriggerDialogue("BaseOverviewHUD");
         
     }
 
@@ -111,14 +105,31 @@ public class HUDPanel : BasePanel
       }
       void Achivement()
       {
+        updateBadge();
           UIManager.GetInst().Push(new AchiveTechPanel());
       }
     void CheckBuliding()
     {
-        UIManager.GetInst().Push(new BuildCheckPanel());
+        UIManager.GetInst().Push(new BuildViewPanel());
     }
     void Back()
     {
+        updateBadge();
         UIManager.GetInst().Pop(false);
+    }
+    void updateBadge()
+    {
+        if (missonBadge != null)
+        {
+            GameObject.Destroy(missonBadge);
+            if (MissionManager.GetInst().LoadTaskQueue() > 0)
+                missonBadge = UIFunction.Inst.AddBadgeToImage(UIFunction.Inst.GetComponentInObj<Image>(missionButton.gameObject), MissionManager.GetInst().LoadTaskQueue());
+        }
+        if (achiveBadge != null)
+        {
+            GameObject.Destroy(achiveBadge);
+            if (TechTreeManager.GetInst().AmountUncheckedCount() + AchievementManager.GetInst().AmountUncheckedCount() > 0)
+                achiveBadge = UIFunction.Inst.AddBadgeToImage(UIFunction.Inst.GetComponentInObj<Image>(achiveButton.gameObject), (TechTreeManager.GetInst().AmountUncheckedCount() + AchievementManager.GetInst().AmountUncheckedCount()));
+        }
     }
 }

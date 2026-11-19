@@ -10,6 +10,8 @@ public class SettingPanel : BasePanel
     public static readonly UIType uitype = new UIType(path, name);
     Slider musicSlider;
     Slider effectSlider;
+    Button AutoDO;
+    GameObject Go;
     public SettingPanel() : base(uitype)
     {
         
@@ -33,8 +35,12 @@ public class SettingPanel : BasePanel
         UIFunction.Inst.StartFade(0.2f, this, true);
         musicSlider = UIFunction.Inst.GetCompoentInObjsChild<Slider>(PanelObj, "MusicVolumSetting");
         effectSlider = UIFunction.Inst.GetCompoentInObjsChild<Slider>(PanelObj, "EffectVolumSetting");
+        AutoDO = UIFunction.Inst.GetCompoentInObjsChild<Button>(PanelObj, "AutoDO");
+        Go = UIFunction.Inst.GetChild(AutoDO.gameObject, "go");
         musicSlider.value = AudioManager.Inst.MusicVolum;
         effectSlider.value = AudioManager.Inst.EffectVolum;
+        
+        changeGo();
     }
 
     public override void OnStart()
@@ -46,9 +52,23 @@ public class SettingPanel : BasePanel
         effectSlider = UIFunction.Inst.GetCompoentInObjsChild<Slider>(PanelObj, "EffectVolumSetting");
         musicSlider.onValueChanged.AddListener(SetMusicVolum);
         effectSlider.onValueChanged.AddListener(SetEffectVolum);
+
+        AutoDO = UIFunction.Inst.GetCompoentInObjsChild<Button>(PanelObj, "AutoDO");
+        Go = UIFunction.Inst.GetChild(AutoDO.gameObject, "go");
         //同步滚动条音量值
         musicSlider.value = AudioManager.Inst.MusicVolum;
         effectSlider.value = AudioManager.Inst.EffectVolum;
+        AutoDO.onClick.AddListener(AutoDo);
+        changeGo();
+    }
+    void AutoDo()
+    {
+        SaveManager.GetInst().AutoDO = !SaveManager.GetInst().AutoDO;
+        changeGo();
+    }
+    void changeGo()
+    {
+        UIFunction.Inst.SetCanvasGroupVise(Go, SaveManager.GetInst().AutoDO);
     }
     void Back()
     {

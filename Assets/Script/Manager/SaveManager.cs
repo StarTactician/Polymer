@@ -1,18 +1,21 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using System.IO;
 /// <summary>
-/// ¹ÜÀí´¢´æ¶ÁÈ¡µÄ½Å±¾£¬ÄÚ²¿·½·¨ÔÚ¹Ø¿¨¹ı¹Ø£¬Î¯ÍĞÍê³É
+/// ç®¡ç†å‚¨å­˜è¯»å–çš„è„šæœ¬ï¼Œå†…éƒ¨æ–¹æ³•åœ¨å…³å¡è¿‡å…³ï¼Œå§”æ‰˜å®Œæˆ
 /// </summary>
 
 public partial class SaveManager
 {
     private static SaveManager Inst;
-    public static int CurrentLevel;
-    public static int LastesLevel;
-    //public static int LevelCost;//¹Ø¿¨ÏûºÄ¾ÛºÏ»ùÔªµÄÊıÁ¿
-    public int MaxLevel = 3;//Ò»¹²µÄ¹Ø¿¨×ÜÊı
+    public static int CurrentLevel=1;
+    public static int LastesLevel=1;
+    public bool AutoDO = true;
+    //public static int LevelCost;//å…³å¡æ¶ˆè€—èšåˆåŸºå…ƒçš„æ•°é‡
+    [Tooltip("å…³å¡æ€»æ•°")]
+    public int MaxLevel = 12;//ä¸€å…±çš„å…³å¡æ€»æ•°
     public int PlayerProgress ;
     public string PlayerName;
     public static int CurrentCoin { get; private set; }
@@ -21,14 +24,21 @@ public partial class SaveManager
     public float TheSetMusicVolum = 1;
     public float TheSetEffectVolum = 1;
     public int TaskDepartment = 1;
-    public static int SaveRefresh { get; private set; }//ÈÎÎñË¢ĞÂ´ÎÊı
-    public string LastChangeTime;//ÉÏ´ÎË¢ĞÂµÄÊ±¼ä
+
+
+    public static int SaveRefresh { get; private set; }//ä»»åŠ¡åˆ·æ–°æ¬¡æ•°
+    public string LastChangeTime;//ä¸Šæ¬¡åˆ·æ–°çš„æ—¶é—´
+    public static bool IsFirstEnter;
+
+    private string starRecordFilePath = Application.persistentDataPath + "/LevelStarRecord.json";
+    private LevelStarRecordList levelStarRecordList = new LevelStarRecordList();
+
     //public Dictionary<string, bool> TechAndBuildingTree { get; private set; }
     public static SaveManager GetInst()
     {
         if (Inst == null)
         {
-            Debug.LogError("Î´ÕÒµ½SaveManagerÊµÀı");
+            Debug.LogError("æœªæ‰¾åˆ°SaveManagerå®ä¾‹");
             return Inst;
         }
         return Inst;
@@ -37,22 +47,74 @@ public partial class SaveManager
     {
         Inst = this;
         //TechAndBuildingTree = new Dictionary<string, bool>();
-        LoadPlayerDate();
-     
     }
-/// <summary>
-/// ¸üĞÂ½ğ±Òºó»á×Ô¶¯±£´æÓÎÏ·
-/// </summary>
-/// <param name="num">ÒªÔÚµ±Ç°½ğÇ®»ù´¡ÉÏÔö¼Ó»ò¼õÉÙµÄ½ğÇ®</param>
-    public void ResourcesChange(int num,string type="EU")
+    public void OnStart()
     {
-        if(type=="EU")
-        CurrentCoin += num;
-        else if(type=="PU")
-        CurrentPU += num;
-        //±£´æµ±Ç°½ğ±ÒÊıÁ¿
+        IsFirstEnter = LoadPlayerDate();
+        UpdateProgress();
+        InitLevelStarRecords();
+
+    }
+    public void InitLevelStarRecords()
+    {
+        if (File.Exists(starRecordFilePath))
+        {
+            string json = File.ReadAllText(starRecordFilePath);
+            levelStarRecordList = JsonUtility.FromJson<LevelStarRecordList>(json);
+            Debug.Log("è¯»å–å·²æœ‰æ˜Ÿçº§è®°å½•æ–‡ä»¶æˆåŠŸï¼");
+        }
+        else
+        {
+            Debug.Log("æœªæ‰¾åˆ°æ˜Ÿçº§è®°å½•æ–‡ä»¶ï¼Œè‡ªåŠ¨åˆå§‹åŒ–ä¸­...");
+
+            for (int i = 1; i <= MaxLevel; i++)
+            {
+                levelStarRecordList.records.Add(new LevelStarRecord
+                {
+                    levelNumber = i,
+                    starCount = 0
+                });
+            }
+
+            SaveLevelStarRecords();
+        }
+    }
+    private void SaveLevelStarRecords()
+    {
+        string json = JsonUtility.ToJson(levelStarRecordList, true);
+        File.WriteAllText(starRecordFilePath, json);
+    }
+
+    /// <summary>
+    /// æ›´æ–°é‡‘å¸åä¼šè‡ªåŠ¨ä¿å­˜æ¸¸æˆ
+    /// </summary>
+    /// <param name="num">è¦åœ¨å½“å‰é‡‘é’±åŸºç¡€ä¸Šå¢åŠ æˆ–å‡å°‘çš„é‡‘é’±</param>
+    public void ResourcesChange(int num,string type="coin")
+    {
+        if (type == "coin"|| type == "EU")
+        {
+            CurrentCoin += num;
+            AchievementManager.GetInst().CheckAchievProgress("coin");
+        }
+            
+        else if (type == "PU")
+        {
+            CurrentPU += num;
+            AchievementManager.GetInst().CheckAchievProgress("PU");
+        }
+            
+        else return;
+        
+        //ä¿å­˜å½“å‰é‡‘å¸æ•°é‡
         SavePlayerDate();
     }
+    public void AddFinishedTaskNum()
+    {
+        ++CurrentFinishedTaskNum;
+        AchievementManager.GetInst().CheckAchievProgress("task");
+        SavePlayerDate();
+    }
+    
     public int ChangeRefreshChance(int num=0)
     {
         SaveRefresh += num;
@@ -60,81 +122,183 @@ public partial class SaveManager
         return SaveRefresh;
     }
     /// <summary>
-    /// ÓÃÓÚ¼ÆËã¹Ø¿¨½«ÏûºÄ¶àÉÙ¾ÛºÏ»ùÔª
+    /// ç”¨äºè®¡ç®—å…³å¡å°†æ¶ˆè€—å¤šå°‘èšåˆåŸºå…ƒ
     /// </summary>
     /// <returns></returns>
-    public static int CountLevelCost()
+    public static int CountLevelCost(int level)
     {
-        return (CurrentLevel-1)*5+20;
+        if (level < LastesLevel)
+            return ((level - 1) * 5 + 20)/5;
+        else
+            return (level - 1) * 5 + 20;
     }
-    // ¼ì²éµ±Ç°Ê±¼äÊÇ·ñĞèÒªÖØÖÃË¢ĞÂ´ÎÊı
+    // æ£€æŸ¥å½“å‰æ—¶é—´æ˜¯å¦éœ€è¦é‡ç½®åˆ·æ–°æ¬¡æ•°
     public void CheckAndResetRefreshTimes()
     {
         DateTime now = DateTime.Now;
-        DateTime lastRefershTime;
-        if (!string.IsNullOrEmpty(LastChangeTime))
+        DateTime todayMidnight = now.Date; // ä»Šå¤©çš„ 00:00
+
+        if (string.IsNullOrEmpty(LastChangeTime))
         {
-            lastRefershTime = DateTime.Parse(LastChangeTime);
+            Debug.Log("LastChangeTimeä¼¼ä¹æ— æ³•è¢«æ­£ç¡®è¯»å–");        
+            Debug.Log(LastChangeTime);
+            return;
+        }
+
+        DateTime lastRefershTime = DateTime.Parse(LastChangeTime);
+
+        // å¦‚æœä¸Šæ¬¡åˆ·æ–°è®°å½•æ—©äºä»Šå¤©çš„ 00:00ï¼Œå¹¶ä¸”å½“å‰æ—¶é—´æ˜¯ä»Šå¤©ä¹‹åçš„
+        if (lastRefershTime < todayMidnight && now >= todayMidnight)
+        {
+            SaveRefresh = 2;
+            LastChangeTime = now.ToString("o");
+            SavePlayerDate();
+            Debug.Log("åˆ·æ–°æ¬¡æ•°å·²é‡ç½®ä¸º 2ï¼ï¼ˆæ¯æ—¥ 00:00 è§¦å‘ï¼‰");
         }
         else
         {
-            lastRefershTime = now;
+            Debug.Log("å½“å‰ä¸æ»¡è¶³æ¯æ—¥åˆ·æ–°æ—¶é—´ï¼ˆ00:00ï¼‰ï¼Œæœªé‡ç½®åˆ·æ–°æ¬¡æ•°ã€‚");
         }
-        
-        // Èç¹ûµ±Ç°Ê±¼äµÄÈÕÆÚ²»Í¬ÓÚÉÏ´ÎÖØÖÃÊ±¼äµÄÈÕÆÚ£¬»òÕßµ±Ç°Ê±¼ä³¬¹ı 12 µã
-        if (string.IsNullOrEmpty(LastChangeTime) || lastRefershTime.Date != now.Date || (now.TimeOfDay.Hours >= 12 && lastRefershTime.TimeOfDay.Hours < 12))
-        {
-            SaveRefresh = 2; // ÖØÖÃË¢ĞÂ´ÎÊı
-            LastChangeTime = now.ToString("o"); // ¸üĞÂÖØÖÃÊ±¼ä
-            SavePlayerDate(); // ±£´æÊı¾İ
-            //Console.WriteLine("Ë¢ĞÂ´ÎÊıÒÑÖØÖÃÎª 2£¡");
-        }
+    }
 
+    public void UnlockTechByLastesLevel()//è§£é”ç¼–å·ä»1åˆ°LastesLevel-1çš„æ‰€æœ‰ç§‘æŠ€
+    {
+        for (int i = 1; i < LastesLevel; i++) // æ³¨æ„ï¼šä¸åŒ…å« LastesLevel
+        {
+            Technology tech = TechTreeManager.GetInst().GetTech(i);
+            if (tech != null && !tech.IsUnlock)
+            {
+                TechTreeManager.GetInst().UnlockTechnology(tech.TechName);
+            }
+        }
     }
     /// <summary>
-    /// ¹ı¹ØµÄÊ±ºòµ÷ÓÃ£¬Èç¹ûµ±Ç°¹Ø¿¨ÊÇ×îÔ¶¹Ø¿¨£¬²¢ÇÒ²»ÊÇ×îºóÒ»¹Ø£¬Ôò¸üĞÂ×îÔ¶¹Ø¿¨(²»¸ºÔğ¼ÓÔØ³¡¾°£¬Ö»¸ºÔğ½áËã»­Ãæ)
+    /// è¿‡å…³çš„æ—¶å€™è°ƒç”¨ï¼Œå¦‚æœå½“å‰å…³å¡æ˜¯æœ€è¿œå…³å¡ï¼Œå¹¶ä¸”ä¸æ˜¯æœ€åä¸€å…³ï¼Œåˆ™æ›´æ–°æœ€è¿œå…³å¡(ä¸è´Ÿè´£åŠ è½½åœºæ™¯ï¼Œåªè´Ÿè´£ç»“ç®—ç”»é¢)
     /// </summary>
-    /// <param name="FarstLevel">µ±Ç°¹Ø¿¨ÊÇ²»ÊÇ×îÔ¶¹Ø¿¨</param>
+    /// <param name="FarstLevel">å½“å‰å…³å¡æ˜¯ä¸æ˜¯æœ€è¿œå…³å¡</param>
     public void PassLevel()
     {
-        int levelReward = 100;//Ã¿¹Ø½±ÀøµÄ³ËÊı
-        int firstReward = 200 * CurrentLevel;//ĞÂÍ¨¹ØµÄ¶îÍâ½±ÀøÊı
-        //1ĞÇ0.75±¶ÂÊ£¬3ĞÇ1.25±¶ÂÊ
+        int levelReward = 100;//æ¯å…³å¥–åŠ±çš„ä¹˜æ•°
+        int firstReward = 200 * CurrentLevel;//æ–°é€šå…³çš„é¢å¤–å¥–åŠ±æ•°
+        //1æ˜Ÿ0.75å€ç‡ï¼Œ3æ˜Ÿ1.25å€ç‡
         int randomCoin = (int)((0.75 + 0.25 * (LevelManager.GetInst().starNumJudge()-1)) * UnityEngine.Random.Range(CurrentLevel * levelReward * 0.8f, CurrentLevel * levelReward * 1.2f));
         //int testCoin= (int)((0.75f + 0.25 * LevelManager.GetInst().starNumJudge()) * Random.Range( 60 * 0.85f, 60 * 1.1f));
-        if (CurrentLevel == LastesLevel)//Èç¹ûÊÇĞÂÍ¨¹Ø
+        if (CurrentLevel >= LastesLevel)//å¦‚æœæ˜¯æ–°é€šå…³
         {
-            if (LastesLevel != MaxLevel)//²¢ÇÒ²»ÊÇ×îºóÒ»¹Ø
+            /*if (CurrentLevel == 1 && LastesLevel == 0)
+                LastesLevel = 2;*/
+            
+            LastesLevel++;//åŒæ—¶è§£é”ç¼–å·LastesLevel-1çš„ç§‘æŠ€
+            //ä¹Ÿè¦åŠ å…¥ä¸»çº¿å…³å¡ç±»æˆå°±çš„æ£€æŸ¥
+            if (LastesLevel != MaxLevel+1)//å¹¶ä¸”ä¸æ˜¯æœ€åä¸€å…³
             {
-                LastesLevel++;
-                //Èç¹ûÊÇµÚÒ»´ÎÍ¨¹Ø£¬»ñµÃ¶îÍâ½ğ±Ò
-                ResourcesChange(100 * CurrentLevel+ (int)(UnityEngine.Random.Range(1.0f,1.25f) * randomCoin));//½ğ±Ò½áËã£¬¸ù¾İµ±Ç°¹ØÊıºÍĞÇÊıÔö¼ÓÒ»¶¨Ëæ»ú·¶Î§µÄ½ğ±Ò
-                UIManager.GetInst().Push(new VectoryPanel());//ÏÔÊ¾Ê¤ÀûUI
+                
+                //å¦‚æœæ˜¯ç¬¬ä¸€æ¬¡é€šå…³ï¼Œè·å¾—é¢å¤–é‡‘å¸
+                ResourcesChange(100 * CurrentLevel+ (int)(UnityEngine.Random.Range(1.0f,1.25f) * randomCoin));//é‡‘å¸ç»“ç®—ï¼Œæ ¹æ®å½“å‰å…³æ•°å’Œæ˜Ÿæ•°å¢åŠ ä¸€å®šéšæœºèŒƒå›´çš„é‡‘å¸
+                UIManager.GetInst().Push(new VectoryPanel());//æ˜¾ç¤ºèƒœåˆ©UI
                 GetCoinPanel coinPanel = new GetCoinPanel();
                 coinPanel.CoinNumber = (firstReward + levelReward * CurrentLevel + randomCoin);
-                UIManager.GetInst().Push(coinPanel);//ÏÔÊ¾»ñÈ¡½ğ±ÒUI
-                Debug.Log("ÊÇĞÂÍ¨¹Ø");
+                //AchievementManager.GetInst().CheckAchievProgress("mainlineLevel");//æ£€æŸ¥å…³å¡ç±»æˆå°±
+                UIManager.GetInst().Push(coinPanel);//æ˜¾ç¤ºè·å–é‡‘å¸UI
+                Debug.Log("æ˜¯æ–°é€šå…³");
             }                                                    
-            else//ÊÇ×îºóÒ»¹Ø
+            else//æ˜¯æœ€åä¸€å…³
             {               
                 ResourcesChange(randomCoin);
-                UIManager.GetInst().Push(new VectoryPanel());//ÏÔÊ¾×îºóÒ»¹ØÊ¤ÀûUI£¬Ã»ÓĞÇ°ÍùÏÂÒ»¹ØµÄÑ¡Ïî
+                UIManager.GetInst().Push(new VectoryPanel());//æ˜¾ç¤ºæœ€åä¸€å…³èƒœåˆ©UIï¼Œæ²¡æœ‰å‰å¾€ä¸‹ä¸€å…³çš„é€‰é¡¹
                 GetCoinPanel coinPanel = new GetCoinPanel();
                 coinPanel.CoinNumber = (randomCoin);
-                UIManager.GetInst().Push(coinPanel);//ÏÔÊ¾»ñÈ¡½ğ±ÒUI
-                Debug.Log("ÊÇ×îºóÒ»¹Ø");
+                UIManager.GetInst().Push(coinPanel);//æ˜¾ç¤ºè·å–é‡‘å¸UI
+                Debug.Log("æ˜¯æœ€åä¸€å…³");
             }
+            UpdateProgress();
 
         }
-        else//²»ÊÇĞÂÍ¨¹Ø£¬¾É¹Ø£¬CurrentLevel £¡= LastesLevel
+        else//ä¸æ˜¯æ–°é€šå…³ï¼Œæ—§å…³ï¼ŒCurrentLevel < LastesLevel
         {
             ResourcesChange(randomCoin);
-            UIManager.GetInst().Push(new VectoryPanel());//ÏÔÊ¾Ê¤ÀûUI
+            UIManager.GetInst().Push(new VectoryPanel());//æ˜¾ç¤ºèƒœåˆ©UI
             GetCoinPanel coinPanel = new GetCoinPanel();
             coinPanel.CoinNumber = (randomCoin);
-            UIManager.GetInst().Push(coinPanel);//ÏÔÊ¾»ñÈ¡½ğ±ÒUI
-            Debug.Log("²»ÊÇĞÂÍ¨¹Ø£¬¾É¹Ø");
-        }                
+            UIManager.GetInst().Push(coinPanel);//æ˜¾ç¤ºè·å–é‡‘å¸UI
+            Debug.Log("ä¸æ˜¯æ–°é€šå…³ï¼Œæ—§å…³");
+        }
+
+        AchievementManager.GetInst().CheckAchievProgress("mainlineLevel");
+        AchievementManager.GetInst().CheckAchievProgress("star");
+        //åœ¨UpdateLevelStarå¤„è¿›è¡Œæ˜Ÿæ•°æˆå°±åˆ¤æ–­
+        UnlockTechByLastesLevel();
+    }
+    public void UpdateProgress()
+    {
+        // ä¸»çº¿å…³å¡è¿›åº¦
+        int levelProgress = (LastesLevel - 1) * 250;
+
+        // è§£é”ç§‘æŠ€æ•°é‡ï¼ˆé€šè¿‡ TechTreeManager è®¿é—®,ä¸åŒ…å«ä¸»çº¿å…³å¡çš„ç§‘æŠ€ï¼‰
+  
+        int techProgress = TechTreeManager.GetInst().TotalTechProgress();
+
+        // è§£é”å»ºç­‘æ•°é‡ï¼ˆé€šè¿‡ BuildingManager è®¿é—®ï¼‰
+        int buildingProgress = BuildingManager.GetInst().TotalBuildingProgress();
+
+        // æ€»è¿›åº¦å€¼
+        int totalProgress = levelProgress + techProgress + buildingProgress;
+        totalProgress = Mathf.Clamp(totalProgress, 0, 10000);
+
+        PlayerProgress = totalProgress;
+        if (PlayerProgress >= 3000 && PlayerProgress < 6000 )
+        {
+            BuildingManager.GetInst().UnlockBuilding("CommandStation_Level2");
+            TaskDepartment = 2;
+        }
+            
+        if(PlayerProgress >=6000 && PlayerProgress < 10000 )
+        {
+            BuildingManager.GetInst().UnlockBuilding("CommandStation_Level3");
+            TaskDepartment = 3;
+        }
+        if(PlayerProgress >=10000)
+        {
+            BuildingManager.GetInst().UnlockBuilding("CommandStation_Level4");
+        }
+        Debug.Log($"âœ… æ¸¸æˆè¿›åº¦æ›´æ–°æˆåŠŸï¼Œå½“å‰è¿›åº¦ï¼š{PlayerProgress} / 10000");
+    }
+    /// <summary>
+    /// æä¾›ç”¨äºæ›´æ–°æ˜Ÿçº§çš„æ–¹æ³•ï¼ˆåœ¨é€šå…³åè°ƒç”¨ï¼‰
+    /// </summary>
+    /// <param name="level"></param>
+    /// <param name="star"></param>
+    public void UpdateLevelStar( int star)
+    {
+        InitLevelStarRecords();
+        LevelStarRecord existing = levelStarRecordList.records.Find(r => r.levelNumber == SaveManager.CurrentLevel);
+        if (existing != null)
+        {
+            if (star > existing.starCount)
+            {
+                existing.starCount = star;
+                SaveLevelStarRecords();
+                AchievementManager.GetInst().CheckAchievProgress("star");
+                Debug.Log($"æ›´æ–°å…³å¡ {SaveManager.CurrentLevel} æ˜Ÿçº§ä¸º {star} æ˜Ÿï¼");
+            }
+        }
+        else
+        {
+            // å¦‚æœæ„å¤–æœªæ‰¾åˆ°è¯¥å…³å¡ï¼Œè¡¥å……è¿›å»
+            levelStarRecordList.records.Add(new LevelStarRecord { levelNumber = SaveManager.CurrentLevel, starCount = star });
+            SaveLevelStarRecords();
+        }
+    }
+    /// <summary>
+    /// è·å–æŸå…³å¡çš„æ˜Ÿæ•°
+    /// </summary>
+    /// <param name="level"></param>
+    /// <returns></returns>
+    public int GetLevelStar(int level)
+    {
+        InitLevelStarRecords();
+        LevelStarRecord record = levelStarRecordList.records.Find(r => r.levelNumber == level);
+        return record != null ? record.starCount : 0;
     }
 
 }

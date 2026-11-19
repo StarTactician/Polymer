@@ -9,9 +9,16 @@ public class AchievementManager
     private static AchievementManager Inst;
     private AchievementList achievementList;
     private List<Achievement> coinType = new List<Achievement>();
+    private List<Achievement> PUType = new List<Achievement>();
     private List<Achievement> missionType = new List<Achievement>();
+    private List<Achievement> levelType = new List<Achievement>();
+    private List<Achievement> starType = new List<Achievement>();
+    private List<Achievement> techType = new List<Achievement>();
+    private List<Achievement> buildingType = new List<Achievement>();
     //private Dictionary<string, Achievement> singleType = new Dictionary<string, Achievement>();
     private string AchievementLibraryFilePath = Application.persistentDataPath + "/AchievementLibrary.json";
+    private Queue<string> unlockAchievQueue = new Queue<string>();
+    private bool isProcessingQueue = false;
 
     public static AchievementManager GetInst()
     {
@@ -30,6 +37,12 @@ public class AchievementManager
     }
     public int GetAchivesNum()
     {
+        if (achievementList == null || achievementList.Achievements == null )
+        {
+            LoadAchievementLibrary();
+            TypeAchiev();
+            Debug.Log("场景已切换，重新初始化数据");
+        }
         return achievementList.Achievements.Count();
     }
     /// <summary>
@@ -78,6 +91,7 @@ public class AchievementManager
         string json = JsonUtility.ToJson(achievementList, true);
         File.WriteAllText(AchievementLibraryFilePath, json);
         Debug.Log("成就库保存成功！");
+        
     }
 
     /// <summary>
@@ -114,8 +128,23 @@ public class AchievementManager
             case "task":
                 achievementsToCheck = missionType;
                 break;
+            case "PU":
+                achievementsToCheck = PUType;
+                break;
+            case "mainlineLevel":
+                achievementsToCheck = levelType;
+                break;
+            case "star":
+                achievementsToCheck = starType;
+                break;
+            case "tech":
+                achievementsToCheck = techType;
+                break;
+            case "building":
+                achievementsToCheck = buildingType;
+                break;
             default:
-                
+                achievementsToCheck = null;
                 break;
         }
         if (achievementsToCheck == null)
@@ -123,43 +152,83 @@ public class AchievementManager
             Debug.LogWarning($"⚠️ 没有找到 {type} 类型的成就");
             return;
         }
+        Debug.Log("开始检查"+type+"类成就");
         foreach (Achievement achiev in achievementsToCheck)
         {
+
             if (!achiev.IsUnlock) // 只检查未解锁的成就
             {
                 bool canUnlock = true; // 需要所有条件都满足
-
-                foreach (AciveType condition in achiev.UnlockType)
+                if (achievementsToCheck == starType)
                 {
-                    int progress = GetProgressByType(condition.type); // 获取当前进度
-                    if (progress < condition.targetValue)
+                    int star = GetProgressByType("star", achiev.UnlockType.targetValue);//这里targetValue为目标关卡
+                    Debug.Log("开始检查第" + achiev.UnlockType.targetValue + "关三星成就");
+                    canUnlock = star == 3;
+                }
+                else if (achievementsToCheck == techType || achievementsToCheck == buildingType)
+                {
+                    canUnlock = GetProgressByType(achiev.UnlockType.type, achiev.UnlockType.targetValue) == 1;
+                }
+                else if (achievementsToCheck != starType|| achievementsToCheck != techType || achievementsToCheck != buildingType)
+                {
+                    int progress = GetProgressByType(achiev.UnlockType.type); // 获取当前进度
+                    if (progress < achiev.UnlockType.targetValue)
                     {
-                        canUnlock = false; // 只要有一个条件不满足，就不能解锁
+                        Debug.Log("当前成就" + achiev.AchieveName + "的值还未达标，" + progress + "<" + achiev.UnlockType.targetValue);
+                        canUnlock = false;
                         break;
                     }
                 }
+                
+                
 
                 if (canUnlock)
                 {
                     Achievement unlockAchiev = achievementList.Achievements.Find(a => a.AchieveID == achiev.AchieveID);
-                    if(unlockAchiev!=null)
+                    if (unlockAchiev != null)
                     {
-                        unlockAchiev.IsUnlock =true;
+                        unlockAchiev.IsUnlock = true;
                         unlockAchiev.hasCheck = 1;//解锁的时候把hasChecked设置为1
-                        Debug.Log("🏆 解锁成就: "+ unlockAchiev.AchieveName);//弹出成就解锁的window
                         SaveAchievementLibrary();
+                        unlockAchievQueue.Enqueue(unlockAchiev.AchieveName);
+                        /*AcivementSildeWindow sildeWindow = new AcivementSildeWindow();
+                        sildeWindow.AchiveName = unlockAchiev.AchieveName;
+                        UIManager.GetInst().Push(sildeWindow, true);*/
+                        Debug.Log("🏆 解锁成就: " + unlockAchiev.AchieveName);//弹出成就解锁的window
+
                     }
                     else
                     {
                         Debug.LogWarning($"⚠️ 成就 {achiev.AchieveName} 未找到");
                     }
-                    //UnlockAchievement(achiev);
                 }
             }
+            else Debug.Log(achiev.AchieveName+"已解锁");
         }
-        
-
+        if (!isProcessingQueue && unlockAchievQueue.Count > 0)
+        {
+            UIFunction.Inst.StartCoroutine(ProcessUnlockQueue());
+        }
     }
+    private IEnumerator ProcessUnlockQueue()
+    {
+        isProcessingQueue = true;
+
+        while (unlockAchievQueue.Count > 0)
+        {
+            string achievName = unlockAchievQueue.Dequeue();
+
+            AcivementSildeWindow sildeWindow = new AcivementSildeWindow();
+            sildeWindow.AchiveName = achievName;
+            UIManager.GetInst().Push(sildeWindow, true);
+
+            // 等待弹窗生命周期结束再继续（比如弹窗总时长 2秒+0.2秒余量）
+            yield return new WaitForSeconds(3.5f);
+        }
+
+        isProcessingQueue = false;
+    }
+
     /// <summary>
     /// 根据成就ID查询成就是否解锁
     /// </summary>
@@ -182,29 +251,67 @@ public class AchievementManager
     {
         coinType.Clear();
         missionType.Clear();
-
+        PUType.Clear();
+        levelType.Clear();
+        starType.Clear();
+        techType.Clear();
+        buildingType.Clear();
         foreach (Achievement achiev in achievementList.Achievements)
         {
-            foreach (AciveType condition in achiev.UnlockType) // 遍历所有解锁条件
-            {
-                string achievType = condition.type; // 获取当前条件类型
+            string achievType = achiev.UnlockType.type; // 获取当前条件类型
 
-                if (achievType == "coin")
+            if (achievType == "coin")
+            {
+                if (!coinType.Contains(achiev))
                 {
-                    if (!coinType.Contains(achiev))
-                    {
-                        coinType.Add(achiev);
-                    }
-                }
-                else if (achievType == "task")
-                {
-                    if (!missionType.Contains(achiev))
-                    {
-                        missionType.Add(achiev);
-                    }
+                    coinType.Add(achiev);
                 }
             }
+            else if (achievType == "task")
+            {
+                if (!missionType.Contains(achiev))
+                {
+                    missionType.Add(achiev);
+                }
+            }
+            else if (achievType == "PU")
+            {
+                if (!missionType.Contains(achiev))
+                {
+                    PUType.Add(achiev);
+                }
+            }
+            else if (achievType == "mainlineLevel")
+            {
+                if (!missionType.Contains(achiev))
+                {
+                    levelType.Add(achiev);
+                }
+            }
+            else if (achievType == "star")
+            {
+                if (!starType.Contains(achiev))
+                {
+                    starType.Add(achiev);
+                }
+            }
+            else if (achievType == "tech")
+            {
+                if (!techType.Contains(achiev))
+                {
+                    techType.Add(achiev);
+                }
+            }
+            else if (achievType == "building")
+            {
+                if (!buildingType.Contains(achiev))
+                {
+                    buildingType.Add(achiev);
+                }
+            }
+            else Debug.Log("未知的成就类型"+ achiev.UnlockType.type);
         }
+        Debug.Log("成就分类完毕"+"金币类数量:"+coinType.Count+ "任务类数量:" + missionType.Count + "PU类数量:" + PUType.Count + "主线通关类数量:" + levelType.Count + "三星通关类数量:" + starType.Count);
     }
 
     /// <summary>
@@ -212,12 +319,17 @@ public class AchievementManager
     /// </summary>
     /// <param name="key"></param>
 
-    private int GetProgressByType(string key)
+    private int GetProgressByType(string key,int level=0)
     {
         switch (key)
         {
             case "task": return SaveManager.CurrentFinishedTaskNum;//如果是任务型，则获取当前任务完成数量
             case "coin": return SaveManager.CurrentCoin;//如果是资源型，则获取当前资源数量
+            case "PU": return SaveManager.CurrentPU;
+            case "mainlineLevel": return SaveManager.LastesLevel-1;
+            case "star": return SaveManager.GetInst().GetLevelStar(level);
+            case "tech": return  TechTreeManager.IsTechnologyUnlocked(level)?1:0;
+            case "building": return BuildingManager.GetInst().IsUnlock(level) ? 1 : 0;
             default:
                 Debug.LogWarning($"未知的成就条件: {key}");
                 return 0;

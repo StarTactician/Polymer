@@ -1,0 +1,53 @@
+{
+  "name": "Level_2_Intro",
+  "dialogueLines": [
+    {
+      "speaker": "布伦希尔德",
+      "text": "这次的实验环境仍然保持低重力，我们将观察电荷之间的中和与分配现象。",
+      "portrait": "Brunhilde_Smile",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "当两个带电粒子发生接触，如果它们带有相反的电荷，它们会进行中和。",
+      "portrait": "Brunhilde_Explain",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "电荷总量会被平均分配到两者之间，若有一单位无法整除，它会偏向总量更大的方向。",
+      "portrait": "Brunhilde_Gesture",
+      "fadePortrait": false
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "而当一颗粒子为零电荷时，接触后将发生电荷的平摊现象，结果是两者拥有几乎相同的电量。",
+      "portrait": "Brunhilde_Side",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "请留意——不带电的粒子无法响应任何电场，它们的运动依赖于其他粒子的碰撞推动。",
+      "portrait": "Brunhilde_Info",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "我们使用色彩来辅助判断电荷特性：红色表示正电，蓝色表示负电。",
+      "portrait": "Brunhilde_Gesture",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "颜色越深，代表带电量越强。浅淡的颜色通常意味着电荷较弱，甚至接近于零。",
+      "portrait": "Brunhilde_Smile",
+      "fadePortrait": false
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "请尽情观察粒子之间的互动，理解它们在这一环境中的行为方式。",
+      "portrait": "Brunhilde_Confident",
+      "fadePortrait": true
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "name": "AchiveTechPanelIntro",
+  "dialogueLines": [
+    {
+      "speaker": "布伦希尔德",
+      "text": "这里是科技与成就的展示界面。",
+      "portrait": "Brunhilde_Smile",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "左上角的图标代表科技树，你可以在那里查看当前已解锁与未解锁的科技项目。",
+      "portrait": "Brunhilde_Explain",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "每一种材料不仅承载着工程应用，也隐藏着人类文明的进步轨迹。",
+      "portrait": "Brunhilde_Glow",
+      "fadePortrait": false
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "而成就系统则记录着你在月球建设过程中达成的各类关键节点。",
+      "portrait": "Brunhilde_Side",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "完成了哪些科研？攻克了哪些关卡？建立了哪些具有象征意义的建筑……都将在这里留下印记。",
+      "portrait": "Brunhilde_Info",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "请随意翻阅，也许你会从自己走过的路径中，重新看见这座基地的意义。",
+      "portrait": "Brunhilde_Smile",
+      "fadePortrait": true
+    }
+  ]
+}

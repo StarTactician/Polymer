@@ -1,0 +1,41 @@
+{
+  "name": "Level_9_Intro",
+  "dialogueLines": [
+    {
+      "speaker": "布伦希尔德",
+      "text": "实验进入新阶段，路径与结构将变得更加精巧。",
+      "portrait": "Brunhilde_Smile",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "你将再次接触到受电场影响的障碍物，它们不会参与聚合，却会对粒子的运动轨迹造成显著偏转。",
+      "portrait": "Brunhilde_Info",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "聚合目标看似明确，但达成路径并不唯一。",
+      "portrait": "Brunhilde_Explain",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "有些方式稳妥但冗长，有些方式则大胆、精简，却要求你对惯性与偏转有更细致的掌握。",
+      "portrait": "Brunhilde_Side",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "操作次数仍然决定实验评级，若你渴望更高评分，或许可以尝试新的思路。",
+      "portrait": "Brunhilde_Gesture",
+      "fadePortrait": false
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "在微观环境中，时机与路径的变化往往会产生意想不到的结果。",
+      "portrait": "Brunhilde_Confident",
+      "fadePortrait": true
+    }
+  ]
+}

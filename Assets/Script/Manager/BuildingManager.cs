@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using System;
+using System.Linq;
 
 public class BuildingManager
 {
     private static BuildingManager Inst;
     private string buildingDataFilePath = Application.persistentDataPath + "/BuildingData.json";
     private BuildingList buildingList;
-    public List<BuildingData> unlockFactory=new List<BuildingData>();
+    public List<BuildingData> unlockBuilding=new List<BuildingData>();
+    private Dictionary<int, Transform> cameraPosDict = new Dictionary<int, Transform>();
     public static BuildingManager GetInst()
     {
         if (Inst == null)
@@ -21,8 +23,29 @@ public class BuildingManager
     public BuildingManager()
     {
         Inst = this;
+    }
+    public void OnStart()
+    {
         LoadBuildingData();
         GenerateBuildingsOnLoad();
+    }
+    public int AmountUmlockCount()
+    {
+        if (buildingList == null || buildingList.buildings == null)
+        {
+            OnStart();
+            Debug.Log("场景已切换，重新初始化数据");
+        }
+        return buildingList.buildings.Count(b => b.isUnlocked);
+    }
+    public int TotalBuildingProgress()
+    {
+        if (buildingList == null || buildingList.buildings == null)
+        {
+            OnStart();
+            Debug.Log("场景已切换，重新初始化数据");
+        }
+        return buildingList.buildings.Where(b => b.isUnlocked).Sum(b => b.progressValue);
     }
 
     public void LoadBuildingData()
@@ -62,11 +85,22 @@ public class BuildingManager
         File.WriteAllText(buildingDataFilePath, json);
         Debug.Log("建筑数据已保存！");
     }
-    public BuildingData GetFactoryByName(string factoryName)
+    public BuildingData GetBuildingByName(string factoryName)
     {
-        foreach (BuildingData factory in unlockFactory)
+        foreach (BuildingData factory in unlockBuilding)
         {
             if (factory.name == factoryName)
+            {
+                return factory;
+            }
+        }
+        return null;
+    }    
+    public BuildingData GetBuildingByID(int factoryID)
+    {
+        foreach (BuildingData factory in unlockBuilding)
+        {
+            if (factory.id == factoryID)
             {
                 return factory;
             }
@@ -85,7 +119,7 @@ public class BuildingManager
         {
             if (!building.isUnlocked || string.IsNullOrEmpty(building.name))
             {
-                Debug.LogWarning("建筑未解锁或命名错误" +building.textName);
+                Debug.LogWarning("建筑未解锁或命名错误" +building.name);
                 continue;
             }
 
@@ -107,6 +141,27 @@ public class BuildingManager
                 buildingObj.transform.localScale = new Vector3(building.scale.x, building.scale.y, building.scale.z);
                 buildingObj.transform.rotation = Quaternion.Euler(building.rotation.x, building.rotation.y, building.rotation.z);
                 Debug.Log($"生成建筑: {building.name} at {building.position}");
+
+                Transform camPos = buildingObj.transform.Find("CameraPos");//获取CameraPos位置
+                if(building.type==0)
+                {
+                    Transform camPos2 = buildingObj.transform.Find("Process1Pos");//
+                    if(!GameRoot.GetInst().MainCamera)
+                    {
+                        
+                        Debug.Log("主摄像机没找到");
+                        GameRoot.GetInst().FindCamera();
+                    }
+                    if (camPos2)
+                        GameRoot.GetInst().MainCamera.transform.position = camPos2.transform.position;
+                    else Debug.Log(building.name+ "还没有设置Process1Pos");
+                }
+                
+                if (camPos != null&&!cameraPosDict.ContainsKey(building.id))
+                {
+                    cameraPosDict.Add(building.id, camPos); // or building.name
+                }
+
             }
             else
             {
@@ -114,6 +169,12 @@ public class BuildingManager
             }
         }
     }
+
+    public Transform GetCameraPos(int id)
+    {
+        return cameraPosDict.TryGetValue(id, out Transform pos) ? pos : null;
+    }
+
     /// <summary>
     /// 资源领取方法
     /// </summary>
@@ -143,7 +204,7 @@ public class BuildingManager
         if (factory.incomeType == "PU")
         {
             rewardPanel.rewardPuShown = true;
-            rewardPanel.Name1 = factory.currentReserves.ToString();
+            rewardPanel.PUNumber = factory.currentReserves;
         }
             
         else if (factory.incomeType == "EU")
@@ -167,40 +228,48 @@ public class BuildingManager
         DateTime now = DateTime.Now;
         GetFactory();
 
-        foreach (var building in unlockFactory)
-        {
-            //if (!building.isUnlocked || building.type != 1) continue; // 只处理工厂类
+        bool anyProductionChanged = false; // 
 
+        foreach (var building in unlockBuilding)
+        {
+            // 只处理工厂类建筑（非 type == 1）
+            if (building.type != 1)
+                continue;
             if (string.IsNullOrEmpty(building.nextGenerateTime))
             {
                 // 第一次设定 nextGenerateTime
                 building.nextGenerateTime = now.AddSeconds(building.producInterval).ToString("yyyy-MM-dd HH:mm:ss");
+                anyProductionChanged = true; // 👈 第一次初始化也需要保存
                 continue;
             }
 
             DateTime nextTime = DateTime.Parse(building.nextGenerateTime);
 
-            // 当前时间未达生产时间
             if (now < nextTime || building.currentReserves >= building.maxReserves)
                 continue;
-                            
-            // 计算产出次数
+
             TimeSpan elapsed = now - nextTime;
             int intervalCount = 1 + Mathf.FloorToInt((float)elapsed.TotalSeconds / building.producInterval);
             int actualAdd = intervalCount * building.income;
 
-            // 不能超过最大储量
             int spaceLeft = building.maxReserves - building.currentReserves;
             int finalAdd = Mathf.Min(actualAdd, spaceLeft);
-            building.currentReserves += finalAdd;
 
-            // 更新下次生产时间
-            DateTime newNextTime = nextTime.AddSeconds(intervalCount * building.producInterval);
-            building.nextGenerateTime = newNextTime.ToString("yyyy-MM-dd HH:mm:ss");
+            if (finalAdd > 0)
+            {
+                building.currentReserves += finalAdd;
+                DateTime newNextTime = nextTime.AddSeconds(intervalCount * building.producInterval);
+                building.nextGenerateTime = newNextTime.ToString("yyyy-MM-dd HH:mm:ss");
+                anyProductionChanged = true; // 👈 确认进行了资源变化
+            }
         }
-
-        SaveBuildingData();
+        
+        if (anyProductionChanged)
+        {
+            SaveBuildingData(); // ✅ 只有有变化时才保存
+        }
     }
+
 
     /// <summary>
     /// 解锁指定建筑时调用
@@ -208,14 +277,17 @@ public class BuildingManager
     /// <param name="buildingName"></param>
     public void UnlockBuilding(string buildingName)
     {
+        
         BuildingData building = buildingList.buildings.Find(b => b.name == buildingName);
         if (building != null && !building.isUnlocked)
         {
             building.isUnlocked = true;
             GetFactory();
             SaveBuildingData();
+            AchievementManager.GetInst().CheckAchievProgress("building");
             Debug.Log($"建筑 {buildingName} 已解锁！");
         }
+        else Debug.Log($"建筑 {buildingName} 已解锁或不存在！");
     }
     /// <summary>
     /// 某个建筑是否被同类更高级建筑替代（upgradeBy 相同）
@@ -228,7 +300,34 @@ public class BuildingManager
         }
         return false;
     }
-
+    public bool IsUnlock(string buildName)
+    {
+        BuildingData building;
+        building=GetBuildingByName(buildName);
+        if(building!=null)
+        {
+            return building.isUnlocked;
+        }
+        else
+        {
+            Debug.Log(buildName+"建筑未解锁");
+            return false;
+        }
+    }    
+    public bool IsUnlock(int ID)
+    {
+        BuildingData building;
+        building=GetBuildingByID(ID);
+        if(building!=null)
+        {
+            return building.isUnlocked;
+        }
+        else
+        {
+            Debug.Log(ID+"建筑未解锁");
+            return false;
+        }
+    }
     /// <summary>
     /// 获取已经解锁的工厂类建筑
     /// </summary>
@@ -236,12 +335,12 @@ public class BuildingManager
     {
         foreach(BuildingData factory in buildingList.buildings)
         {
-            if (factory.type == 1 && factory.isUnlocked&&!unlockFactory.Contains(factory))
-                unlockFactory.Add(factory);               
+            if (factory.isUnlocked&&!unlockBuilding.Contains(factory))
+                unlockBuilding.Add(factory);               
         }
-        Debug.Log("当前解锁工厂数量"+unlockFactory.Count);
-        if (unlockFactory.Count == 0)
-            Debug.Log("工厂数目为0，请检查JSON是否正确被读取");
+        Debug.Log("当前解锁建筑数量"+unlockBuilding.Count);
+        if (unlockBuilding.Count == 0)
+            Debug.Log("建筑数目为0，请检查JSON是否正确被读取");
     }
 }
 

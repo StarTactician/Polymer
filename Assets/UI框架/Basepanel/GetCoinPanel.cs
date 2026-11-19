@@ -13,6 +13,7 @@ public class GetCoinPanel : BasePanel
     //private TextMeshProUGUI bulidName;
     //private TextMeshProUGUI techName;
     public int CoinNumber;
+    public int PUNumber;
     public string Name1;
     public string Name2;
     public bool rewardCoinShown = false;//在调用这个Panel的脚本中设置
@@ -55,6 +56,8 @@ public class GetCoinPanel : BasePanel
         techName = UIFunction.Inst.GetCompoentInObjsChild<TextMeshProUGUI>(PanelObj, "Name2");*/
         if (CoinNumber != 0)
             rewardCoinShown = true;
+        if (PUNumber != 0)
+            rewardPuShown = true;
         DisplayRewards();
     }
 
@@ -87,7 +90,7 @@ public class GetCoinPanel : BasePanel
             else if(rewardPuShown)
             {
                 image.sprite = Resources.Load<Sprite>("IMG/Rewards/PU");
-                UIFunction.Inst.GetCompoentInObjsChild<TextMeshProUGUI>(image.gameObject, "Text").text = CoinNumber.ToString();
+                UIFunction.Inst.GetCompoentInObjsChild<TextMeshProUGUI>(image.gameObject, "Text").text = PUNumber.ToString();
                 rewardPuShown = false; // 标记新建筑奖励已展示
             }
             else if (newBuildingShown)

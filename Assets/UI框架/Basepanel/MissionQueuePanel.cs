@@ -220,7 +220,7 @@ public class MissionQueuePanel : BasePanel
             GameObject reward = UIFunction.Inst.GetChild(QueueButtonAndTaskID_Dict[index].gameObject, "Reward");
             List<Image> rewardImage = UIFunction.Inst.GetComponentsInObj<Image>(reward);
 
-            bool rewardCoinShown = false, newBuildingShown = false, newTechShown = false, upgradeTaskDepartmentShown = false;
+            bool rewardCoinShown = false, newBuildingShown = false, newTechShown = false, rewardPUShown = false;
 
             foreach (Image image in rewardImage)
             {
@@ -239,10 +239,10 @@ public class MissionQueuePanel : BasePanel
                     image.sprite = Resources.Load<Sprite>("IMG/Rewards/Tech");
                     newTechShown = true;
                 }
-                else if (!upgradeTaskDepartmentShown && task.upgradeTaskDepartment)
+                else if (!rewardPUShown && task.rewardPU > 0)
                 {
-                    image.sprite = Resources.Load<Sprite>("IMG/Rewards/Upgrade");
-                    upgradeTaskDepartmentShown = true;
+                    image.sprite = Resources.Load<Sprite>("IMG/Rewards/PU");
+                    rewardPUShown = true;
                 }
                 else
                 {

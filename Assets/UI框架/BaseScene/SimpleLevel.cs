@@ -19,10 +19,12 @@ public class SimpleLevel : BaseScene
             Debug.LogWarning("LevelManager未被正确实例化！");
 
         UIManager.GetInst().Push(new PauseButtonPanel());
+        DialogueManager.GetInst().TryTriggerDialogue("Level_1_Intro");
     }
 
     public override void ExitScene()
     {
         // 可以发布退出场景的事件来处理退出逻辑
+        PRTS.GetInst().ResetSession();
     }
 }

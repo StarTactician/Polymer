@@ -1,33 +1,34 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 public class LevelManager
 {
-    //¸ºÔğ¹Ø¿¨µÄÊ¤ÀûÓë·ñµÄÅĞ¶¨
+    //è´Ÿè´£å…³å¡çš„èƒœåˆ©ä¸å¦çš„åˆ¤å®š
     private static LevelManager Inst;
-    //[Tooltip("µ±Ç°Ëù½øĞĞµÄ¹Ø¿¨")]
+    //[Tooltip("å½“å‰æ‰€è¿›è¡Œçš„å…³å¡")]
     //public static int CurrentLevel;
-    //[Tooltip("×îÔ¶Íæµ½µÄ¹Ø¿¨")]
+    //[Tooltip("æœ€è¿œç©åˆ°çš„å…³å¡")]
     //public static int TheFarthestLevel;
+    
 
-    #region ÒÔÏÂÊı¾İÓÉTouched´«Êä»ñµÃ
+    #region ä»¥ä¸‹æ•°æ®ç”±Touchedä¼ è¾“è·å¾—
 
-    int TwoStarStep;//´ï³É¶şĞÇËùÒªÇó²»¸ßÓÚµÄ²½Êı
-    int ThreeStarStep;//´ï³ÉÈıĞÇËùÒªÇó²»¸ßÓÚµÄ²½Êı
-    [Tooltip("Ã¿¹ØµÄ´ğ°¸£¬ÓÉTouchedÌá¹©£¨½Úµã£¬±ß£©")]
+    int TwoStarStep;//è¾¾æˆäºŒæ˜Ÿæ‰€è¦æ±‚ä¸é«˜äºçš„æ­¥æ•°
+    int ThreeStarStep;//è¾¾æˆä¸‰æ˜Ÿæ‰€è¦æ±‚ä¸é«˜äºçš„æ­¥æ•°
+    [Tooltip("æ¯å…³çš„ç­”æ¡ˆï¼Œç”±Touchedæä¾›ï¼ˆèŠ‚ç‚¹ï¼Œè¾¹ï¼‰")]
      List<int> Answear;
 
 
     #endregion
-
-    [Tooltip("Ò»¶¨Îª×î±ßÉÏµÄÔªËØµÄ±àºÅ£¬±éÀú¿ªÊ¼µÄ½Úµã£¬½øÈëÓÎÏ·ºó»ñÈ¡ÃûÎªStartChargeµÄµçºÉ²¢½«Æä¸³Öµ¸øStartKey")]
+    public int GetMaxUseCountForChargeChangeItem;
+    [Tooltip("ä¸€å®šä¸ºæœ€è¾¹ä¸Šçš„å…ƒç´ çš„ç¼–å·ï¼Œéå†å¼€å§‹çš„èŠ‚ç‚¹ï¼Œè¿›å…¥æ¸¸æˆåè·å–åä¸ºStartChargeçš„ç”µè·å¹¶å°†å…¶èµ‹å€¼ç»™StartKey")]
     public Charge StartKey;
 
     List<KeyValuePair<int, List<int>>> playerFinalPolmer;
 
     [SerializeField]
-    [Tooltip("µ±Ç°³¡¾°ÖĞµÄËùÓĞ»ùÍÅ/µçºÉ")]
+    [Tooltip("å½“å‰åœºæ™¯ä¸­çš„æ‰€æœ‰åŸºå›¢/ç”µè·")]
     List<Charge> charges;
 
     public Touched touched;
@@ -35,26 +36,28 @@ public class LevelManager
     {
         if (Inst == null)
         {
-            Debug.LogError("Î´ÕÒµ½LevelManagerÊµÀı");
+            Debug.LogError("æœªæ‰¾åˆ°LevelManagerå®ä¾‹");
             return Inst;
         }
         return Inst;
     }
 
-    public LevelManager()//¿ªÊ¼¾Í»áÖ´ĞĞµÄº¯Êı
+    public LevelManager()//å¼€å§‹å°±ä¼šæ‰§è¡Œçš„å‡½æ•°
     {
         Inst = this;
         playerFinalPolmer = new List<KeyValuePair<int, List<int>>>();
-        charges = new List<Charge>();                
+        charges = new List<Charge>();
     }
+
+
     /// <summary>
-    ///½øÈëÓÎÏ·³¡¾°ºó±»µ÷ÓÃ
+    ///è¿›å…¥æ¸¸æˆåœºæ™¯åè¢«è°ƒç”¨
     /// </summary>
     public void FindCharge()
     {
         if (!touched)
         {
-            Debug.LogWarning("touched»¹Ã»±»ÕÒµ½");
+            Debug.LogWarning("touchedè¿˜æ²¡è¢«æ‰¾åˆ°");
             touched = GameObject.FindObjectOfType<Touched>().gameObject.GetComponent<Touched>();
         }
             
@@ -73,89 +76,186 @@ public class LevelManager
             }                          
         }           
     }
-    public void VictoryCheck()//Ã¿µ±µçºÉÁ¬½ÓÊ±µ÷ÓÃ
+    public void VictoryCheck()//æ¯å½“ç”µè·è¿æ¥æ—¶è°ƒç”¨
     {
         int connectedValue=0;
-        foreach(Charge charge in charges)//»ñÈ¡³¡¾°ÖĞËùÓĞµçºÉ
+        foreach(Charge charge in charges)//è·å–åœºæ™¯ä¸­æ‰€æœ‰ç”µè·
         {
-            if (charge.CurrntConnectNum==charge.MaxConnectNum)//Èç¹ûÄ³¸ö»ùÍÅµÄ¼üÁ¬ÂúÁË
+            if (charge.CurrntConnectNum==charge.MaxConnectNum)//å¦‚æœæŸä¸ªåŸºå›¢çš„é”®è¿æ»¡äº†
                 connectedValue += 1;
         }
-        //È«²¿µçºÉ¶¼Á´Âú
-        if (connectedValue == charges.Count)//½â¾öË¼Â·¿ÉÒÔÃ¿¸ö»ùÍÅÎªÒ»¸ö¼¯ºÏ£¬µ±ºÍÆäËû»ùÍÅ½áºÏÊ±£¬Á½¸ö¼¯ºÏºÏ¶şÎªÒ»£¬µ±³¡¾°ÖĞÖ»Ê£Ò»¸ö¼¯ºÏÊ±¾ÍÊÇÈ«²¿½áºÏÁË£¬»òÕßËùÓĞµçºÉµÄ¼üÁ¬Âú£¿
+        // ç¤ºä¾‹é€»è¾‘ï¼šåœºæ™¯ä¸­åªæœ‰ä¸€ä¸ªç²’å­ä»æœ‰å‰©ä½™è¿æ¥ä½ï¼Œå…¶ä½™å…¨éƒ¨æ»¡äº†
+        int canStillConnectCount = charges.Count(charge => charge.MaxConnectNum - charge.CurrntConnectNum > 0);
+        if (canStillConnectCount == 1)
+        {
+            TriggerDefeat("æ— å‰©ä½™å…±ä»·é”®ï¼Œå·²æ— å¯èƒ½å†å®Œæˆèšåˆ");
+            return;
+        }
+
+        //å…¨éƒ¨ç”µè·éƒ½é“¾æ»¡
+        if (connectedValue == charges.Count)//è§£å†³æ€è·¯å¯ä»¥æ¯ä¸ªåŸºå›¢ä¸ºä¸€ä¸ªé›†åˆï¼Œå½“å’Œå…¶ä»–åŸºå›¢ç»“åˆæ—¶ï¼Œä¸¤ä¸ªé›†åˆåˆäºŒä¸ºä¸€ï¼Œå½“åœºæ™¯ä¸­åªå‰©ä¸€ä¸ªé›†åˆæ—¶å°±æ˜¯å…¨éƒ¨ç»“åˆäº†ï¼Œæˆ–è€…æ‰€æœ‰ç”µè·çš„é”®è¿æ»¡ï¼Ÿ
             checkDFS();
     }
-    #region Ö´ĞĞDFSµÄº¯Êı
-    private void checkDFS()//ÅĞ¶¨Ê¤¸º
+    #region æ‰§è¡ŒDFSçš„å‡½æ•°
+    private void checkDFS()//åˆ¤å®šèƒœè´Ÿ
     {
-        Debug.Log("¿ªÊ¼Ê¤ÀûÅĞ¶¨");        
-        playerFinalPolmer.Clear();// È·±£ÊÇ¿ÕµÄ
-        /*foreach (Charge charge in charges)
+        Debug.Log("å¼€å§‹èƒœåˆ©åˆ¤å®š");        
+        playerFinalPolmer.Clear();// ç¡®ä¿æ˜¯ç©ºçš„
+      
+        //List<int> visitedOrder = DFS();//è·å–DFSç®—æ³•å‡½æ•°çš„è¿”å›å€¼     
+        //Debug.Log("éå†é¡ºåº: " + string.Join(", ", visitedOrder));// è¿™ä¸€æ­¥æ˜¯è·å–éå†é¡ºåº        
+        if (CheckAnswer())// æ£€æŸ¥è¯¥è¿”å›å€¼æ˜¯å¦ä¸ç­”æ¡ˆåŒ¹é…
         {
-            playerFinalPolmer.Add(new KeyValuePair<int, List<int>>(charge.Value, charge.neighbour));//ÔÚÁĞ±íÖĞÌí¼ÓÔªËØ±àºÅºÍÆäÁÚ¾Ó±àºÅ      
-        }*/           
-        List<int> visitedOrder = DFS();//»ñÈ¡DFSËã·¨º¯ÊıµÄ·µ»ØÖµ     
-        Debug.Log("±éÀúË³Ğò: " + string.Join(", ", visitedOrder));// ÕâÒ»²½ÊÇ»ñÈ¡±éÀúË³Ğò        
-        if (CheckAnswer(visitedOrder))// ¼ì²é¸Ã·µ»ØÖµÊÇ·ñÓë´ğ°¸Æ¥Åä
-        {
-            //½áËã¶¯»­£¬ÏÔÊ¾Ê¤ÀûUI£¬ĞÇÊıÏÔÊ¾²¢¸üĞÂ×îÔ¶½øĞĞ¹Ø¿¨
-            Debug.Log("Ó®ÁË");
-            SaveManager.GetInst().PassLevel();//¸ù¾İµ±Ç°¹Ø¿¨ºÍÍ¨¹ØĞÇÊı¸øÍæ¼Ò½ğ±Ò½±Àø
-            touched.enabled = false;
-            AudioManager.Inst.Updatelist(3);//²¥·ÅÊ¤ÀûBGM
+            //ç»“ç®—åŠ¨ç”»ï¼Œæ˜¾ç¤ºèƒœåˆ©UIï¼Œæ˜Ÿæ•°æ˜¾ç¤ºå¹¶æ›´æ–°æœ€è¿œè¿›è¡Œå…³å¡
+            Debug.Log("èµ¢äº†");
             
+            SaveManager.GetInst().PassLevel();//æ ¹æ®å½“å‰å…³å¡å’Œé€šå…³æ˜Ÿæ•°ç»™ç©å®¶é‡‘å¸å¥–åŠ±
+
+
+            if (starNumJudge() == 3 && !touched.inAssistMode)
+            {
+                PRTS.GetInst().OnVictoryCheckOrPrompt(SaveManager.CurrentLevel);
+            }
+            //touched.SmoothTimeStop();
+            touched.enabled = false;
+            AudioManager.Inst.Updatelist(3);//æ’­æ”¾èƒœåˆ©BGM
+            SaveManager.GetInst().UpdateLevelStar(starNumJudge());
+
         }
                   
         else
         {
-            UIManager.GetInst().Push(new DefeatedPanel());//ÏÔÊ¾Ê§°ÜUI
-            touched.enabled = false;
-            Debug.Log("¼ÄÁË");
+            TriggerDefeat("åŸºå›¢é“¾æ¥é¡ºåºé”™è¯¯");
         }
                    
     }
-    private List<int> DFS()
+    public void TriggerDefeat(string reason)
     {
-        HashSet<Charge> visited = new HashSet<Charge>(); // ¼ÇÂ¼ÒÑ·ÃÎÊµÄµçºÉ
-        Stack<Charge> stack = new Stack<Charge>(); // Õ»ÓÃÓÚDFS±éÀú
-        List<int> playerAnswer = new List<int>(); 
-        stack.Push(StartKey); 
-        while (stack.Count > 0)
-        {
-            Charge currentCharge = stack.Pop(); // ´ÓÕ»ÖĞÈ¡³öÒ»¸öµçºÉ
-            if (!visited.Contains(currentCharge))
-            {
-                visited.Add(currentCharge); // ±ê¼Çµ±Ç°µçºÉÎªÒÑ·ÃÎÊ
-                playerAnswer.Add(currentCharge.Value); // ½«µ±Ç°µçºÉµÄÖµ¼ÓÈë±éÀúË³Ğò
+        if (UIManager.IsPause)
+            return;
+        Debug.LogWarning("ä»»åŠ¡å¤±è´¥ï¼š" + reason);
+        //touched.SmoothTimeStop();
+        touched.enabled = false;
+        DefeatedPanel defeatedPanel = new DefeatedPanel();
+        defeatedPanel.DefeatedMessage = reason;
+        UIManager.GetInst().Push(defeatedPanel);
+        AudioManager.Inst.Updatelist(4);//æ’­æ”¾å¤±è´¥BGM
+        
+    }
 
-                foreach (Charge neighbor in currentCharge.neighbour)
+    private void DFS(Charge current, List<Charge> result, HashSet<Charge> visited)
+    {
+        visited.Add(current);
+        result.Add(current);
+
+        List<Charge> neighbors = new List<Charge>(current.neighbour);
+
+        // ä¸»é“¾ä¼˜å…ˆé€»è¾‘
+        int nextIndex = result.Count;
+        if (nextIndex < Answear.Count)
+        {
+            int nextTargetValue = Answear[nextIndex];
+
+            foreach (Charge neighbor in neighbors)
+            {
+                if (!visited.Contains(neighbor) && neighbor.Value == nextTargetValue)
                 {
-                    Debug.Log("±éÀúÁÚ¾Ó½ÚµãÁË");
-                    if (!visited.Contains(neighbor))
-                    {
-                        stack.Push(neighbor); // ½«Î´·ÃÎÊµÄÁÚ¾Ó½ÚµãÑ¹ÈëÕ»
-                        Debug.Log("ÁÚ¾Ó½ÚµãÑ¹ÈëÕ»ÁË");
-                    }
+                    DFS(neighbor, result, visited); // âœ… ä¸»é“¾ç»§ç»­èµ°
                 }
             }
-            Debug.Log("Ö´ĞĞÁË");
         }
 
-        return playerAnswer; // ·µ»Ø±éÀúË³Ğò
+        // éå†å‰©ä¸‹çš„éç›®æ ‡é‚»å±…ï¼ˆæ”¯é“¾ï¼‰
+        foreach (Charge neighbor in neighbors)
+        {
+            if (!visited.Contains(neighbor))
+            {
+                DFS(neighbor, result, visited); // âœ… æ”¯é“¾è¡¥å……èµ°
+            }
+        }
     }
 
-    private bool CheckAnswer(List<int> visitedOrder)
-    {    
-        List<int> answerOrder = new List<int>(Answear); // »ñÈ¡´ğ°¸µÄ±éÀúË³Ğò
-        //answerOrder.Sort(); // ÊÂÊµÉÏ´ğ°¸Ö»ÓĞÒ»ÖÖ£¬²»ĞèÒª´ÓĞ¡µ½´óÅÅÁĞ
-        //visitedOrder.Sort(); // 
 
-        return visitedOrder.SequenceEqual(answerOrder); // ±È½ÏÁ½¸öË³ĞòÊÇ·ñÏàÍ¬
-    }
-    #endregion
-    public int starNumJudge()//ÅĞ¶Ïµ±Ç°ÊÇ¼¸ĞÇÍ¨¹Ø
+
+
+
+    private bool CheckAnswer()
     {
-        if(touched.Step<=ThreeStarStep)
+        List<Charge> playerAnswer = new List<Charge>();
+        DFS(StartKey, playerAnswer, new HashSet<Charge>());
+
+        Debug.Log("éå†é¡ºåº: " + string.Join(", ", playerAnswer.Select(c => c.Value)));
+
+        if (playerAnswer.Count != Answear.Count)
+            return false;
+
+        for (int i = 0; i < playerAnswer.Count; i++)
+        {
+            if (playerAnswer[i].Value != Answear[i])
+                return false;
+        }
+
+        return true;
+    }
+/*
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="matchingCharge">å½“å‰æ­£åœ¨åŒ¹é…çš„åŸºå›¢</param>
+    /// <param name="answerIndex">å½“å‰åŒ¹é…çš„åŸºå›¢ç¼–å·åœ¨Answearä¸­çš„ç´¢å¼•</param>
+    /// <param name="visited">åœ¨ä¸€æ¬¡é€’å½’ä¸­å·²ç»èµ°è¿‡çš„åŸºå›¢é›†åˆ</param>
+    /// <returns></returns>
+    private bool MatchDFSRecursive(Charge current, int answerIndex, HashSet<Charge> visited, List<int> path)
+    {
+        if (current == null || answerIndex >= Answear.Count)
+        {
+            path.Add(current != null ? current.Value : -1); // åŠ ä¸Šå¼‚å¸¸èŠ‚ç‚¹
+            Debug.Log("âŒ éå†å¤±è´¥ï¼ˆæ— æ•ˆèŠ‚ç‚¹æˆ–è¶…å‡ºèŒƒå›´ï¼‰ï¼Œè·¯å¾„: " + string.Join(", ", path));
+            path.RemoveAt(path.Count - 1);
+            return false;
+        }
+
+        if (current.Value != Answear[answerIndex])
+        {
+            path.Add(current.Value);
+            Debug.Log("âŒ å€¼ä¸åŒ¹é…ï¼Œè·¯å¾„: " + string.Join(", ", path));
+            path.RemoveAt(path.Count - 1);
+            return false;
+        }
+
+        visited.Add(current);
+        path.Add(current.Value);
+
+        if (answerIndex == Answear.Count - 1)
+        {
+            Debug.Log("âœ… åŒ¹é…æˆåŠŸï¼éå†é¡ºåº: " + string.Join(", ", path));
+            return true;
+        }
+
+        foreach (Charge neighbor in current.neighbour)//ä»Chargeçš„é‚»å±…é‡ŒæŒ¨ç€éå†
+        {
+            if (!visited.Contains(neighbor) && neighbor.Value == Answear[answerIndex + 1])
+            {
+                if (MatchDFSRecursive(neighbor, answerIndex + 1, visited, path))
+                    return true;
+            }
+        }
+
+
+        // å›æº¯
+        visited.Remove(current);
+        path.RemoveAt(path.Count - 1);
+        Debug.Log("âŒ è·¯å¾„å›é€€ï¼Œå½“å‰è·¯å¾„: " + string.Join(", ", path));
+        return false;
+    }
+
+    */
+
+    #endregion
+    public int starNumJudge()//åˆ¤æ–­å½“å‰æ˜¯å‡ æ˜Ÿé€šå…³
+    {
+        Debug.Log("é€šå…³ç¬¬"+SaveManager.CurrentLevel+"å…³");
+        if (touched.Step<=ThreeStarStep)
         {
             //LevelUIManager.levelUIInst.VectorySettlement(2);
             return 3;
@@ -170,5 +270,6 @@ public class LevelManager
             return 1;
             //LevelUIManager.levelUIInst.VectorySettlement(0);
         }
+        
     }
 }

@@ -1,0 +1,47 @@
+{
+  "name": "Level_5_Intro",
+  "dialogueLines": [
+    {
+      "speaker": "布伦希尔德",
+      "text": "本次实验的目标是模拟乙烯-醋酸乙烯聚合过程。",
+      "portrait": "Brunhilde_Smile",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "你将发现，参与聚合的基团数量更多，空间排布也更加复杂。",
+      "portrait": "Brunhilde_Thinking",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "在这种布局下，单纯依靠电场的直接控制，已难以达成最优聚合。",
+      "portrait": "Brunhilde_Side",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "你需要尝试先行推动某些基团换位，为后续聚合创造空间。",
+      "portrait": "Brunhilde_Explain",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "越复杂的结构，越需要精准的发射角度与时机调控。",
+      "portrait": "Brunhilde_Gesture",
+      "fadePortrait": false
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "操作次数依然会影响评分——实验室的能元资源依然需要高效利用。",
+      "portrait": "Brunhilde_Confident",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "你可以选择以稳妥方式完成实验，也可以不断挑战自己，寻找更精妙的解法。",
+      "portrait": "Brunhilde_Smile",
+      "fadePortrait": true
+    }
+  ]
+}

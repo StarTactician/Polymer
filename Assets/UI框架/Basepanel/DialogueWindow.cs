@@ -17,6 +17,8 @@ public class DialogueWindow : BasePanel
     private Button skipButton;
     private Coroutine typingCoroutine;
     private string currentFullText = "";
+    private string currentDialogueName;
+    private bool isTyping = false;
 
     public DialogueWindow() : base(uitype) { }
 
@@ -26,14 +28,29 @@ public class DialogueWindow : BasePanel
         nameText = UIFunction.Inst.GetCompoentInObjsChild<TextMeshProUGUI>(PanelObj, "NameText");
         dialogueText = UIFunction.Inst.GetCompoentInObjsChild<TextMeshProUGUI>(PanelObj, "DialogueText");
         portraitImage = UIFunction.Inst.GetCompoentInObjsChild<Image>(PanelObj, "Portrait");
-        continueButton = UIFunction.Inst.GetCompoentInObjsChild<Button>(PanelObj, "ContinueButton");
-        skipButton = UIFunction.Inst.GetCompoentInObjsChild<Button>(PanelObj, "SkipButton");
+        continueButton = UIFunction.Inst.GetCompoentInObjsChild<Button>(PanelObj, "Continue");
+        skipButton = UIFunction.Inst.GetCompoentInObjsChild<Button>(PanelObj, "Skip");
 
         if (continueButton != null)
             continueButton.onClick.AddListener(OnContinueClicked);
 
         if (skipButton != null)
-            skipButton.onClick.AddListener(() => UIManager.GetInst().PopWindow(this, true));
+            skipButton.onClick.AddListener(() =>
+            {
+                if (isTyping)
+                {
+                    UIFunction.Inst.StopCoroutine(typingCoroutine);
+                    dialogueText.text = currentFullText;
+                    typingCoroutine = null;
+                    isTyping = false;
+                }
+                else
+                {
+                    UIManager.GetInst().PopWindow(this, true);
+                }
+            });
+        UIManager.Pause(true);
+
     }
 
     public override void OnEnable()
@@ -45,15 +62,24 @@ public class DialogueWindow : BasePanel
     public override void OnDisable()
     {
         base.OnDisable();
-        UIFunction.Inst.StartFade(0.2f, this, false);
+        DialogueManager.GetInst().OnDialogueFinished(currentDialogueName);
+        UIManager.Pause(false);
     }
 
-    public void LoadDialogue(string dialogueID)
+    public override void OnDestroy()
+    {       
+        base.OnDestroy();
+        DialogueManager.GetInst().OnDialogueFinished(currentDialogueName);
+        UIManager.Pause(false);
+    }
+
+    public void LoadDialogue(string dialogueName)
     {
-        TextAsset jsonFile = Resources.Load<TextAsset>("Dialogues/" + dialogueID);
+        currentDialogueName = dialogueName;
+        TextAsset jsonFile = Resources.Load<TextAsset>("Dialogues/" + dialogueName);
         if (jsonFile == null)
         {
-            Debug.LogError("未找到对话文件: " + dialogueID);
+            Debug.LogError("未找到对话文件: " + dialogueName);
             return;
         }
 
@@ -70,16 +96,15 @@ public class DialogueWindow : BasePanel
 
     private void OnContinueClicked()
     {
-        // 如果正在打字，先跳过打字，直接显示整句
-        if (typingCoroutine != null)
+        if (isTyping)
         {
             UIFunction.Inst.StopCoroutine(typingCoroutine);
             dialogueText.text = currentFullText;
             typingCoroutine = null;
+            isTyping = false;
             return;
         }
 
-        // 否则进入下一句
         DisplayNextSentence();
     }
 
@@ -97,7 +122,7 @@ public class DialogueWindow : BasePanel
 
         if (!string.IsNullOrEmpty(currentLine.portrait))
         {
-            Sprite portraitSprite = Resources.Load<Sprite>("IMG/Character/" + currentLine.portrait);
+            Sprite portraitSprite = Resources.Load<Sprite>("IMG/People/" + currentLine.portrait);
             if (portraitSprite != null)
             {
                 portraitImage.sprite = portraitSprite;
@@ -106,11 +131,15 @@ public class DialogueWindow : BasePanel
             }
         }
 
-        // 使用打字机效果显示文本
         if (typingCoroutine != null)
             UIFunction.Inst.StopCoroutine(typingCoroutine);
 
-        typingCoroutine = UIFunction.Inst.StartTypewriter(dialogueText, currentFullText, 0.03f, UIFunction.Inst);
+        isTyping = true;
+        typingCoroutine = UIFunction.Inst.StartTypewriter(dialogueText, currentFullText, 0.03f, UIFunction.Inst, () =>
+        {
+            typingCoroutine = null;
+            isTyping = false;
+        });
     }
 }
 

@@ -1,16 +1,16 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class UIManager
 {
     /// <summary>
-    /// ½«BasePanelºÍËûÃÇ¶ÔÓ¦µÄ¾ßÌåÓÎÏ·ÎïÌåÒ»Ò»¶ÔÓ¦ÆğÀ´µÄ¹Ø¼ü
+    /// å°†BasePanelå’Œä»–ä»¬å¯¹åº”çš„å…·ä½“æ¸¸æˆç‰©ä½“ä¸€ä¸€å¯¹åº”èµ·æ¥çš„å…³é”®
     /// </summary>
     public Dictionary<string, GameObject> UI_Dict;
-    public Dictionary<string, BasePanel> Windows_Dict; // ÓÃÓÚ´æ´¢¿ÉÒÔ¸²¸ÇÔÚÆäËûÃæ°åÖ®ÉÏµÄ´°¿Ú
+    public Dictionary<string, BasePanel> Windows_Dict; // ç”¨äºå­˜å‚¨å¯ä»¥è¦†ç›–åœ¨å…¶ä»–é¢æ¿ä¹‹ä¸Šçš„çª—å£
     /// <summary>
-    /// µ±Ç°³¡¾°µÄUIÕ»£¬Ö»ÓÃÕ»¶¥µÄUIÔªËØ»á±»ÏÔÊ¾,window½«²»»á¼ÓÈëÆäÖĞ
+    /// å½“å‰åœºæ™¯çš„UIæ ˆï¼Œåªç”¨æ ˆé¡¶çš„UIå…ƒç´ ä¼šè¢«æ˜¾ç¤º,windowå°†ä¸ä¼šåŠ å…¥å…¶ä¸­
     /// </summary>
     public Stack<BasePanel> UI_Stack;   
     public GameObject CurrentSceneCanvas;
@@ -21,7 +21,7 @@ public class UIManager
     {
         if (Inst == null)
         {
-            Debug.LogError("Î´ÕÒµ½UIManagerÊµÀı");
+            Debug.LogError("æœªæ‰¾åˆ°UIManagerå®ä¾‹");
             return Inst;
         }
         return Inst;
@@ -32,6 +32,7 @@ public class UIManager
         UI_Stack = new Stack<BasePanel>();
         UI_Dict = new Dictionary<string, GameObject>();
         Windows_Dict = new Dictionary<string, BasePanel>();
+        //Pause(false);
     }
     public static void Pause(bool pause)
     {
@@ -39,9 +40,9 @@ public class UIManager
         Time.timeScale = pause ? 0f : 1f;
     }
     /// <summary>
-    /// ÔÚĞèÒªÊµÀı»¯¶ÔÓ¦ĞÅÏ¢µÄUIÃæ°åÊ±±»µ÷ÓÃ
+    /// åœ¨éœ€è¦å®ä¾‹åŒ–å¯¹åº”ä¿¡æ¯çš„UIé¢æ¿æ—¶è¢«è°ƒç”¨
     /// </summary>
-    /// <param name="ui_info">´«µİUI½çÃæµÄÃû×ÖÓë´æ´¢Â·¾¶µÄ½Å±¾</param>
+    /// <param name="ui_info">ä¼ é€’UIç•Œé¢çš„åå­—ä¸å­˜å‚¨è·¯å¾„çš„è„šæœ¬</param>
     /// <returns></returns>
     private GameObject InstantiateUIObject(UIType ui_info,bool isWindow = false)//
     {
@@ -52,8 +53,8 @@ public class UIManager
                 return UI_Dict[ui_info.Name];
             }
             if (CurrentSceneCanvas == null)
-                CurrentSceneCanvas = UIFunction.Inst.FindCanvas();
-            //¸ù¾İUITypeµÄĞÅÏ¢ÊµÀı»¯¶ÔÓ¦µÄPanel.gameobject
+                CurrentSceneCanvas = UIFunction.Inst.FindCanvas("UIScreen");
+            //æ ¹æ®UITypeçš„ä¿¡æ¯å®ä¾‹åŒ–å¯¹åº”çš„Panel.gameobject
             GameObject TheUI = GameObject.Instantiate<GameObject>(Resources.Load<GameObject>(ui_info.Path), CurrentSceneCanvas.transform);
             return TheUI;
         }
@@ -63,71 +64,75 @@ public class UIManager
             return TheWindow;
         }
     }
+    
     /// <summary>
-    /// ĞèÒªÏÔÊ¾Ä³¸öUI½çÃæÊ±µ÷ÓÃ
+    /// éœ€è¦æ˜¾ç¤ºæŸä¸ªUIç•Œé¢æ—¶è°ƒç”¨
     /// </summary>
     /// <param name="basePanel"></param>
-    /// <param name="isWindow">ÊÇ²»ÊÇ´°¿Ú</param>
+    /// <param name="isWindow">æ˜¯ä¸æ˜¯çª—å£</param>
     public void Push(BasePanel basePanel, bool isWindow = false)
     {
-        if (isWindow)// Èç¹ûÊÇ¸²¸ÇÃæ°å£¬Ö±½ÓÌí¼Óµ½WindouwsÁĞ±íÖĞ²¢ÏÔÊ¾
-        {   //¸üĞÂ¼ÇÂ¼£º°ÑbasePanel.uiType.Name»»³É basePanel.WindowObject.name·ÀÖ¹Í¬½Å±¾×²³µ
-            if (basePanel.PanelObj==null )//Èç¹ûÕâ¸öÓÎÏ·ÎïÌåµÄÃû×Ö£¨²»ÊÇbasePanelµÄÃû×Ö£©²»ÔÚÕâ¸ö×ÖµäÀï£©ÔòÊÇÊ×´ÎÍÆÈëÕâ¸ö´°¿Ú£¬Ö±½ÓÊµÀı»¯Õâ¸ö´°¿Ú
+        if (isWindow)// å¦‚æœæ˜¯è¦†ç›–é¢æ¿ï¼Œç›´æ¥æ·»åŠ åˆ°Windouwsåˆ—è¡¨ä¸­å¹¶æ˜¾ç¤º
+        {   //æ›´æ–°è®°å½•ï¼šæŠŠbasePanel.uiType.Nameæ¢æˆ basePanel.WindowObject.nameé˜²æ­¢åŒè„šæœ¬æ’è½¦
+            if (basePanel.PanelObj==null)//å¦‚æœè¿™ä¸ªæ¸¸æˆç‰©ä½“çš„åå­—ï¼ˆä¸æ˜¯basePanelçš„åå­—ï¼‰ä¸åœ¨è¿™ä¸ªå­—å…¸é‡Œï¼‰åˆ™æ˜¯é¦–æ¬¡æ¨å…¥è¿™ä¸ªçª—å£ï¼Œç›´æ¥å®ä¾‹åŒ–è¿™ä¸ªçª—å£
             {
                 //|| !Windows_Dict.ContainsKey(basePanel.PanelObj.name
                 GameObject ui_Obj = InstantiateUIObject(basePanel.uiType,true);
-                basePanel.PanelObj = ui_Obj;//½«´°¿Ú½Å±¾Óë´°¿ÚÓÎÏ·ÎïÌå°ó¶¨
+                basePanel.PanelObj = ui_Obj;//å°†çª—å£è„šæœ¬ä¸çª—å£æ¸¸æˆç‰©ä½“ç»‘å®š
                 //UI_Dict.Add(basePanel.WindowObject.name, ui_Obj);
-                Windows_Dict.Add(basePanel.PanelObj.name, basePanel);
+                //if (!Windows_Dict.ContainsKey(basePanel.PanelObj.name))
+                    Windows_Dict.Add(basePanel.PanelObj.name, basePanel);
                 basePanel.OnStart();
             }
-            else//²»ÊÇÊ×´ÎÍÆÈë£¬ÔòÖ±½ÓÆôÓÃÒÑ¾­¼ÓÈëÁËµÄ´°¿Ú
+            else//ä¸æ˜¯é¦–æ¬¡æ¨å…¥ï¼Œåˆ™ç›´æ¥å¯ç”¨å·²ç»åŠ å…¥äº†çš„çª—å£
             {
                 //basePanel.PanelObj = Windows_Dict[basePanel.PanelObj.name].PanelObj;
                 basePanel.PanelObj.SetActive(true);
-                basePanel.PanelObj.transform.SetAsLastSibling(); // ½«´°¿ÚÒÆ¶¯µ½²ã¼¶×î¶¥¶Ë
+                basePanel.PanelObj.transform.SetAsLastSibling(); // å°†çª—å£ç§»åŠ¨åˆ°å±‚çº§æœ€é¡¶ç«¯
                 basePanel.OnEnable();
             }
             
         }
         else
         {
-            if (UI_Stack.Count > 0)//²»Ö¹Ò»¸ö¾Í½ûÓÃµôÉÏÒ»¸ö
+            if (UI_Stack.Count > 0)//ä¸æ­¢ä¸€ä¸ªå°±ç¦ç”¨æ‰ä¸Šä¸€ä¸ª
             {
                 UI_Stack.Peek().OnDisable();
                 UI_Dict[UI_Stack.Peek().uiType.Name].SetActive(false);
             }
-            // Èç¹û×ÖµäÖĞÃ»ÓĞ¸ÃÃæ°å£¬Ôò´´½¨Ò»¸öĞÂµÄÊµÀı
+            // å¦‚æœå­—å…¸ä¸­æ²¡æœ‰è¯¥é¢æ¿ï¼Œåˆ™åˆ›å»ºä¸€ä¸ªæ–°çš„å®ä¾‹
             if (!UI_Dict.ContainsKey(basePanel.uiType.Name))
             {
                 GameObject ui_Obj = InstantiateUIObject(basePanel.uiType);
                 UI_Dict.Add(basePanel.uiType.Name, ui_Obj);
                 basePanel.PanelObj = ui_Obj;
-                basePanel.OnStart(); // ³õÊ¼»¯Ãæ°å
+                basePanel.OnStart(); // åˆå§‹åŒ–é¢æ¿
+                Debug.Log(basePanel + "å·²åˆå§‹åŒ–");
             }
             else
             {
-                // Èç¹ûÃæ°åÒÑ´æÔÚ£¬Ôò»ñÈ¡Ëü²¢ÆôÓÃ
+                // å¦‚æœé¢æ¿å·²å­˜åœ¨ï¼Œåˆ™è·å–å®ƒå¹¶å¯ç”¨
                 basePanel.PanelObj = UI_Dict[basePanel.uiType.Name];
-                basePanel.PanelObj.transform.SetAsLastSibling(); // ½«UIÒÆ¶¯µ½²ã¼¶×î¶¥¶Ë
-                //UI_Stack.Push(basePanel);//´ı²âÊÔ
+                basePanel.PanelObj.transform.SetAsLastSibling(); // å°†UIç§»åŠ¨åˆ°å±‚çº§æœ€é¡¶ç«¯
+                //UI_Stack.Push(basePanel);//å¾…æµ‹è¯•
                 basePanel.PanelObj.SetActive(true);
-                basePanel.OnEnable(); // ÆôÓÃÃæ°å
+                basePanel.OnEnable(); // å¯ç”¨é¢æ¿
+                Debug.Log(basePanel + "å·²è¢«é‡æ–°å¯ç”¨");
             }
-            // ½«Ãæ°åÍÆÈëÕ»ÖĞ
+            // å°†é¢æ¿æ¨å…¥æ ˆä¸­
             if (UI_Stack.Count == 0 || UI_Stack.Peek().uiType.Name != basePanel.uiType.Name)
             {
                 UI_Stack.Push(basePanel);
-                Debug.Log(basePanel+"ÒÑÈëÕ»£¡");
+                Debug.Log(basePanel+"å·²å…¥æ ˆï¼");
             }
             
         }
     }
     /// <summary>
-    /// Ò»¶ÎÊ±¼äºó»á×Ô¶¯ÏûÊ§µÄ´°¿Ú
+    /// ä¸€æ®µæ—¶é—´åä¼šè‡ªåŠ¨æ¶ˆå¤±çš„çª—å£
     /// </summary>
     /// <param name="basePanel"></param>
-    /// <param name="time">³öÏÖ¶à³¤Ê±¼äºóÏûÊ§£¬Ä¬ÈÏÊ±³¤1.2s</param>
+    /// <param name="time">å‡ºç°å¤šé•¿æ—¶é—´åæ¶ˆå¤±ï¼Œé»˜è®¤æ—¶é•¿1.2s</param>
     public void PushTips(BasePanel basePanel,float time=1.2f)
     {
         if (tipsWindowContainer == null)
@@ -137,11 +142,11 @@ public class UIManager
         basePanel.PanelObj = ui_Obj;
         basePanel.OnStart();
         ui_Obj.transform.SetParent(tipsWindowContainer.transform, false);
-        UIFunction.Inst.StartDelayMethod(basePanel.OnDestroy, time-0.4f);//Ö´ĞĞÍêĞ­³ÌĞèÒª0.3s
+        UIFunction.Inst.StartDelayMethod(basePanel.OnDestroy, time-0.4f);//æ‰§è¡Œå®Œåç¨‹éœ€è¦0.3s
         GameObject.Destroy(ui_Obj, time);        
     }
     /// <summary>
-    /// ÔÚÖ¸¶¨ÎïÌåµÄ×ÓÎïÌåÉÏÊµÀı»¯
+    /// åœ¨æŒ‡å®šç‰©ä½“çš„å­ç‰©ä½“ä¸Šå®ä¾‹åŒ–
     /// </summary>
     /// <param name="basePanel"></param>
     /// <param name="transform"></param>
@@ -153,14 +158,14 @@ public class UIManager
         return TheUI;
     }
     /// <summary>
-    /// ĞèÒª¹Ø±Õµ±Ç°UI½çÃæÊ±µ÷ÓÃ
+    /// éœ€è¦å…³é—­å½“å‰UIç•Œé¢æ—¶è°ƒç”¨
     /// </summary>
-    /// <param name="changeScene">ÊÇ·ñÇĞ»»³¡¾°£¬ÇĞ»»³¡¾°Ôò¹Ø±Õµ±Ç°³¡¾°µÄËùÓĞUI</param>
+    /// <param name="changeScene">æ˜¯å¦åˆ‡æ¢åœºæ™¯ï¼Œåˆ‡æ¢åœºæ™¯åˆ™å…³é—­å½“å‰åœºæ™¯çš„æ‰€æœ‰UI</param>
     public void Pop(bool changeScene)//
     {
         if (changeScene)
         {
-            // Ïú»Ùµ±Ç°³¡¾°µÄËùÓĞÃæ°å
+            // é”€æ¯å½“å‰åœºæ™¯çš„æ‰€æœ‰é¢æ¿
             while (UI_Stack.Count > 0)
             {
                 BasePanel topPanel = UI_Stack.Peek();
@@ -169,8 +174,9 @@ public class UIManager
                 GameObject.Destroy(UI_Dict[topPanel.uiType.Name]);
                 UI_Dict.Remove(topPanel.uiType.Name);
                 UI_Stack.Pop();
-                Debug.Log(topPanel + "ÒÑ³öÕ»£¡");
+                Debug.Log(topPanel + "å·²å‡ºæ ˆï¼");
             }
+            UI_Dict.Clear();
             PopAllWindow();
         }
         else
@@ -181,9 +187,9 @@ public class UIManager
                 topPanel.OnDisable();
                 UI_Dict[topPanel.uiType.Name].SetActive(false);
                 UI_Stack.Pop();
-                Debug.Log(topPanel + "ÒÑ³öÕ»£¡");
+                Debug.Log(topPanel + "å·²å‡ºæ ˆï¼");
             }
-            // ÆôÓÃÕ»ÖĞµÄÏÂÒ»¸öÃæ°å
+            // å¯ç”¨æ ˆä¸­çš„ä¸‹ä¸€ä¸ªé¢æ¿
             if (UI_Stack.Count > 0)
             {
                 BasePanel nextPanel = UI_Stack.Peek();
@@ -193,7 +199,7 @@ public class UIManager
         }
     }
     /// <summary>
-    /// µ¯³öÒ»´ÎĞÔµÄÃæ°å£¬¸´ÓÃĞÔµÍµÄ£¬ÈçµÃÇ®Óë»¨Ç®Ãæ°å
+    /// å¼¹å‡ºä¸€æ¬¡æ€§çš„é¢æ¿ï¼Œå¤ç”¨æ€§ä½çš„ï¼Œå¦‚å¾—é’±ä¸èŠ±é’±é¢æ¿
     /// </summary>
     public void PopOnceOnlyUsePanel()
     {
@@ -204,9 +210,9 @@ public class UIManager
             GameObject.Destroy(UI_Dict[topPanel.uiType.Name]);
             UI_Dict.Remove(topPanel.uiType.Name);
             UI_Stack.Pop();
-            Debug.Log(topPanel + "ÒÑ³öÕ»²¢±»Ïú»Ù£¡");
+            Debug.Log(topPanel + "å·²å‡ºæ ˆå¹¶è¢«é”€æ¯ï¼");
         }
-        // ÆôÓÃÕ»ÖĞµÄÏÂÒ»¸öÃæ°å
+        // å¯ç”¨æ ˆä¸­çš„ä¸‹ä¸€ä¸ªé¢æ¿
         if (UI_Stack.Count > 0)
         {
             BasePanel nextPanel = UI_Stack.Peek();
@@ -215,10 +221,10 @@ public class UIManager
         }
     }
     /// <summary>
-    /// ¹Ø±ÕÄ³¸ö´°¿ÚµÄÂß¼­
+    /// å…³é—­æŸä¸ªçª—å£çš„é€»è¾‘
     /// </summary>
-    /// <param name="Window">¾ßÌå´°¿Ú</param>
-    /// <param name="isOnceOnlyUse">Õâ¸ö´°¿ÚÊÇ²»ÊÇÒ»´ÎĞÔµÄ£¬±ÈÈçÏÔÊ¾ÌØµãÊıÖµµÄ£¬ÒÔ¼°¸´ÓÃĞÔºÜµÍµÄ</param>
+    /// <param name="Window">å…·ä½“çª—å£</param>
+    /// <param name="isOnceOnlyUse">è¿™ä¸ªçª—å£æ˜¯ä¸æ˜¯ä¸€æ¬¡æ€§çš„ï¼Œæ¯”å¦‚æ˜¾ç¤ºç‰¹ç‚¹æ•°å€¼çš„ï¼Œä»¥åŠå¤ç”¨æ€§å¾ˆä½çš„</param>
     public void PopWindow(BasePanel Window,bool isOnceOnlyUse)
     {
         if (Windows_Dict.ContainsKey(Window.PanelObj.name))
@@ -238,13 +244,13 @@ public class UIManager
             }
         }
         else
-            Debug.Log("Windows_ListÃ»ÓĞ°üº¬"+ Window);
+            Debug.Log("Windows_Listæ²¡æœ‰åŒ…å«"+ Window);
     }
     public void PopAllWindow()
     {
-        if (Windows_Dict.Count > 0) // Ïú»ÙËùÓĞ´°¿Ú
+        if (Windows_Dict.Count > 0) // é”€æ¯æ‰€æœ‰çª—å£
         {
-            List<BasePanel> windowsList = new List<BasePanel>(Windows_Dict.Values); // ¸´ÖÆ×ÖµäµÄÖµµ½List
+            List<BasePanel> windowsList = new List<BasePanel>(Windows_Dict.Values); // å¤åˆ¶å­—å…¸çš„å€¼åˆ°List
             foreach (BasePanel window in windowsList)
             {
                 PopWindow(window, true);

@@ -16,6 +16,8 @@ public class TechTreePanel : BasePanel
     private List<Button> techButtons;
     public Dictionary<int,GameObject> ButtonBadges_Dict = new Dictionary<int,GameObject>();//将按钮标号与New标识的物体一一对应
     ScrollRect scrollRect;
+    private List<Button> switchButtons;
+    public GameObject part1, part2, part3;
     public TechTreePanel() : base(uitype)
     {
 
@@ -42,6 +44,13 @@ public class TechTreePanel : BasePanel
         techButtons = UIFunction.Inst.GetComponentsInObjsChild<Button>(PanelObj, "Techs");
         scrollRect = UIFunction.Inst.GetCompoentInObjsChild<ScrollRect>(PanelObj, "Scroll");
         UIFunction.Inst.GetCompoentInObjsChild<Button>(PanelObj, "Back").onClick.AddListener(Back);
+
+        part1 = UIFunction.Inst.GetChild(PanelObj, "part1");
+        part2 = UIFunction.Inst.GetChild(PanelObj, "part2");
+        part3 = UIFunction.Inst.GetChild(PanelObj, "part3");
+        switchButtons = UIFunction.Inst.GetComponentsInObjsChild<Button>(PanelObj, "switchButtons");
+        InitSwitchButtons();
+
         foreach (Button button in techButtons)//根据按钮的名字来确定其展示的科技ID，并根据科技的解锁情况来判定是否出现指定科技图片
         {
             //先判断其名字对应的科技是否解锁           
@@ -64,6 +73,7 @@ public class TechTreePanel : BasePanel
                 }
                 else
                 {
+                    techImage.sprite = Resources.Load<Sprite>("IMG/LittleUI/NotFound");
                     Debug.LogWarning("未能找到与按钮名称匹配的图片: " + buttonName);
                 }
             }               
@@ -103,14 +113,17 @@ public class TechTreePanel : BasePanel
                 techWindow.IsLocked = false;
                 techWindow.TechName = selectedTech.TechName;
                 techWindow.TechDescription = selectedTech.TechCNName+":"+selectedTech.Description;
-                techWindow.TechSprite= Resources.Load<Sprite>(loadPath + buttonName);
+                Sprite sprite= Resources.Load<Sprite>(loadPath + buttonName);
+                if (sprite != null)
+                    techWindow.TechSprite = sprite;
+                else techWindow.TechSprite = Resources.Load<Sprite>("IMG/LittleUI/NotFound");
             }
             else
             {
                 techWindow.IsLocked = true;
-                techWindow.TechName = "???";
+                techWindow.TechName = "科技未解锁";
                 techWindow.TechDescription = selectedTech.UnlockWay;
-                techWindow.TechSprite = Resources.Load<Sprite>("IMG/LittleUI/TechLock");
+                techWindow.TechSprite = Resources.Load<Sprite>("IMG/LittleUI/NotFound");
             }
             Debug.Log(clickedButton.name);
             ScrollToButton(buttonName);
@@ -141,6 +154,36 @@ public class TechTreePanel : BasePanel
 
         // 启动平滑滚动协程
         UIFunction.Inst.StartSmoothScroll(contentRect, targetX);
+    }
+
+    void InitSwitchButtons()
+    {
+        // 添加监听器
+        for (int i = 0; i < switchButtons.Count; i++)
+        {
+            int index = i; // 闭包变量
+            switchButtons[i].onClick.AddListener(() => OnSwitchButtonClick(index));
+        }
+
+        int lastLevel = SaveManager.LastesLevel;
+
+        // 默认显示 part1（按钮0）
+        OnSwitchButtonClick(0);
+
+        Debug.Log("成功初始化关卡界面");
+    }
+
+    void OnSwitchButtonClick(int index)
+    {
+        Debug.Log("关卡界面切换成功");
+        for (int i = 0; i < switchButtons.Count; i++)
+        {
+            UIFunction.Inst.SetCanvasGroupVise(switchButtons[i].gameObject, i != index);
+        }
+
+        UIFunction.Inst.SetCanvasGroupVise(part1, index == 0);
+        UIFunction.Inst.SetCanvasGroupVise(part2, index == 1);
+        UIFunction.Inst.SetCanvasGroupVise(part3, index == 2);
     }
     void Back()
     {

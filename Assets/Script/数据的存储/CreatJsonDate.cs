@@ -20,11 +20,12 @@ public partial class SaveManager
             progress = PlayerProgress,  // ✅ 存储玩家进度
             playerName = PlayerName,  // ✅ 存储玩家名称
             finishedMissionNum = CurrentFinishedTaskNum,
-            taskDepartmentLevel = TaskDepartment,
+            //taskDepartmentLevel = TaskDepartment,
             RefreshChance = SaveRefresh,
             lastResetTime = LastChangeTime,
             musicVolume = AudioManager.Inst.MusicVolum,
-            effectVolume = AudioManager.Inst.EffectVolum
+            effectVolume = AudioManager.Inst.EffectVolum,
+            AutoDo = AutoDO
         };
 
         // 序列化为 JSON
@@ -55,39 +56,33 @@ public partial class SaveManager
             CurrentLevel = playerData.currentLevel;
             LastesLevel = playerData.farthestLevel;
             CurrentCoin = playerData.coin;
-            CurrentPU = playerData.PU;  // ✅ 读取 PU
-            PlayerProgress = playerData.progress;  // ✅ 读取玩家进度
-            PlayerName = playerData.playerName;  // ✅ 读取玩家名称
+            CurrentPU = playerData.PU;  
+            PlayerProgress = playerData.progress;  
+            PlayerName = playerData.playerName;  
             CurrentFinishedTaskNum = playerData.finishedMissionNum;
-            TaskDepartment = playerData.taskDepartmentLevel;
+            //TaskDepartment = playerData.taskDepartmentLevel;
             SaveRefresh = playerData.RefreshChance;
             LastChangeTime = playerData.lastResetTime;
+            TheSetMusicVolum = playerData.musicVolume;
+            TheSetEffectVolum = playerData.effectVolume;
+            AutoDO = playerData.AutoDo;
 
-            if (AudioManager.Inst != null)
-            {
-                AudioManager.Inst.MusicVolum = playerData.musicVolume;
-                AudioManager.Inst.EffectVolum = playerData.effectVolume;
-            }
-            else
-            {
-                Debug.Log("AudioManager未找到！");
-            }
 
             Debug.Log("玩家数据加载完成！");
-            return true;
+            return false;
         }
         else
         {
             Debug.LogWarning("玩家数据文件不存在，创建默认数据...");
             CurrentCoin = 2000; // 开局默认两千
-            CurrentPU = 50; // 开局默认 50 PU
+            CurrentPU = 100; // 开局默认 100 PU
             PlayerProgress = 0; // 开局默认进度为 0
             PlayerName = "基地指挥官"; // 默认玩家名称
             SaveRefresh = 2;
             TaskDepartment = 1;
 
             SavePlayerDate(); // 创建默认数据文件
-            return false;
+            return true;
         }
     }
 

@@ -1,156 +1,226 @@
 {
     "tasks": [
         {
-            "id": "T001",
-            "type": "材料研发",
-            "description": "研究新型聚合物材料，提高基础产量。",
-            "cost": 1000,
-            "level": 1,
-            "duration": 1800,
-            "newTech": "SuperCH2",
-            "rarity": { "key": "Common" },
-            "conditions": [
-                { "key": "unlockCH2Material", "value": true }
-            ]
-        },
+  "id": "T001",
+  "type": "订单接取",
+  "description": "与民用空间站完成一项小批量材料交易，为月球基地带来小笔能元收入。",
+  "cost": 0,
+  "level": 1,
+  "duration": 10800,
+  "rewardCoin": 3000,
+  "newBuliding": "",
+  "newTech": "",
+  "rarity": { "key": "Common" },
+  "conditions": []
+},
         {
-            "id": "T002",
-            "type": "基地升级",
-            "description": "扩建基地，增加资源存储容量。",
-            "cost": 2000,
-            "level": 2,
-            "duration": 3600,
-            "newBuliding": "CoreBase",
-            "rarity": { "key": "Rare" },
-            "conditions": [
-                { "key": "coinMoreThan8000", "value": true }
-            ]
-        },
+  "id": "T002",
+  "type": "物资采购",
+  "description": "向地球的航天公司采购月球上难以合成的关键材料，为后续研究做准备。",
+  "cost": 5000,
+  "level": 1,
+  "duration": 21600,
+  "rewardPU": 50,
+  "rarity": { "key": "Rare" },
+  "conditions": []
+},
+       {
+  "id": "T003",
+  "type": "订单接取",
+  "description": "与民用空间站进行小批量工程塑料交易，为基地再添一笔不小的收入。",
+  "cost": 0,
+  "level": 1,
+  "duration": 14400,
+  "rewardCoin": 6000,
+  "rarity": { "key": "Common" },
+  "conditions": [
+    { "key": "Progress2", "canNotShowOut": false }
+  ]
+},
         {
-            "id": "T003",
-            "type": "订单接取",
-            "description": "接受外界的材料订单，获取急需资金。",
-            "cost": 0,
-            "level": 1,
-            "duration": 2400,
-            "rewardCoin": 2500,
-            "rarity": { "key": "Common" },
-            "conditions": []
-        },
+  "id": "T004",
+  "type": "订单接取",
+  "description": "为民用空间站上的科研机构提供一批特种塑料，交易额虽小，但极具战略意义。",
+  "cost": 0,
+  "level": 1,
+  "duration": 18000,
+  "rewardCoin": 9000,
+  "rarity": { "key": "Common" },
+  "conditions": [
+    { "key": "Progress3", "canNotShowOut": false }
+  ]
+},
         {
-            "id": "T004",
-            "type": "基地升级",
-            "description": "建造CH2工厂，开始批量生成CH2。",
-            "cost": 4000,
-            "level": 3,
-            "duration": 5400,
-            "newBuliding": "CH2Factory",
-            "rarity": { "key": "VeryRare" },
-            "conditions": [
-                { "key": "unlockCH2Material", "value": true }
-            ]
-        },
+  "id": "T005",
+  "type": "订单接取",
+  "description": "完成一笔大宗塑料出口订单，标志着月球基地初步具备产业化能力。",
+  "cost": 0,
+  "level": 2,
+  "duration": 43200,
+  "rewardCoin": 15000,
+  "rarity": { "key": "Rare" },
+  "conditions": [
+    { "key": "hasBuiltFactory", "canNotShowOut": false }
+  ]
+},
         {
-            "id": "T005",
-            "type": "材料研发",
-            "description": "开发新科技，减少材料消耗。",
-            "cost": 5000,
-            "level": 4,
-            "duration": 7200,
-            "newTech": "SuperCH2",
-            "rarity": { "key": "SuperRare" },
-            "conditions": [
-                { "key": "unlockCH2Material", "value": true }
-            ]
-        },
+  "id": "T006",
+  "type": "订单接取",
+  "description": "接到大量来自地球的工程塑料订单，完成后将极大提升基地经济能力。",
+  "cost": 0,
+  "level": 3,
+  "duration": 43200,
+  "rewardCoin": 20000,
+  "rarity": { "key": "VeryRare" },
+  "conditions": [
+    { "key": "hasBuiltFactory", "canNotShowOut": false },
+    { "key": "Progress2", "canNotShowOut": false }
+  ]
+},
+       {
+  "id": "T007",
+  "type": "订单接取",
+  "description": "与地球大型科研机构达成特种塑料交易，为基地提供大量的能元储备。",
+  "cost": 0,
+  "level": 3,
+  "duration": 28800,
+  "rewardCoin": 16000,
+  "rarity": { "key": "SuperRare" },
+  "conditions": [
+    { "key": "hasBuiltFactory", "canNotShowOut": false },
+    { "key": "Progress3", "canNotShowOut": false }
+  ]
+},
         {
-            "id": "T006",
-            "type": "基地升级",
-            "description": "扩建能源供应建筑，确保能量供应充足。",
-            "cost": 1500,
-            "level": 2,
-            "duration": 3000,
-            "newBuliding": "EnergyCore",
-            "rarity": { "key": "Rare" },
-            "conditions": [
-                { "key": "hasCoreBase", "value": true }
-            ]
-        },
+  "id": "T008",
+  "type": "物资采购",
+  "description": "向地球的大型航天公司采购一大批难以合成的稀缺材料，为高阶聚合物研究做好准备。",
+  "cost": 10000,
+  "level": 2,
+  "duration": 43200,
+  "rewardPU": 120,
+  "rarity": { "key": "VeryRare" },
+  "conditions": [
+    { "key": "Progress2", "canNotShowOut": false }
+  ]
+},
+
+{
+  "id": "T009",
+  "type": "基地升级",
+  "description": "升级飞船降落场及其塔台系统，提升月球基地的航天调度能力。",
+  "cost": 50000,
+  "level": 3,
+  "duration": 43200,
+  "rewardCoin": 10000,
+  "newBuliding": "LandingPad_Level2",
+  "rarity": { "key": "VeryRare" },
+  "conditions": [
+    { "key": "Progress2", "canNotShowOut": false },
+    { "key": "LandingPadLevel1", "canNotShowOut": false }
+  ]
+},
         {
-            "id": "T007",
-            "type": "工厂革新",
-            "description": "升级现有工厂，进一步提高效率。",
-            "cost": 4000,
-            "level": 3,
-            "duration": 6000,
-            "newBuliding": "UpgradeCH2Factory",
-            "rarity": { "key": "VeryRare" },
-            "conditions": [
-                { "key": "hasBuiltCH2Factory", "value": true }
-            ]
-        },
-        {
-            "id": "T008",
-            "type": "材料研发",
-            "description": "深入研究高等级材料，探索新性能。",
-            "cost": 6000,
-            "level": 5,
-            "duration": 10800,
-            "newTech": "SuperMaterial",
-            "rarity": { "key": "SuperRare" },
-            "conditions": [
-                { "key": "unlockCH2Material", "value": true }
-            ]
-        },
-        {
-            "id": "T009",
-            "type": "订单接取",
-            "description": "与空间居住站进行资源交易，获取急需资金。",
-            "cost": 0,
-            "level": 2,
-            "duration": 6000,
-            "rewardCoin": 6400,
-            "rarity": { "key": "Rare" },
-            "conditions": [
-                { "key": "unlockCH2Material", "value": true }
-            ]
-        },
-        {
-            "id": "T010",
-            "type": "工厂革新",
-            "description": "升级基础设施，提高整体生产效率。",
-            "cost": 5000,
-            "level": 2,
-            "duration": 4800,
-            "newTech": "BaseMentLevel2",
-            "rarity": { "key": "Rare" },
-            "conditions": []
-        },
-        {
-            "id": "T011",
-            "type": "材料研发",
-            "description": "研究应急响应材料，以应对突发事件。",
-            "cost": 4000,
-            "level": 3,
-            "duration": 2700,
-            "newTech": "TestTech",
-            "rarity": { "key": "VeryRare" },
-            "conditions": [
-                { "key": "unlockCH2Material", "value": true }
-            ]
-        },
-        {
-            "id": "T012",
-            "type": "基地升级",
-            "description": "探索新建造技术，扩展基地。",
-            "cost": 6500,
-            "level": 3,
-            "duration": 5400,
-            "newBuliding": "TestBuliding",
-            "rarity": { "key": "Rare" },
-            "conditions": [
-                { "key": "testconditions", "value": true }
-            ]
-        }
+  "id": "T010",
+  "type": "基地升级",
+  "description": "升级生活舱以提升居住容量与储能能力，为长期驻留做好准备。",
+  "cost": 10000,
+  "level": 2,
+  "duration": 28800,
+  "rewardPU": 50,
+  "newBuliding": "LivingStation_Level2",
+  "rarity": { "key": "Rare" },
+  "conditions": [
+    { "key": "Progress2", "canNotShowOut": false },
+    { "key": "LivingStationLevel1", "canNotShowOut": false }
+  ]
+},
+{
+  "id": "T011",
+  "type": "基地升级",
+  "description": "升级科研中心，强化结构并新增可在地球与月球的环境飞行的载人平台，为特殊材料研究与高价值任务刷新提供支持。",
+  "cost": 25000,
+  "level": 2,
+  "duration": 28800,
+  "newBuliding": "ResearchCenter_Level2",
+  "rarity": { "key": "Rare" },
+  "conditions": [
+    { "key": "Progress2", "canNotShowOut": false },
+    { "key": "ResearchCenterLevel1", "canNotShowOut": false }
+  ]
+},
+       {
+  "id": "T012",
+  "type": "基地升级",
+  "description": "从1950年代的染料光电装置起步，历经异质结与体异质结结构革新，有机电池终于实现了在太空中的大规模部署。但该装置建成后需投入有机质PU才能运行。",
+  "cost": 10000,
+  "level": 2,
+  "duration": 21600,
+  "rewardPU": -20,
+  "rarity": { "key": "Rare" },
+  "conditions": [
+    { "key": "Progress2", "canNotShowOut": false },
+    { "key": "SolarPanelLevel1", "canNotShowOut": false }
+  ]
+},
+{
+  "id": "T013",
+  "type": "基地建设",
+  "description": "建成一系列深埋月壤的机械装置，包括钻头、挖掘臂与传送装置，开采珍稀的氦-3与神秘的有机碳链矿，为基地源源不断提供PU。",
+  "cost": 35000,
+  "level": 3,
+  "duration": 43200,
+  "newBuliding": "LunarMiningBase",
+  "rarity": { "key": "VeryRare" },
+  "conditions": [
+    { "key": "Progress2", "canNotShowOut": false },
+    { "key": "notHasBuiltMiningBase", "canNotShowOut": false }
+  ]
+},
+{
+  "id": "T014",
+  "type": "基地建设",
+  "description": "建成首座月球工厂，将工业体系首次延伸至地球之外。这不仅是技术的跨越，更是人类文明迈出星际自立的第一步。",
+  "cost": 40000,
+  "level": 3,
+  "duration": 43200,
+  "newBuliding": "LunarFactory_Level1",
+  "rarity": { "key": "VeryRare" },
+  "conditions": [
+    { "key": "Progress2", "canNotShowOut": false },
+    { "key": "hasBuiltMiningBase", "canNotShowOut": false },
+    { "key": "notHasBuiltFactory", "canNotShowOut": false }
+  ]
+},
+{
+  "id": "T015",
+  "type": "基地建设",
+  "description": "建造天穹生态园，从单纯求生迈向宜居家园。透明天穹下，植物恒温生长，象征人类在月面上真正扎根。",
+  "cost": 15000,
+  "level": 4,
+  "duration": 28800,
+  "rewardPU": 50,
+  "newBuliding": "LunarBiosphere",
+  "rarity": { "key": "SuperRare" },
+  "conditions": [
+    { "key": "Progress3", "canNotShowOut": false },
+    { "key": "notUnlockBiosphere", "canNotShowOut": false }
+  ]
+},
+{
+  "id": "T016",
+  "type": "材料研发",
+  "description": "探索在低重力与零重力环境下制备碳纤维复合材料的可能性，为新一代轻质结构铺平道路。",
+  "cost": 20000,
+  "level": 3,
+  "duration": 21600,
+  "newTech": "CarbonFiberComposite",
+  "rarity": { "key": "VeryRare" },
+  "conditions": [
+    { "key": "Progress3", "canNotShowOut": false },
+    { "key": "notUnlockCarbonFiberComposite", "canNotShowOut": false }
+  ]
+}
+
     ]
 }

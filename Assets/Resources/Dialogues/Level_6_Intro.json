@@ -1,0 +1,47 @@
+{
+  "name": "Level_6_Intro",
+  "dialogueLines": [
+    {
+      "speaker": "布伦希尔德",
+      "text": "在本次实验中，我们将挑战更复杂的结构聚合——聚对苯二甲酸乙二醇酯。",
+      "portrait": "Brunhilde_Smile",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "你将操作多达七个独立基团，在空间有限的实验区中完成聚合。",
+      "portrait": "Brunhilde_Info",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "本阶段新增了电场极性的控制，你可以在正负极之间切换，以适应更复杂的引导需求。",
+      "portrait": "Brunhilde_Explain",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "有时候，一次逆向释放，反而能帮助你在更短的步数内完成整个路径。",
+      "portrait": "Brunhilde_Gesture",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "此外，你将首次接触对苯结构的高精度聚合要求。",
+      "portrait": "Brunhilde_Side",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "这类结构只能接受“对位”聚合——若连接发生在邻位或间位，将视为不符合实验标准。",
+      "portrait": "Brunhilde_Confident",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "请调整角度、节奏与顺序，既保证轨迹精准，也遵循化学结构的逻辑。",
+      "portrait": "Brunhilde_Smile",
+      "fadePortrait": true
+    }
+  ]
+}

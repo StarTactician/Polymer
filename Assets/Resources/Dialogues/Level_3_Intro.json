@@ -1,0 +1,47 @@
+{
+  "name": "Level_3_Intro",
+  "dialogueLines": [
+    {
+      "speaker": "布伦希尔德",
+      "text": "接下来的实验涉及聚氯乙烯的聚合模拟。",
+      "portrait": "Brunhilde_Smile",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "你将注意到，实验环境中出现了一些不易清除的杂质结构。",
+      "portrait": "Brunhilde_Explain",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "不过幸运的是它们不参与高分子基团反应，但也不会被轻易移除。",
+      "portrait": "Brunhilde_Info",
+      "fadePortrait": false
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "这些杂质具有物理存在感，会阻挡粒子的路径，但因其体积巨大，即便发生碰撞也不会位移。",
+      "portrait": "Brunhilde_Side",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "请利用好微观粒子的反弹行为，尝试从角度与时机中寻找最优路径。",
+      "portrait": "Brunhilde_Gesture",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "需要提醒的是，每一次电场释放都意味着一次实验资源的调配。",
+      "portrait": "Brunhilde_Explain",
+      "fadePortrait": false
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "请尽量减少操作次数，以提升实验效率，并节约实验室的能元储备。",
+      "portrait": "Brunhilde_Confident",
+      "fadePortrait": true
+    }
+  ]
+}

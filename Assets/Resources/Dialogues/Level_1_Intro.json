@@ -1,0 +1,65 @@
+{
+  "name": "Level_1_Intro",
+  "dialogueLines": [
+    {
+      "speaker": "布伦希尔德",
+      "text": "欢迎来到第一项实验任务，管理员。",
+      "portrait": "Brunhilde_Smile",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "你需要通过操控电场，引导带电基团在低重力环境下完成聚合。",
+      "portrait": "Brunhilde_Explain",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "每种基团受力方式不同，请善用正负电场的排斥与吸引特性。",
+      "portrait": "Brunhilde_Side",
+      "fadePortrait": false
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "本次实验的目标是以尽可能少的步数完成聚合操作。",
+      "portrait": "Brunhilde_Info",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "实验结束后将根据你的操作步数进行评分，共分为一至三星。",
+      "portrait": "Brunhilde_Confident",
+      "fadePortrait": false
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "星级越高，获得的资源奖励也越丰富。",
+      "portrait": "Brunhilde_Gesture",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "左上角的 HELP 图标可以随时查看当前需要合成的分子结构图。",
+      "portrait": "Brunhilde_Side",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "你所控制的红色圆圈表示正在释放的正电电场区域。",
+      "portrait": "Brunhilde_Explain",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "将圆圈靠近某个基团时，可以预览该基团被电场激发后可能的运动轨迹。",
+      "portrait": "Brunhilde_Smile",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "请尽情探索，用最优的方式完成你的第一次实验。",
+      "portrait": "Brunhilde_Smile",
+      "fadePortrait": true
+    }
+  ]
+}

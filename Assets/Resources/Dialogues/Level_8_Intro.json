@@ -1,0 +1,41 @@
+{
+  "name": "Level_8_Intro",
+  "dialogueLines": [
+    {
+      "speaker": "布伦希尔德",
+      "text": "本次实验的目标，是模拟己内酰胺的环状闭合结构。",
+      "portrait": "Brunhilde_Smile",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "当前结构已接近完成，你需要完成环上最后一段的闭合操作，以模拟聚酰胺的生成过程。",
+      "portrait": "Brunhilde_Explain",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "你将操控一个带负电的小型碳氧基团，它结构轻巧，对路径扰动高度敏感。",
+      "portrait": "Brunhilde_Info",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "部分障碍物附近存在微弱吸引力，会轻微影响轨迹偏移，请尝试利用这些变化，引导基团抵达理想位置。",
+      "portrait": "Brunhilde_Side",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "这是一项关于精度与预判的测试，请思考如何通过自然偏转、反弹与电场控制，实现闭环聚合。",
+      "portrait": "Brunhilde_Confident",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "聚合即将完成，只差一步，就能闭合这个令人满意的环。",
+      "portrait": "Brunhilde_Smile",
+      "fadePortrait": true
+    }
+  ]
+}

@@ -3,28 +3,69 @@
   "dialogueLines": [
     {
       "speaker": "布伦希尔德",
-      "text": "欢迎来到月球基地，管理员。",
-      "portrait": "Brunhilde_Smile"
+      "text": "你好，指挥官。欢迎来到月球基地。",
+      "portrait": "Brunhilde_Happy",
+      "fadePortrait": true
     },
     {
       "speaker": "布伦希尔德",
-      "text": "这里是人类在地外世界的第一个永久据点。",
-      "portrait": "Brunhilde_Confident"
+      "text": "我是月球基地的辅助 AI——布伦希尔德，将协助你开启这段探索与建设的新旅程。",
+      "portrait": "Brunhilde_Happy",
+      "fadePortrait": false
     },
     {
       "speaker": "布伦希尔德",
-      "text": "我是辅助 AI 布伦希尔德，将协助你完成各项科研与建设任务。",
-      "portrait": "Brunhilde_Side"
+      "text": "在这里，我们将探索在低重力下的材料合成与制备，为人类的太空文明打下基础。",
+      "portrait": "Brunhilde_Smile",
+      "fadePortrait": true
     },
     {
       "speaker": "布伦希尔德",
-      "text": "每一块材料、每一个装置，都是人类智慧的结晶。",
-      "portrait": "Brunhilde_Smile"
+      "text": "点击左侧的“进入实验室”按钮，你将进入分子实验室。",
+      "portrait": "Brunhilde_Side",
+      "fadePortrait": false
     },
     {
       "speaker": "布伦希尔德",
-      "text": "现在，一切准备就绪——未来，由你书写。",
-      "portrait": "Brunhilde_Glow"
+      "text": "在那里，你可以通过操控电场，探索在低重力环境下的材料制备方法。",
+      "portrait": "Brunhilde_Explain",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "点击下方的“基地总览”按钮，可以查看资源建筑，并进行基础设定。",
+      "portrait": "Brunhilde_Gesture",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "在基地总览中，你还可以下达下一步任务，决定是进行材料研究，还是开发新设施。",
+      "portrait": "Brunhilde_Smile",
+      "fadePortrait": false
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "右上角显示的是两项关键资源：能元（EU）与聚合基元（PU）。",
+      "portrait": "Brunhilde_Info",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "能元是能源与资金的集合体，可通过太阳能板生成，也能用于科技解锁与建设消耗。",
+      "portrait": "Brunhilde_Explain",
+      "fadePortrait": false
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "聚合基元则是由地球运来的基础材料，是高分子合成的核心资源。",
+      "portrait": "Brunhilde_Glow",
+      "fadePortrait": true
+    },
+    {
+      "speaker": "布伦希尔德",
+      "text": "准备好了吗？接下来，你将亲自推动人类材料文明的跃升。",
+      "portrait": "Brunhilde_Happy",
+      "fadePortrait": true
     }
   ]
 }
