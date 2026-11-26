@@ -87,11 +87,19 @@ public class BuildInfoWindow : BasePanel
     /// <summary>
     /// 领取资源并更新数据
     /// </summary>
+    public static void HideInactiveWindows(Dictionary<int, BuildInfoWindow> windows, BuildingManager buildings)
+    {
+        foreach (var entry in windows)
+        {
+            if (!buildings.IsActiveBuilding(buildings.GetBuildingByID(entry.Key)))
+                entry.Value.PanelObj.SetActive(false);
+        }
+    }
+
     private void CollectResources()
     {
-        if (CurrentNum > 0)
+        if (CurrentNum > 0 && BuildingManager.GetInst().CollectBuildingResources(FactoryName))
         {
-            BuildingManager.GetInst().CollectBuildingResources(FactoryName);
             CurrentNum = 0;
             updateDate();
         }

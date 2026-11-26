@@ -6,12 +6,9 @@ using UnityEditor;
 
 public partial class SaveManager
 {
-    public void SavePlayerDate()
+    internal PlayerData CreatePlayerSaveData()
     {
-        Debug.Log("正在保存玩家数据...");
-
-        // 创建玩家数据对象
-        PlayerData playerData = new PlayerData
+        return new PlayerData
         {
             currentLevel = CurrentLevel,
             farthestLevel = LastesLevel,
@@ -28,8 +25,19 @@ public partial class SaveManager
             AutoDo = AutoDO
         };
 
-        // 序列化为 JSON
-        string json = JsonUtility.ToJson(playerData, true);
+    }
+
+    internal void ApplyCommittedBuildingClaim(PlayerData player)
+    {
+        CurrentCoin = player.coin;
+        CurrentPU = player.PU;
+    }
+
+    public void SavePlayerDate()
+    {
+        BuildingClaimJournal.RequireNoPendingClaim(Application.persistentDataPath);
+        Debug.Log("正在保存玩家数据...");
+        string json = JsonUtility.ToJson(CreatePlayerSaveData(), true);
 
         // 写入文件
         string filePath = Path.Combine(Application.persistentDataPath, "PlayerData.json");
@@ -40,6 +48,7 @@ public partial class SaveManager
 
     public bool LoadPlayerDate() // bool值用于判断玩家是否第一次进入游戏
     {
+        BuildingClaimJournal.Recover(Application.persistentDataPath);
         string filePath = Path.Combine(Application.persistentDataPath, "PlayerData.json");
 
         if (File.Exists(filePath))

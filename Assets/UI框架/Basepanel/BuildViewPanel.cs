@@ -120,12 +120,14 @@ public class BuildViewPanel : BasePanel
     /// </summary>
     private void UpdateFactoryUI()
     {
-        var unlockedFactories = BuildingManager.GetInst().unlockBuilding;
+        BuildingManager buildings = BuildingManager.GetInst();
+        BuildInfoWindow.HideInactiveWindows(activeBuildWindows, buildings);
+        var unlockedFactories = buildings.unlockBuilding;
 
         foreach (BuildingData factory in unlockedFactories)
         {
             // 如果该建筑已被更高级版本替代，就跳过
-            if (BuildingManager.GetInst().IsReplacedByUpgrade(factory, unlockedFactories))
+            if (!buildings.IsActiveBuilding(factory))
                 continue;
             // 只处理工厂类建筑（非 type == 1）
             if (factory.type != 1)
@@ -137,6 +139,7 @@ public class BuildViewPanel : BasePanel
                 existingWindow.FactoryName = factory.name;
                 existingWindow.CurrentNum = factory.currentReserves;
                 existingWindow.MaxNum = factory.maxReserves;
+                existingWindow.PanelObj.SetActive(true);
                 existingWindow.OnEnable();
             }
             else//如果没有，则是创建
@@ -180,12 +183,14 @@ public class BuildViewPanel : BasePanel
     /// </summary>
     private void UpdateUnfactoryUI()
     {
-        var unlockedBuildings = BuildingManager.GetInst().unlockBuilding;
+        BuildingManager buildings = BuildingManager.GetInst();
+        BuildInfoWindow.HideInactiveWindows(activeUnFactoryWindows, buildings);
+        var unlockedBuildings = buildings.unlockBuilding;
 
         foreach (BuildingData building in unlockedBuildings)
         {
             // 跳过被高级版本替代的建筑
-            if (BuildingManager.GetInst().IsReplacedByUpgrade(building, unlockedBuildings))
+            if (!buildings.IsActiveBuilding(building))
                 continue;
 
             // 只处理非工厂类建筑（非 type == 1）
@@ -199,6 +204,7 @@ public class BuildViewPanel : BasePanel
                 existingWindow.FactoryName = building.name;
                 existingWindow.CurrentNum = building.currentReserves;
                 existingWindow.MaxNum = building.maxReserves;
+                existingWindow.PanelObj.SetActive(true);
                 existingWindow.OnEnable();
             }
             else // 不存在则创建
@@ -240,7 +246,8 @@ public class BuildViewPanel : BasePanel
     void updateGenerateProgress()
     {
         BuildingManager.GetInst().UpdateBuildingProduction();
-        UpdateFactoryUI();
+        if (showFactory) UpdateFactoryUI();
+        else UpdateUnfactoryUI();
     }
 
     void Back()

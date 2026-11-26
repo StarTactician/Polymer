@@ -10,6 +10,7 @@ public class ConfirmCoinCostPanel : BasePanel
     private static string path = "Panel/ConfirmCoinCostPanel";
     public static readonly UIType uitype = new UIType(path, name);
     private TextMeshProUGUI coinNum;
+    private bool closed;
     public int Num;
     public int Level;
     public ConfirmCoinCostPanel() : base(uitype)
@@ -20,6 +21,7 @@ public class ConfirmCoinCostPanel : BasePanel
 
     public override void OnDestroy()
     {
+        closed = true;
         base.OnDestroy();
     }
 
@@ -47,32 +49,28 @@ public class ConfirmCoinCostPanel : BasePanel
     }
     void Back()
     {
+        if (closed || SceneControl.GetInst().IsLevelEntryPending) return;
+        closed = true;
         UIManager.GetInst().PopOnceOnlyUsePanel();
     }
+
     void Confirm()
     {
-        //判断钱够不够
-        if(SaveManager.CurrentPU< Num)
-        {
-            //弹出不够窗口
-            UIManager.GetInst().PopOnceOnlyUsePanel();
-            TipsJumpWindow jumpWindow = new TipsJumpWindow();
-            jumpWindow.Text = "当前聚合基元不够，无法开始研发工作!";
-            UIManager.GetInst().PushTips(jumpWindow,2.5f);
-        }
-        else
-        {
-            if(Level>=SaveManager.GetInst().MaxLevel)//是最后一关了，直接返回。事实上最后一关不应该出现进入下一关按钮，后面再改
-                UIManager.GetInst().PopOnceOnlyUsePanel();
+        if (closed || PanelObj == null || !PanelObj.activeInHierarchy) return;
+        SceneControl.LevelEntryStatus result = SceneControl.GetInst().TryBeginLevelLoad(Level, Num);
+        if (result == SceneControl.LevelEntryStatus.Started || result == SceneControl.LevelEntryStatus.Busy) return;
 
-            SaveManager.GetInst().ResourcesChange(-Num,"PU");
-            //TestScene testScene = new TestScene();
-            //SceneControl.GetInst().LoadScene(testScene.SceneName, testScene);
-            //SaveManager.GetInst().CoinChange(-SaveManager.CurrentLevel * 40);
-            SaveManager.CurrentLevel = Level;//只有这里，也就是进入关卡前才能改
-            SceneControl.GetInst().LoadLevel(SaveManager.CurrentLevel);
-        }
+        closed = true;
+        UIManager.GetInst().PopOnceOnlyUsePanel();
+        TipsJumpWindow tip = new TipsJumpWindow
+        {
+            Text = result == SceneControl.LevelEntryStatus.InsufficientPU
+                ? "\u57fa\u5143\u4e0d\u8db3\uff0c\u65e0\u6cd5\u5f00\u59cb\u7814\u53d1\u3002"
+                : "\u8be5\u5173\u5361\u76ee\u524d\u65e0\u6cd5\u8fdb\u5165\u3002"
+        };
+        UIManager.GetInst().PushTips(tip, 2.5f);
     }
+
     void CoinNum(int num)
     {
         coinNum.text = "进入关卡将花费 "+num.ToString();

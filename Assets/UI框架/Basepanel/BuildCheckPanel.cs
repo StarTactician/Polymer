@@ -61,12 +61,14 @@ public class BuildCheckPanel : BasePanel
     /// </summary>
     private void UpdateFactoryUI()
     {
-        var unlockedFactories = BuildingManager.GetInst().unlockBuilding;
+        BuildingManager buildings = BuildingManager.GetInst();
+        BuildInfoWindow.HideInactiveWindows(activeBuildWindows, buildings);
+        var unlockedFactories = buildings.unlockBuilding;
 
         foreach (BuildingData factory in unlockedFactories)
         {
             // 如果该建筑已被更高级版本替代，就跳过
-            if (BuildingManager.GetInst().IsReplacedByUpgrade(factory, unlockedFactories))
+            if (!buildings.IsActiveBuilding(factory))
                 continue;
 
             if (activeBuildWindows.ContainsKey(factory.id))
@@ -76,6 +78,7 @@ public class BuildCheckPanel : BasePanel
                 existingWindow.FactoryName = factory.name;
                 existingWindow.CurrentNum = factory.currentReserves;
                 existingWindow.MaxNum = factory.maxReserves;
+                existingWindow.PanelObj.SetActive(true);
                 existingWindow.OnEnable();
             }
             else

@@ -10,6 +10,7 @@ public class VectoryPanel : BasePanel
     private RawImage star1;
     private RawImage star2;
     private RawImage star3;
+    private Button nextLevelButton;
     public static readonly UIType uitype = new UIType(path, name);
     private bool hasShow;
     public VectoryPanel() : base(uitype)
@@ -33,6 +34,8 @@ public class VectoryPanel : BasePanel
     {
         base.OnEnable();
         UIFunction.Inst.StartFade(0.2f, this, true);
+        if (nextLevelButton != null)
+            nextLevelButton.interactable = SceneControl.GetInst().CanLoadLevel(SaveManager.CurrentLevel + 1);
         if(!hasShow)
         ShowStar(LevelManager.GetInst().starNumJudge());//自身start启用了之后马上会被禁用出现金币数量UI，所以跳星星的操作放进OnEnable只展示一次
     }
@@ -42,7 +45,9 @@ public class VectoryPanel : BasePanel
         base.OnStart();
         UIFunction.Inst.StartFade(0.2f, this, true);
         UIFunction.Inst.GetCompoentInObjsChild<Button>(PanelObj, "BackToMenu").onClick.AddListener(BackToMenu);
-        UIFunction.Inst.GetCompoentInObjsChild<Button>(PanelObj, "NextLevel").onClick.AddListener(NextLevel);
+        nextLevelButton = UIFunction.Inst.GetCompoentInObjsChild<Button>(PanelObj, "NextLevel");
+        nextLevelButton.interactable = SceneControl.GetInst().CanLoadLevel(SaveManager.CurrentLevel + 1);
+        nextLevelButton.onClick.AddListener(NextLevel);
         UIFunction.Inst.GetCompoentInObjsChild<Button>(PanelObj, "Restart").onClick.AddListener(Restart);
         star1 = UIFunction.Inst.GetCompoentInObjsChild<RawImage>(PanelObj, "star1");
         star2 = UIFunction.Inst.GetCompoentInObjsChild<RawImage>(PanelObj, "star2");
@@ -56,21 +61,26 @@ public class VectoryPanel : BasePanel
     }
     void NextLevel()
     {
-        //++SaveManager.CurrentLevel;
-        if (SaveManager.CurrentLevel == SaveManager.LastesLevel - 1&& SaveManager.LastesLevel>SaveManager.GetInst().MaxLevel)
-            return;
-        ConfirmCoinCostPanel coinCostPanel = new ConfirmCoinCostPanel();
-        coinCostPanel.Num = SaveManager.CountLevelCost(SaveManager.CurrentLevel + 1);
-        coinCostPanel.Level = SaveManager.CurrentLevel + 1;
-        UIManager.GetInst().Push(coinCostPanel);
+        OpenLevelEntry(SaveManager.CurrentLevel + 1);
     }
+
     void Restart()
     {
-        ConfirmCoinCostPanel coinCostPanel = new ConfirmCoinCostPanel();
-        coinCostPanel.Num = SaveManager.CountLevelCost(SaveManager.CurrentLevel);
-        coinCostPanel.Level = SaveManager.CurrentLevel ;
-        UIManager.GetInst().Push(coinCostPanel);
+        OpenLevelEntry(SaveManager.CurrentLevel);
     }
+
+    private void OpenLevelEntry(int level)
+    {
+        if (PanelObj == null || !PanelObj.activeInHierarchy) return;
+        SceneControl sceneControl = SceneControl.GetInst();
+        if (sceneControl.IsLevelEntryPending || !sceneControl.CanLoadLevel(level)) return;
+        UIManager.GetInst().Push(new ConfirmCoinCostPanel
+        {
+            Num = SaveManager.CountLevelCost(level),
+            Level = level
+        });
+    }
+
     void ShowStar(int starnum)
     {
         hasShow = true;

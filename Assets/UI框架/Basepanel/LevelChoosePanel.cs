@@ -122,15 +122,21 @@ public class LevelChoosePanel : BasePanel
 
     void Select()
     {
+        if (PanelObj == null || !PanelObj.activeInHierarchy || SceneControl.GetInst().IsLevelEntryPending) return;
         Button clickedButton = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
         if (clickedButton != null)
         {
-            Debug.Log(clickedButton.name);
-            //SaveManager.CurrentLevel= int.Parse(clickedButton.name);
-            //SceneControl.GetInst().LoadLevel(SaveManager.CurrentLevel);
-            ConfirmCoinCostPanel coinCostPanel = new ConfirmCoinCostPanel();
-            coinCostPanel.Num = SaveManager.CountLevelCost(int.Parse(clickedButton.name));
-            coinCostPanel.Level= int.Parse(clickedButton.name);
+            int level = int.Parse(clickedButton.name);
+            if (!SceneControl.GetInst().CanLoadLevel(level))
+            {
+                UIManager.GetInst().PushTips(new TipsJumpWindow { Text = "该关卡目前无法进入。" }, 2.5f);
+                return;
+            }
+            ConfirmCoinCostPanel coinCostPanel = new ConfirmCoinCostPanel
+            {
+                Num = SaveManager.CountLevelCost(level),
+                Level = level
+            };
             UIManager.GetInst().Push(coinCostPanel);
         }
         else

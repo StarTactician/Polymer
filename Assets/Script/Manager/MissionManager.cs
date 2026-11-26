@@ -7,6 +7,8 @@ using System.Linq;
 
 public class MissionManager
 {
+    private const int CarbonFiberTechnologyId = 25;
+    private const int LevelTwoLandingPadId = 10;
     private static MissionManager Inst;
     public int CompeletMission;
 
@@ -484,7 +486,9 @@ public class MissionManager
                         return false;
                     break;
                 case "LandingPadLevel1":
-                    if (condition.canNotShowOut || BuildingManager.GetInst().IsUnlock("LandingPadLevel2"))
+                case "LandingPad_Level1":
+                    BuildingManager buildings = BuildingManager.GetInst();
+                    if (condition.canNotShowOut || buildings.IsUnlock(LevelTwoLandingPadId) || buildings.IsUnlock("LandingPad_Level2"))
                         return false;
                     break;
                 case "LivingStationLevel1":
@@ -512,7 +516,7 @@ public class MissionManager
                         return false;                   
                     break;                
                 case "notUnlockCarbonFiberComposite":
-                    if (condition.canNotShowOut || TechTreeManager.IsTechnologyUnlocked(25))
+                    if (condition.canNotShowOut || TechTreeManager.IsTechnologyUnlocked(CarbonFiberTechnologyId))
                         return false;                   
                     break;
 
@@ -550,11 +554,24 @@ public class MissionManager
             //PU
             if (!string.IsNullOrEmpty(taskQueue.Peek().newBuliding))//在建筑，科技管理器中解锁对应的
             {
-                BuildingManager.GetInst().UnlockBuilding(taskQueue.Peek().newBuliding);
+                BuildingManager buildings = BuildingManager.GetInst();
+                if (taskQueue.Peek().id == "T009") buildings.UnlockBuilding(LevelTwoLandingPadId, "LandingPad_Level2");
+                else buildings.UnlockBuilding(taskQueue.Peek().newBuliding);
                 rewardPanel.newBuildingShown = true;
                 rewardPanel.Name1 = taskQueue.Peek().newBuliding;
             }
-            if (!string.IsNullOrEmpty(taskQueue.Peek().newTech))
+            if (taskQueue.Peek().id == "T016")
+            {
+                TechTreeManager techTree = TechTreeManager.GetInst();
+                Technology technology = techTree.GetTech(CarbonFiberTechnologyId);
+                if (technology != null)
+                {
+                    techTree.UnlockTechnology(CarbonFiberTechnologyId);
+                    rewardPanel.newTechShown = true;
+                    rewardPanel.Name2 = technology.TechCNName;
+                }
+            }
+            else if (!string.IsNullOrEmpty(taskQueue.Peek().newTech))
             {
                 TechTreeManager.GetInst().UnlockTechnology(taskQueue.Peek().newTech);
                 rewardPanel.newTechShown = true;

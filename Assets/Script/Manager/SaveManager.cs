@@ -232,20 +232,20 @@ public partial class SaveManager
     public void UpdateProgress()
     {
         // 主线关卡进度
-        int levelProgress = (LastesLevel - 1) * 250;
+        int mainlineProgressPoints = (LastesLevel - 1) * 250;
 
         // 解锁科技数量（通过 TechTreeManager 访问,不包含主线关卡的科技）
   
-        int techProgress = TechTreeManager.GetInst().TotalTechProgress();
+        int technologyProgressPoints = TechTreeManager.GetInst().TotalTechProgress();
 
         // 解锁建筑数量（通过 BuildingManager 访问）
-        int buildingProgress = BuildingManager.GetInst().TotalBuildingProgress();
+        int buildingProgressPoints = BuildingManager.GetInst().TotalBuildingProgress();
 
         // 总进度值
-        int totalProgress = levelProgress + techProgress + buildingProgress;
-        totalProgress = Mathf.Clamp(totalProgress, 0, 10000);
+        int totalProgressPoints = mainlineProgressPoints + technologyProgressPoints + buildingProgressPoints;
+        totalProgressPoints = Mathf.Clamp(totalProgressPoints, 0, 10000);
 
-        PlayerProgress = totalProgress;
+        PlayerProgress = totalProgressPoints;
         if (PlayerProgress >= 3000 && PlayerProgress < 6000 )
         {
             BuildingManager.GetInst().UnlockBuilding("CommandStation_Level2");

@@ -288,34 +288,30 @@
     "hasNPC": true,
     "npcPath": []
   },
-{
-  "buildings": [
-    {
-      "id": 13,
-      "name": "LunarBiosphere",
-      "textName": "月球生态舱",
-      "upgradeBy": "",
-      "description": "这座生态舱并不直接产出资源，却可能是整座月球基地最具人文意义的空间。舱体内种植着番茄、绿叶作物和小型树苗，配置有暖光灯与可见的空气水回收系统。\n在这里，宇航员能看到生命的色彩与温度，感受到从苟且生存到体面生活的真实转变。生态舱的存在标志着基地环境质量的跃升，也象征着人类在外太空真正迈入了栖息的阶段。",
-      "level": 3,
-      "type": 2,
-      "unlockReward": 1200,
-      "income": 0,
-      "incomeType": "",
-      "producInterval": 0,
-      "maxReserves": 0,
-      "currentReserves": 0,
-      "hasCheck": 1,
-      "lastGenerateTime": "",
-      "nextGenerateTime": "",
-      "position": { "x": 0, "y": 0, "z": 0 },
-      "scale": { "x": 1, "y": 1, "z": 1 },
-      "rotation": { "x": 0, "y": 0, "z": 0 },
-      "isUnlocked": false,
-      "hasNPC": true,
-      "npcPath": []
-    }
-  ]
-}
+  {
+    "id": 13,
+    "name": "LunarBiosphere",
+    "textName": "月球生态舱",
+    "upgradeBy": "",
+    "description": "这座生态舱并不直接产出资源，却可能是整座月球基地最具人文意义的空间。舱体内种植着番茄、绿叶作物和小型树苗，配置有暖光灯与可见的空气水回收系统。\n在这里，宇航员能看到生命的色彩与温度，感受到从苟且生存到体面生活的真实转变。生态舱的存在标志着基地环境质量的跃升，也象征着人类在外太空真正迈入了栖息的阶段。",
+    "level": 3,
+    "type": 2,
+    "unlockReward": 1200,
+    "income": 0,
+    "incomeType": "",
+    "producInterval": 0,
+    "maxReserves": 0,
+    "currentReserves": 0,
+    "hasCheck": 1,
+    "lastGenerateTime": "",
+    "nextGenerateTime": "",
+    "position": { "x": 0, "y": 0, "z": 0 },
+    "scale": { "x": 1, "y": 1, "z": 1 },
+    "rotation": { "x": 0, "y": 0, "z": 0 },
+    "isUnlocked": false,
+    "hasNPC": true,
+    "npcPath": []
+  }
 
   ]
 }

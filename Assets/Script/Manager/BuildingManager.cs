@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System;
 using System.Linq;
 
@@ -12,6 +13,15 @@ public class BuildingManager
     private BuildingList buildingList;
     public List<BuildingData> unlockBuilding=new List<BuildingData>();
     private Dictionary<int, Transform> cameraPosDict = new Dictionary<int, Transform>();
+    private readonly Dictionary<int, GameObject> buildingModels = new Dictionary<int, GameObject>();
+
+    private static string BuildingKey(string name)
+    {
+        if (name == "LandingPadLevel1") return "LandingPad_Level1";
+        if (name == "LandingPadLevel2") return "LandingPad_Level2";
+        return name;
+    }
+
     public static BuildingManager GetInst()
     {
         if (Inst == null)
@@ -45,11 +55,34 @@ public class BuildingManager
             OnStart();
             Debug.Log("场景已切换，重新初始化数据");
         }
-        return buildingList.buildings.Where(b => b.isUnlocked).Sum(b => b.progressValue);
+        // Legacy data stores building progress under unlockReward.
+        return buildingList.buildings.Where(b => b.isUnlocked)
+            .Sum(b => b.progressValue != 0 ? b.progressValue : b.unlockReward);
+    }
+
+    private const int LunarBiosphereId = 13;
+    private const string LunarBiosphereName = "LunarBiosphere";
+
+    private void RestoreMissingLunarBiosphere()
+    {
+        if (buildingList.buildings.Any(b => b != null && (b.id == LunarBiosphereId || b.name == LunarBiosphereName)))
+            return;
+
+        TextAsset defaults = Resources.Load<TextAsset>("DefaultBuildingData");
+        if (defaults == null)
+            return;
+
+        BuildingList defaultsList = JsonUtility.FromJson<BuildingList>(defaults.text);
+        BuildingData biosphere = defaultsList?.buildings?.Find(b =>
+            b != null && b.id == LunarBiosphereId && b.name == LunarBiosphereName);
+        if (biosphere != null)
+            buildingList.buildings.Add(biosphere);
     }
 
     public void LoadBuildingData()
     {
+        BuildingClaimJournal.Recover(Application.persistentDataPath);
+        unlockBuilding.Clear();
         if (File.Exists(buildingDataFilePath))
         {
             string json = File.ReadAllText(buildingDataFilePath);
@@ -59,6 +92,7 @@ public class BuildingManager
                 Debug.LogError("建筑数据为空，请检查 JSON 文件。");
                 return;
             }
+            RestoreMissingLunarBiosphere();
             Debug.Log("建筑数据加载成功！");
         }
         else
@@ -77,10 +111,12 @@ public class BuildingManager
                 buildingList = new BuildingList();
             }
         }
+        RebuildUnlockedBuildings();
     }
 
     public void SaveBuildingData()
     {
+        BuildingClaimJournal.RequireNoPendingClaim(Application.persistentDataPath);
         string json = JsonUtility.ToJson(buildingList, true);
         File.WriteAllText(buildingDataFilePath, json);
         Debug.Log("建筑数据已保存！");
@@ -89,7 +125,7 @@ public class BuildingManager
     {
         foreach (BuildingData factory in unlockBuilding)
         {
-            if (factory.name == factoryName)
+            if (BuildingKey(factory.name) == BuildingKey(factoryName))
             {
                 return factory;
             }
@@ -113,30 +149,31 @@ public class BuildingManager
     /// </summary>
     public void GenerateBuildingsOnLoad()
     {
-        GetFactory(); // 确保 unlockFactory 已更新
-
-        foreach (BuildingData building in buildingList.buildings)
+        foreach (var pair in buildingModels)
         {
-            if (!building.isUnlocked || string.IsNullOrEmpty(building.name))
+            if (pair.Value != null && !IsActiveBuilding(GetBuildingByID(pair.Key)))
             {
-                Debug.LogWarning("建筑未解锁或命名错误" +building.name);
+                pair.Value.SetActive(false);
+                cameraPosDict.Remove(pair.Key);
+            }
+        }
+
+        foreach (BuildingData building in unlockBuilding)
+        {
+            if (!IsActiveBuilding(building)) continue;
+            if (buildingModels.TryGetValue(building.id, out GameObject existing) && existing != null)
+            {
+                existing.SetActive(true);
+                Transform existingCamera = existing.transform.Find("CameraPos");
+                if (existingCamera != null) cameraPosDict[building.id] = existingCamera;
                 continue;
             }
 
-                
-
-            // 如果该建筑已被更高级版本替代，就跳过生成
-            if (IsReplacedByUpgrade(building, buildingList.buildings.FindAll(b => b.isUnlocked)))
-            {
-                Debug.LogWarning("建筑已被更高级版本替代" + building.textName);
-                continue;
-            }
-                
-
-            GameObject buildingPrefab = Resources.Load<GameObject>($"Building/{building.name}");
+            GameObject buildingPrefab = Resources.Load<GameObject>($"Building/{BuildingKey(building.name)}");
             if (buildingPrefab != null)
             {
                 GameObject buildingObj = GameObject.Instantiate(buildingPrefab);
+                buildingModels[building.id] = buildingObj;
                 buildingObj.transform.position = new Vector3(building.position.x, building.position.y, building.position.z);
                 buildingObj.transform.localScale = new Vector3(building.scale.x, building.scale.y, building.scale.z);
                 buildingObj.transform.rotation = Quaternion.Euler(building.rotation.x, building.rotation.y, building.rotation.z);
@@ -157,11 +194,7 @@ public class BuildingManager
                     else Debug.Log(building.name+ "还没有设置Process1Pos");
                 }
                 
-                if (camPos != null&&!cameraPosDict.ContainsKey(building.id))
-                {
-                    cameraPosDict.Add(building.id, camPos); // or building.name
-                }
-
+                if (camPos != null) cameraPosDict[building.id] = camPos;
             }
             else
             {
@@ -179,97 +212,118 @@ public class BuildingManager
     /// 资源领取方法
     /// </summary>
     /// <param name="factoryName"></param>
-    public void CollectBuildingResources(string factoryName)
+    public bool CollectBuildingResources(string factoryName) => CollectBuildingResources(factoryName, DateTime.Now);
+
+    private void RecoverBeforeBuildingUse()
     {
-        UpdateBuildingProduction(); // 确保是最新数据
-
-        BuildingData factory = buildingList.buildings.Find(b => b.name == factoryName && b.isUnlocked);
-        if (factory == null)
-        {
-            Debug.LogWarning($"未找到建筑：{factoryName}");
-            return;
-        }
-
-        if (factory.currentReserves <= 0)
-        {
-            Debug.Log($"建筑 {factoryName} 当前储量为 0，无法领取。");
-            return;
-        }
-
-        // 增加玩家资源
-        SaveManager.GetInst().ResourcesChange(factory.currentReserves, factory.incomeType);
-
-        
-        GetCoinPanel rewardPanel = new GetCoinPanel();
-        if (factory.incomeType == "PU")
-        {
-            rewardPanel.rewardPuShown = true;
-            rewardPanel.PUNumber = factory.currentReserves;
-        }
-            
-        else if (factory.incomeType == "EU")
-        {
-            rewardPanel.rewardCoinShown = true;
-            rewardPanel.CoinNumber = factory.currentReserves;
-        }
-        // 清空储量（但不改生产时间）
-        factory.currentReserves = 0;
-        UIManager.GetInst().Push(rewardPanel);
-        SaveBuildingData();
-
-        Debug.Log($"✅ 成功领取 {factoryName} 的资源，当前储量已清空");
+        if (!BuildingClaimJournal.Recover(Application.persistentDataPath)) return;
+        // A failed claim can be retried without restarting the scene. Refresh both in-memory views.
+        LoadBuildingData();
+        SaveManager.GetInst().LoadPlayerDate();
     }
 
-    /// <summary>
-    /// 资源生成方法,12点时，建筑面板进入时，以及并在进入建筑面板后每分钟执行一次
-    /// </summary>
-    public void UpdateBuildingProduction()
+    private bool CollectBuildingResources(string factoryName, DateTime now)
     {
-        DateTime now = DateTime.Now;
-        GetFactory();
-
-        bool anyProductionChanged = false; // 
-
-        foreach (var building in unlockBuilding)
+        try { RecoverBeforeBuildingUse(); }
+        catch (Exception error) when (error is IOException || error is UnauthorizedAccessException || error is InvalidDataException)
         {
-            // 只处理工厂类建筑（非 type == 1）
-            if (building.type != 1)
-                continue;
+            Debug.LogException(error);
+            return false;
+        }
+        BuildingData factory = GetBuildingByName(factoryName);
+        if (!IsActiveBuilding(factory) || factory.type != 1) return false;
+
+        if (factory.incomeType != "EU" && factory.incomeType != "coin" && factory.incomeType != "PU")
+            return false;
+
+        bool productionChanged = ApplyBuildingProduction(now);
+        int amount = factory.currentReserves;
+        if (amount <= 0)
+        {
+            if (productionChanged) SaveBuildingData();
+            return false;
+        }
+
+        bool isPU = factory.incomeType == "PU";
+        PlayerData player = SaveManager.GetInst().CreatePlayerSaveData();
+        if (isPU) player.PU += amount;
+        else player.coin += amount;
+
+        string warehouseAfter;
+        try
+        {
+            factory.currentReserves = 0;
+            warehouseAfter = JsonUtility.ToJson(buildingList, true);
+        }
+        finally { factory.currentReserves = amount; }
+
+        try
+        {
+            BuildingClaimJournal.Commit(Application.persistentDataPath, JsonUtility.ToJson(player, true), warehouseAfter);
+        }
+        catch (Exception error) when (error is IOException || error is UnauthorizedAccessException || error is InvalidDataException)
+        {
+            Debug.LogException(error);
+            return false;
+        }
+
+        SaveManager.GetInst().ApplyCommittedBuildingClaim(player);
+        factory.currentReserves = 0;
+
+        var reward = new GetCoinPanel
+        {
+            rewardPuShown = factory.incomeType == "PU",
+            PUNumber = factory.incomeType == "PU" ? amount : 0,
+            rewardCoinShown = factory.incomeType == "EU",
+            CoinNumber = factory.incomeType == "EU" ? amount : 0
+        };
+        try
+        {
+            AchievementManager.GetInst().CheckAchievProgress(isPU ? "PU" : "coin");
+            UIManager.GetInst().Push(reward);
+        }
+        catch (Exception error)
+        {
+            Debug.LogException(error);
+        }
+        return true;
+    }
+
+    public void UpdateBuildingProduction() => UpdateBuildingProduction(DateTime.Now);
+
+    private void UpdateBuildingProduction(DateTime now)
+    {
+        RecoverBeforeBuildingUse();
+        if (ApplyBuildingProduction(now)) SaveBuildingData();
+    }
+
+    private bool ApplyBuildingProduction(DateTime now)
+    {
+        bool changed = false;
+        foreach (BuildingData building in unlockBuilding)
+        {
+            if (!IsActiveBuilding(building) || building.type != 1 || building.producInterval <= 0 || building.income <= 0) continue;
             if (string.IsNullOrEmpty(building.nextGenerateTime))
             {
-                // 第一次设定 nextGenerateTime
                 building.nextGenerateTime = now.AddSeconds(building.producInterval).ToString("yyyy-MM-dd HH:mm:ss");
-                anyProductionChanged = true; // 👈 第一次初始化也需要保存
+                changed = true;
                 continue;
             }
 
-            DateTime nextTime = DateTime.Parse(building.nextGenerateTime);
+            DateTime next = DateTime.Parse(building.nextGenerateTime);
+            if (now < next) continue;
 
-            if (now < nextTime || building.currentReserves >= building.maxReserves)
-                continue;
-
-            TimeSpan elapsed = now - nextTime;
-            int intervalCount = 1 + Mathf.FloorToInt((float)elapsed.TotalSeconds / building.producInterval);
-            int actualAdd = intervalCount * building.income;
-
-            int spaceLeft = building.maxReserves - building.currentReserves;
-            int finalAdd = Mathf.Min(actualAdd, spaceLeft);
-
-            if (finalAdd > 0)
-            {
-                building.currentReserves += finalAdd;
-                DateTime newNextTime = nextTime.AddSeconds(intervalCount * building.producInterval);
-                building.nextGenerateTime = newNextTime.ToString("yyyy-MM-dd HH:mm:ss");
-                anyProductionChanged = true; // 👈 确认进行了资源变化
-            }
+            long intervalTicks = TimeSpan.TicksPerSecond * building.producInterval;
+            long batches = 1 + (now.Ticks - next.Ticks) / intervalTicks;
+            long availableSpace = Math.Max(0L, (long)building.maxReserves - building.currentReserves);
+            long added = (long)Math.Min(availableSpace, batches * (decimal)building.income);
+            building.currentReserves = (int)(building.currentReserves + added);
+            // Expired batches advance the clock even when the warehouse cannot store them.
+            building.nextGenerateTime = next.AddTicks(batches * intervalTicks).ToString("yyyy-MM-dd HH:mm:ss");
+            changed = true;
         }
-        
-        if (anyProductionChanged)
-        {
-            SaveBuildingData(); // ✅ 只有有变化时才保存
-        }
+        return changed;
     }
-
 
     /// <summary>
     /// 解锁指定建筑时调用
@@ -277,25 +331,38 @@ public class BuildingManager
     /// <param name="buildingName"></param>
     public void UnlockBuilding(string buildingName)
     {
-        
-        BuildingData building = buildingList.buildings.Find(b => b.name == buildingName);
-        if (building != null && !building.isUnlocked)
-        {
-            building.isUnlocked = true;
-            GetFactory();
-            SaveBuildingData();
-            AchievementManager.GetInst().CheckAchievProgress("building");
-            Debug.Log($"建筑 {buildingName} 已解锁！");
-        }
-        else Debug.Log($"建筑 {buildingName} 已解锁或不存在！");
+        string key = BuildingKey(buildingName);
+        if (string.IsNullOrEmpty(key)) return;
+        UnlockBuilding(buildingList.buildings.Find(b => BuildingKey(b.name) == key));
     }
-    /// <summary>
-    /// 某个建筑是否被同类更高级建筑替代（upgradeBy 相同）
+
+    public void UnlockBuilding(int id, string legacyName)
+    {
+        BuildingData building = buildingList.buildings.Find(b => b.id == id);
+        UnlockBuilding(building ?? buildingList.buildings.Find(b => BuildingKey(b.name) == BuildingKey(legacyName)));
+    }
+
+    private void UnlockBuilding(BuildingData building)
+    {
+        if (building == null || building.isUnlocked) return;
+        building.isUnlocked = true;
+        RebuildUnlockedBuildings();
+        SaveBuildingData();
+        AchievementManager.GetInst().CheckAchievProgress("building");
+        if (SceneManager.GetActiveScene().name == "StartScene") GenerateBuildingsOnLoad();
+    }
+
+    public bool IsActiveBuilding(BuildingData building)
+    {
+        return building != null && building.isUnlocked && !string.IsNullOrEmpty(building.name) &&
+            !IsReplacedByUpgrade(building, unlockBuilding);
+    }
+
     public bool IsReplacedByUpgrade(BuildingData building, List<BuildingData> unlockedList)
     {
         foreach (var b in unlockedList)
         {
-            if (b.isUnlocked && !string.IsNullOrEmpty(b.upgradeBy) && b.upgradeBy == building.name)
+            if (b.isUnlocked && !string.IsNullOrEmpty(b.upgradeBy) && BuildingKey(b.upgradeBy) == BuildingKey(building.name))
                 return true;
         }
         return false;
@@ -331,17 +398,13 @@ public class BuildingManager
     /// <summary>
     /// 获取已经解锁的工厂类建筑
     /// </summary>
-    private void GetFactory()
+    private void RebuildUnlockedBuildings()
     {
-        foreach(BuildingData factory in buildingList.buildings)
-        {
-            if (factory.isUnlocked&&!unlockBuilding.Contains(factory))
-                unlockBuilding.Add(factory);               
-        }
-        Debug.Log("当前解锁建筑数量"+unlockBuilding.Count);
-        if (unlockBuilding.Count == 0)
-            Debug.Log("建筑数目为0，请检查JSON是否正确被读取");
+        unlockBuilding.Clear();
+        if (buildingList?.buildings != null)
+            unlockBuilding.AddRange(buildingList.buildings.Where(b => b != null && b.isUnlocked));
     }
+
 }
 
 
